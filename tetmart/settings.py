@@ -49,12 +49,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # KHAI BÁO APPS CỦA DỰ ÁN
-    'apps.core',
-    'apps.accounts',
-    'apps.catalog',
-    'apps.cart',
-    'apps.orders',
-    'apps.dashboard',
+   # 'apps.core',
+   # 'apps.accounts',
+   # 'apps.catalog',
+   # 'apps.cart',
+   # 'apps.orders',
+   # 'apps.dashboard',
+    'users',
+    'products',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -96,11 +99,11 @@ WSGI_APPLICATION = 'tetmart.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tet_mart_db',      # Tên DB bạn vừa tạo
-        'USER': 'admin',            # User bạn vừa tạo
-        'PASSWORD': '123',          # Mật khẩu bạn vừa đặt
-        'HOST': '127.0.0.1',        # Địa chỉ localhost
-        'PORT': '3306',             # Cổng XAMPP
+        'NAME': 'tet_mart_db',      
+        'USER': 'admin',            
+        'PASSWORD': '123',          
+        'HOST': '127.0.0.1',       
+        'PORT': '3306',             
     }
 }
 
