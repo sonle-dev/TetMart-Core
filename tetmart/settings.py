@@ -90,16 +90,17 @@ WSGI_APPLICATION = 'tetmart.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# Tìm dòng DATABASES cũ, xóa đi và thay bằng đoạn này:
 
+
+# Cấu hình Database cho TetMart-Core
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tet_mart_db',      # Tên DB bạn vừa tạo
+        'USER': 'admin',            # User bạn vừa tạo
+        'PASSWORD': '123',          # Mật khẩu bạn vừa đặt
+        'HOST': '127.0.0.1',        # Địa chỉ localhost
+        'PORT': '3306',             # Cổng XAMPP
     }
 }
 
