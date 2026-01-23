@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3" style="color: var(--tet-text);">
+            Sắm Tết ấm cúng – Trang trí nhà cửa rực rỡ
+        </h1>
+        <p class="lead mb-4 text-muted">
+            Chọn ngay đèn lồng, bao lì xì, hoa mai/đào và nhiều đồ trang trí đẹp
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#products" class="btn btn-primary-tet">Mua sắm ngay</a>
+            <a href="#" class="btn btn-outline-tet">Xem danh mục</a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Danh mục nổi bật</h4>
+    
+    <div class="row g-4 justify-content-center">
+        
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🏮</div>
+                <span class="cat-name">Đèn lồng</span>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🧧</div>
+                <span class="cat-name">Bao lì xì</span>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🌸</div>
+                <span class="cat-name">Hoa mai/đào</span>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🎊</div>
+                <span class="cat-name">Dây trang trí</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container pb-5" id="products">
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Sản phẩm bán chạy</h4>
+    
+    <div class="row g-4">
+        
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column">
+                <div class="product-img-container">
+                    <img src="https://salt.tikicdn.com/cache/750x750/ts/product/d0/20/7a/12a86847c2310137452d921356247c18.jpg.webp" alt="SP">
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span style="font-size: 20px;">🏮</span>
+                        <small class="text-muted">Đèn lồng</small>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">Đèn lồng đỏ truyền thống</h6>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">150.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <button class="btn btn-primary-tet w-100">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column">
+                <div class="product-img-container">
+                    <img src="https://bizweb.dktcdn.net/100/443/076/products/trang-tri-tet-hoa-dao-dong.jpg" alt="SP">
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span style="font-size: 20px;">🌸</span>
+                        <small class="text-muted">Hoa mai/đào</small>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">Cành hoa mai vàng</h6>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">180.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <button class="btn btn-primary-tet w-100">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column">
+                <div class="product-img-container">
+                    <img src="https://salt.tikicdn.com/cache/w1200/ts/product/6e/c8/10/7c462744d03d09a06655c65b5302636a.jpg" alt="SP">
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span style="font-size: 20px;">🧧</span>
+                        <small class="text-muted">Bao lì xì</small>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">Bao lì xì hoa mai vàng</h6>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">25.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <button class="btn btn-primary-tet w-100">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <div class="col-12 col-sm-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column">
+                <div class="product-img-container">
+                    <img src="https://vn-test-11.slatic.net/p/3c73499427b20387498c89599d14620f.jpg" alt="SP">
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span style="font-size: 20px;">🎊</span>
+                        <small class="text-muted">Dây trang trí</small>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">Dây treo chữ Phúc</h6>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">45.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <button class="btn btn-primary-tet w-100">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="container mb-5">
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Lý do chọn Tet Mart</h4>
+    
+    <div class="row g-4">
+        
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038767.png" width="60" class="mb-3" alt="Dễ chọn">
+                <h6 class="fw-bold mb-2">Dễ chọn – Dễ mua</h6>
+                <p class="text-muted small mb-0">
+                    Giao diện đơn giản, dễ sử dụng, tìm kiếm nhanh chóng.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.freepik.com/512/9149/9149134.png" width="60" class="mb-3" alt="Chất lượng">
+                <h6 class="fw-bold mb-2">Sản phẩm chất lượng</h6>
+                <p class="text-muted small mb-0">
+                    Đa dạng mẫu mã, hàng tuyển chọn kỹ càng, giá cả phải chăng.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.freepik.com/512/9198/9198191.png" width="60" class="mb-3" alt="Thanh toán">
+                <h6 class="fw-bold mb-2">Thanh toán COD</h6>
+                <p class="text-muted small mb-0">
+                    Thanh toán khi nhận hàng an toàn, kiểm tra hàng thoải mái.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

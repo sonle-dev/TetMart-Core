@@ -72,7 +72,7 @@ ROOT_URLCONF = 'tetmart.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # Trỏ vào thư mục templates gốc
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,3 +144,19 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# ==========================================
+# FIX LỖI XAMPP (MariaDB 10.4) VỚI DJANGO 5
+# ==========================================
+import django.db.backends.mysql.base
+from django.db.backends.mysql.features import DatabaseFeatures
+
+# 1. Bỏ qua kiểm tra phiên bản Database
+django.db.backends.mysql.base.DatabaseWrapper.check_database_version_supported = lambda self: None
+
+# 2. Tắt tính năng RETURNING (nguyên nhân gây lỗi 1064)
+# Phải tắt cả 2 dòng này thì XAMPP cũ mới chạy được
+DatabaseFeatures.can_return_columns_from_insert = False
+DatabaseFeatures.can_return_rows_from_bulk_insert = False
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Trỏ vào thư mục static gốc

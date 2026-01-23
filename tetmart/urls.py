@@ -15,8 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # 1. Đường dẫn cho tài khoản (Login/Logout...)
+    # Dòng này sẽ tự động tạo các đường dẫn tên là 'login', 'logout'...
+    path('accounts/', include('django.contrib.auth.urls')), # <--- QUAN TRỌNG: Thêm dòng này
+
+    # 2. Đường dẫn trang chủ (Trỏ về app Core)
+    path('', include('apps.core.urls')), 
 ]
+
+# Cấu hình file tĩnh (CSS/Ảnh)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
