@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <a href="/" class="text-decoration-none text-muted fw-bold">
+        <i class="fas fa-arrow-left me-1"></i> Quay lại
+    </a>
+</div>
+
+<div class="container mb-5">
+    <div class="row gx-5">
+        
+        <div class="col-md-6 mb-4">
+            <div class="product-detail-img-container rounded-4 overflow-hidden border-0 shadow-sm bg-white d-flex align-items-center justify-content-center">
+                <img src="{{ product.image }}" class="img-fluid" style="max-height: 500px;" alt="{{ product.name }}">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span style="font-size: 20px;">{{ product.icon }}</span>
+                <span class="text-muted small">{{ product.category }}</span>
+            </div>
+
+            <h2 class="fw-bold mb-3" style="color: var(--tet-text);">{{ product.name }}</h2>
+            <h3 class="text-danger fw-bold mb-3">{{ product.price }}đ</h3>
+
+            <div class="mb-4">
+                <span class="badge bg-danger px-3 py-2 rounded-pill">Còn hàng</span>
+            </div>
+
+            <p class="text-muted mb-4" style="line-height: 1.6;">
+                {{ product.desc }}
+            </p>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="fw-bold small text-muted">Số lượng:</span>
+                <div class="input-group quantity-group">
+                    <button class="btn quantity-btn" type="button">-</button>
+                    <input type="text" class="form-control quantity-input" value="1">
+                    <button class="btn quantity-btn" type="button">+</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary-tet w-100 py-2 fw-bold rounded-3 shadow-sm">
+                Thêm vào giỏ
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5 pt-4">
+    <h5 class="fw-bold mb-4" style="color: var(--tet-text);">Sản phẩm liên quan</h5>
+    
+    <div class="row g-4">
+        <div class="col-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column shadow-sm">
+                <div class="product-img-container">
+                    <a href="{% url 'core:product_detail' 2 %}">
+                        <img src="https://bizweb.dktcdn.net/100/443/076/products/trang-tri-tet-hoa-dao-dong.jpg" alt="SP">
+                    </a>
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span style="font-size: 20px;">🌸</span>
+                        <small class="text-muted">Hoa mai/đào</small>
+                    </div>
+                    <a href="{% url 'core:product_detail' 2 %}" class="text-decoration-none text-reset">
+                        <h6 class="fw-bold mb-2">Cành hoa mai vàng</h6>
+                    </a>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">180.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <a href="{% url 'core:product_detail' 2 %}" class="btn btn-primary-tet w-100">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="product-card h-100 d-flex flex-column shadow-sm">
+                <div class="product-img-container">
+                    <a href="{% url 'core:product_detail' 3 %}">
+                        <img src="https://salt.tikicdn.com/cache/w1200/ts/product/6e/c8/10/7c462744d03d09a06655c65b5302636a.jpg" alt="SP">
+                    </a>
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                         <span style="font-size: 20px;">🧧</span>
+                        <small class="text-muted">Bao lì xì</small>
+                    </div>
+                    <a href="{% url 'core:product_detail' 3 %}" class="text-decoration-none text-reset">
+                        <h6 class="fw-bold mb-2">Bao lì xì rồng vàng</h6>
+                    </a>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-danger fw-bold fs-5">25.000đ</span>
+                            <span class="badge-stock">Còn hàng</span>
+                        </div>
+                        <a href="{% url 'core:product_detail' 3 %}" class="btn btn-primary-tet w-100">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

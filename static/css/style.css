@@ -152,3 +152,66 @@ body {
     object-fit: contain;     /* Giữ nguyên tỉ lệ ảnh không bị méo */
     margin-right: 5px;       /* Cách chữ ra một chút */
 }
+/* --- TRANG CHI TIẾT SẢN PHẨM --- */
+.product-detail-img-container {
+    background-color: #ffffff; /* Nền trắng */
+    min-height: 400px;         /* Chiều cao tối thiểu */
+    width: 100%;
+    padding: 20px;
+}
+
+/* Nút quay lại */
+.text-decoration-none:hover {
+    color: var(--tet-primary) !important;
+    text-decoration: underline !important;
+}
+
+/* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
+
+/* 1. Hộp chứa chung */
+.quantity-group {
+    width: 130px; /* Rộng hơn một chút */
+    border-radius: 8px; /* Bo góc cả cụm */
+    overflow: hidden; /* Để nút con không bị lòi ra khỏi góc bo */
+    border: 1px solid #d9d9d9; /* Viền mỏng màu xám bao quanh */
+    background-color: #fff; /* Nền trắng sạch */
+}
+
+/* 2. Nút cộng/trừ (+/-) */
+.quantity-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* Bỏ viền riêng của nút */
+    background-color: #f8f9fa; /* Màu nền xám rất nhạt */
+    color: #333; /* Màu chữ đậm */
+    font-weight: 700; /* In đậm dấu +/- */
+    font-size: 1.2rem; /* To hơn một chút */
+    transition: all 0.2s; /* Hiệu ứng mượt mà */
+}
+
+/* Hiệu ứng khi di chuột vào nút */
+.quantity-btn:hover {
+    background-color: #e9ecef; /* Màu nền tối hơn chút khi hover */
+    color: var(--tet-primary); /* Đổi màu chữ sang đỏ Tết */
+}
+
+/* 3. Ô input ở giữa */
+.quantity-input {
+    border: none; /* Bỏ viền */
+    text-align: center;
+    font-weight: 700; /* Số in đậm */
+    font-size: 1.1rem;
+    color: #333;
+    background-color: transparent; /* Nền trong suốt để ăn theo nền hộp chứa */
+    width: 50px; /* Chiều rộng cố định */
+}
+
+/* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
+.quantity-input:focus, .quantity-btn:focus {
+    box-shadow: none;
+    outline: none;
+}
