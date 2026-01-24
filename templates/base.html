@@ -17,7 +17,8 @@
 
     <nav class="navbar navbar-expand-lg navbar-tet sticky-top bg-white border-bottom">
         <div class="container align-items-center">
-            <a class="navbar-brand fw-bold fs-4" href="/" style="color: var(--tet-primary);">
+            
+            <a class="navbar-brand fw-bold fs-4" href="{% url 'core:home' %}" style="color: var(--tet-primary);">
                 <i class="fas fa-lantern"></i> Tet Mart
             </a>
     
@@ -34,6 +35,7 @@
                 </form>
                 
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    
                     <li class="nav-item">
                         <a class="nav-link text-dark position-relative" href="#">
                             <i class="fas fa-shopping-cart fs-5"></i>
@@ -44,33 +46,71 @@
                     </li>
                     
                     {% if user.is_authenticated %}
+                        
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-bold text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1 text-muted"></i>
                                 Chào, {{ user.username }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Đơn mua</a></li>
-                                <li><a class="dropdown-item" href="#">Tài khoản</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                                <li><a class="dropdown-item" href="#">📄 Đơn mua</a></li>
+                                <li><a class="dropdown-item" href="#">⚙️ Tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form action="{% url 'logout' %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
-                                    </form>
+                                    <a class="dropdown-item text-danger fw-bold" href="{% url 'core:logout' %}">
+                                        🚪 Đăng xuất
+                                    </a>
                                 </li>
                             </ul>
                         </li>
+
                     {% else %}
+                        
                         <li class="nav-item">
-                            <a href="/accounts/login/" class="btn btn-primary-tet btn-sm px-4">Đăng nhập</a>
+                            <a href="{% url 'core:register' %}" class="btn btn-outline-danger btn-sm px-3 fw-bold rounded-3" style="border-color: #d72323; color: #d72323;">
+                                Đăng ký
+                            </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <a href="{% url 'core:login' %}" class="btn btn-danger btn-sm px-4 fw-bold rounded-3" style="background-color: #d72323; border: none;">
+                                Đăng nhập
+                            </a>
+                        </li>
+
                     {% endif %}
+
                 </ul>
             </div>
         </div>
     </nav>
 
     <main class="flex-grow-1">
+        
+        {% if messages %}
+            <div class="container mt-3">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        {% for message in messages %}
+                            
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center" role="alert">
+                                
+                                {% if message.tags == 'error' %}
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% else %}
+                                    <i class="fas fa-check-circle me-2"></i>
+                                {% endif %}
+                                
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>
