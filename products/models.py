@@ -1,15 +1,15 @@
 from django.db import models
 
-# 1. Bảng Danh Mục (Ví dụ: Bánh kẹo, Đồ uống...)
+#  Bảng Danh Mục (Ví dụ: Bánh kẹo, Đồ uống...)
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Tên danh mục")
     slug = models.SlugField(unique=True, verbose_name="Link SEO (Slug)") 
-    # slug giúp link đẹp hơn: tetmart.com/danh-muc/banh-keo
+
 
     def __str__(self):
         return self.name
 
-# 2. Bảng Sản Phẩm
+#  Bảng Sản Phẩm
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', verbose_name="Danh mục")
     name = models.CharField(max_length=200, verbose_name="Tên sản phẩm")

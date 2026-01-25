@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 
-import os  # <--- Cái bạn đang thiếu
+import os  
 from pathlib import Path
-from dotenv import load_dotenv  # <--- Để đọc file .env
+from dotenv import load_dotenv  
 
 # Nạp các biến từ file .env vào chương trình
 load_dotenv()
@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'tetmart.wsgi.application'
 
 
 
-# Cấu hình Database cho TetMart-Core
+# Cấu hình Database 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -149,5 +149,5 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Cấu hình User Model tùy chỉnh
+# Cấu hình User Model
 AUTH_USER_MODEL = 'users.User'
