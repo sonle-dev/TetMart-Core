@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quản trị hệ thống - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light" style="min-height: 100vh;">
+    <div class="row">
+        
+        <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
+            <div class="position-sticky pt-3">
+                
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
+                    <span>Quản lý chung</span>
+                </h6>
+                <ul class="nav flex-column gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:dashboard' %}">
+                            <i class="fas fa-chart-line me-2"></i> Tổng quan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:orders' %}">
+                            <i class="fas fa-file-invoice me-2"></i> Đơn hàng
+                            <span class="badge bg-warning text-dark ms-2">5</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="#">
+                            <i class="fas fa-box-open me-2"></i> Sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="#">
+                            <i class="fas fa-users me-2"></i> Khách hàng
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
+                    <span>Thống kê</span>
+                </h6>
+                <ul class="nav flex-column gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:reports' %}">
+                            <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
+                    <span>Cấu hình</span>
+                </h6>
+                <ul class="nav flex-column gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="#">
+                            <i class="fas fa-cog me-2"></i> Cài đặt
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <h2 class="h2 fw-bold text-danger">Dashboard</h2>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2">
+                        <i class="fas fa-share"></i> Xuất báo cáo
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger dropdown-toggle">
+                        <i class="fas fa-calendar-alt"></i> Tuần này
+                    </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4 text-white" style="background: linear-gradient(135deg, #d72323 0%, #ff6b6b 100%);">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="opacity-75">💰 Tổng Doanh Thu</h5>
+                            <h1 class="fw-bold display-5 mb-0">{{ revenue }}đ</h1>
+                            <p class="mb-0 mt-2"><i class="fas fa-arrow-up"></i> Tăng trưởng <strong>15%</strong> so với tháng trước</p>
+                        </div>
+                        <i class="fas fa-coins fa-4x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3 text-muted">Tình trạng đơn hàng</h5>
+            <div class="row row-cols-1 row-cols-md-5 g-3 mb-4">
+                
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm border-top border-4 border-warning">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2 text-warning"><i class="fas fa-bell fa-2x"></i></div>
+                            <h6 class="fw-bold text-muted">Đơn mới</h6>
+                            <h3 class="fw-bold mb-0 text-dark">{{ count_new }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm border-top border-4 border-danger">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2 text-danger"><i class="fas fa-clock fa-2x"></i></div>
+                            <h6 class="fw-bold text-muted">Chờ xử lý</h6>
+                            <h3 class="fw-bold mb-0 text-dark">{{ count_processing }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm border-top border-4 border-info">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2 text-info"><i class="fas fa-shipping-fast fa-2x"></i></div>
+                            <h6 class="fw-bold text-muted">Đang giao</h6>
+                            <h3 class="fw-bold mb-0 text-dark">{{ count_shipping }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm border-top border-4 border-success">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2 text-success"><i class="fas fa-check-circle fa-2x"></i></div>
+                            <h6 class="fw-bold text-muted">Hoàn thành</h6>
+                            <h3 class="fw-bold mb-0 text-dark">{{ count_completed }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm border-top border-4 border-secondary">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2 text-secondary"><i class="fas fa-times-circle fa-2x"></i></div>
+                            <h6 class="fw-bold text-muted">Đã hủy</h6>
+                            <h3 class="fw-bold mb-0 text-dark">{{ count_cancelled }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold m-0 text-dark"><i class="fas fa-list-alt me-2 text-danger"></i> Đơn hàng gần đây</h5>
+                    <a href="{% url 'core:orders' %}" class="btn btn-sm btn-light text-danger fw-bold">Xem tất cả</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary">
+                                <tr>
+                                    <th class="ps-4">Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4 fw-bold">#DH001</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle p-2 me-2 text-danger fw-bold">A</div>
+                                            <span>Nguyễn Văn An</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">25/01/2026</td>
+                                    <td class="fw-bold text-danger">1.250.000đ</td>
+                                    <td><span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Chờ xử lý</span></td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4 fw-bold">#DH002</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle p-2 me-2 text-primary fw-bold">B</div>
+                                            <span>Trần Thị Bình</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">24/01/2026</td>
+                                    <td class="fw-bold text-danger">500.000đ</td>
+                                    <td><span class="badge bg-success px-3 py-2 rounded-pill">Hoàn thành</span></td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: all 0.2s;
+        border-radius: 5px;
+    }
+    .hover-effect:hover {
+        background-color: #ffe5e5;
+        color: #d72323 !important;
+        font-weight: bold;
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}

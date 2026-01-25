@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect # 👈 Đã thêm redirect
 from django.contrib import messages # 👈 Đã thêm messages để hiện thông báo
 from django.contrib.auth import authenticate, login, logout 
+from django.contrib.auth.decorators import login_required
 # 1. TẠO KHO DỮ LIỆU GIẢ (MOCK DATA)
 products_data = [
     {
@@ -104,3 +105,13 @@ def logout_view(request):
     logout(request) # Xóa phiên đăng nhập
     messages.success(request, "👋 Đăng xuất thành công! Hẹn gặp lại.")
     return redirect('core:login') # Chuyển hướng về trang đăng nhập
+@login_required(login_url='core:login')
+def dashboard_view(request):
+    # Dữ liệu giả để test giao diện
+    context = {
+        'total_orders': 150,
+        'revenue': '25.000.000',
+        'pending_orders': 5,
+        'total_products': 48
+    }
+    return render(request, 'dashboard.html', context)
