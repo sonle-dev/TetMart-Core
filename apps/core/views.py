@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect # 👈 Đã thêm redirect
-from django.contrib import messages # 👈 Đã thêm messages để hiện thông báo
-from django.contrib.auth import authenticate, login, logout 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
 # 1. TẠO KHO DỮ LIỆU GIẢ (MOCK DATA)
 products_data = [
     {
@@ -48,7 +49,6 @@ def index(request):
 
 # Hàm hiển thị chi tiết sản phẩm
 def product_detail(request, product_id):
-    # Tìm sản phẩm trong danh sách dựa vào ID
     product = None
     for item in products_data:
         if item['id'] == product_id:
@@ -58,60 +58,53 @@ def product_detail(request, product_id):
     context = {'product': product}
     return render(request, 'product_detail.html', context)
 
-# Hàm hiển thị trang đăng nhập
-def login_view(request):
-    # Nếu bấm nút Đăng nhập (POST), bạn có thể xử lý ở đây sau
-    if request.method == 'POST':
-        # Tạm thời chưa xử lý logic thật, chỉ render lại trang
-        pass
-    return render(request, 'login.html')
+# ---------------------------------------------------------
+# CÁC HÀM XỬ LÝ TÀI KHOẢN (Auth)
+# ---------------------------------------------------------
 
-# Hàm hiển thị trang đăng ký (ĐÃ SỬA LOGIC THÔNG BÁO)
 def register_view(request):
-    # Kiểm tra nếu người dùng bấm nút Submit (Gửi form)
+    """Trang Đăng ký"""
     if request.method == 'POST':
-        # 1. (Sau này logic lưu vào DB sẽ nằm ở đây)
+        # Logic lưu vào DB sẽ viết ở đây sau
         
-        # 2. Tạo thông báo thành công màu xanh
-        messages.success(request, '🎉 Đăng ký tài khoản thành công! Vui lòng đăng nhập.')
-        
-        # 3. Chuyển hướng người dùng sang trang Đăng nhập
+        # Thông báo thành công
+        messages.success(request, 'Đăng ký tài khoản thành công! Vui lòng đăng nhập.')
         return redirect('core:login')
 
-    # Nếu vào bình thường (GET) thì hiện form đăng ký
-    return render(request, 'register.html')
+    # 👇 ĐÃ SỬA: Trỏ vào thư mục user/register.html
+    return render(request, 'user/register.html')
+
 
 def login_view(request):
+    """Trang Đăng nhập"""
     if request.method == 'POST':
-        # 1. Lấy dữ liệu từ ô input (nhờ vào cái name="username" ta vừa thêm)
+        # 1. Lấy dữ liệu từ form
         username_input = request.POST.get('username')
         password_input = request.POST.get('password')
 
-        # 2. Kiểm tra thông tin đăng nhập
+        # 2. Kiểm tra xác thực
         user = authenticate(request, username=username_input, password=password_input)
 
         if user is not None:
-            # ✅ ĐÚNG: Đăng nhập và chuyển về trang chủ
+            # ✅ Đăng nhập thành công
             login(request, user)
-            messages.success(request, f"🎉 Chào mừng {user.username} quay trở lại!")
+            messages.success(request, f"Chào mừng {user.username} quay trở lại!")
+            
+            # Kiểm tra xem người dùng có đang muốn vào trang nào trước đó không (ví dụ Dashboard)
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
             return redirect('core:home')
         else:
-            # ❌ SAI: Bắn thông báo lỗi
-            messages.error(request, "⚠️ Tên đăng nhập hoặc mật khẩu không đúng!")
+            # ❌ Đăng nhập thất bại
+            messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng!")
             
-    return render(request, 'login.html')
+    # 👇 ĐÃ SỬA: Trỏ vào thư mục user/login.html
+    return render(request, 'user/login.html')
+
 
 def logout_view(request):
-    logout(request) # Xóa phiên đăng nhập
-    messages.success(request, "👋 Đăng xuất thành công! Hẹn gặp lại.")
-    return redirect('core:login') # Chuyển hướng về trang đăng nhập
-@login_required(login_url='core:login')
-def dashboard_view(request):
-    # Dữ liệu giả để test giao diện
-    context = {
-        'total_orders': 150,
-        'revenue': '25.000.000',
-        'pending_orders': 5,
-        'total_products': 48
-    }
-    return render(request, 'dashboard.html', context)
+    """Xử lý Đăng xuất"""
+    logout(request)
+    messages.success(request, "Đăng xuất thành công! Hẹn gặp lại. 👋")
+    return redirect('core:login')

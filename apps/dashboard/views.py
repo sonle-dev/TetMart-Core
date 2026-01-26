@@ -19,7 +19,7 @@ def dashboard_view(request):
         'total_orders': 150,          # Tổng đơn (cho bảng)
         'total_products': 48          # Tổng sản phẩm
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard/dashboard.html', context)
 
 @login_required(login_url='core:login')
 def report_view(request):

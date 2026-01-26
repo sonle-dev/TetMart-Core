@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container py-4">
-    <a href="/" class="text-decoration-none text-muted fw-bold">
+    <a href="{% url 'core:home' %}" class="text-decoration-none text-muted fw-bold">
         <i class="fas fa-arrow-left me-1"></i> Quay lại
     </a>
 </div>
@@ -34,19 +34,32 @@
                 {{ product.desc }}
             </p>
 
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <span class="fw-bold small text-muted">Số lượng:</span>
-                <div class="input-group quantity-group">
-                    <button class="btn quantity-btn" type="button">-</button>
-                    <input type="text" class="form-control quantity-input" value="1">
-                    <button class="btn quantity-btn" type="button">+</button>
+            <form method="POST" action="#">
+                {% csrf_token %}
+                
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="fw-bold small text-muted">Số lượng:</span>
+                    
+                    <div class="input-group quantity-group" style="width: 140px;">
+                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
+                        
+                        <input type="number" 
+                               name="quantity" 
+                               id="quantity-input" 
+                               class="form-control quantity-input text-center bg-white" 
+                               value="1" 
+                               min="1" 
+                               readonly>
+                               
+                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
+                    </div>
                 </div>
-            </div>
 
-            <button class="btn btn-primary-tet w-100 py-2 fw-bold rounded-3 shadow-sm">
-                Thêm vào giỏ
-            </button>
-        </div>
+                <button type="submit" class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm" style="background-color: #d72323; border: none;">
+                    Thêm vào giỏ
+                </button>
+            </form>
+            </div>
     </div>
 </div>
 
@@ -74,7 +87,7 @@
                             <span class="text-danger fw-bold fs-5">180.000đ</span>
                             <span class="badge-stock">Còn hàng</span>
                         </div>
-                        <a href="{% url 'core:product_detail' 2 %}" class="btn btn-primary-tet w-100">Xem chi tiết</a>
+                        <a href="{% url 'core:product_detail' 2 %}" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
@@ -100,11 +113,47 @@
                             <span class="text-danger fw-bold fs-5">25.000đ</span>
                             <span class="badge-stock">Còn hàng</span>
                         </div>
-                        <a href="{% url 'core:product_detail' 3 %}" class="btn btn-primary-tet w-100">Xem chi tiết</a>
+                        <a href="{% url 'core:product_detail' 3 %}" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function handleQuantity(amount) {
+        // 1. Lấy ô input theo ID
+        const input = document.getElementById('quantity-input');
+        
+        // 2. Lấy giá trị hiện tại (chuyển về số nguyên)
+        let currentQty = parseInt(input.value);
+        
+        // 3. Tính toán giá trị mới
+        let newQty = currentQty + amount;
+
+        // 4. Chặn không cho nhỏ hơn 1
+        if (newQty < 1) {
+            newQty = 1;
+        }
+
+        // 5. Cập nhật lại vào ô input
+        input.value = newQty;
+    }
+</script>
+
+<style>
+    .quantity-btn:hover {
+        background-color: #ffe5e5;
+        color: #d72323;
+        border-color: #d72323 !important;
+    }
+    /* Ẩn nút tăng giảm mặc định của input number */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+</style>
+
 {% endblock %}
