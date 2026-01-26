@@ -9,7 +9,8 @@ from .views import (
     product_detail, 
     login_view, 
     register_view, 
-    logout_view
+    logout_view,
+    
 )
 
 # ---------------------------------------------------------
@@ -20,7 +21,11 @@ from apps.dashboard.views import (
     dashboard_view, 
     report_view, 
     order_list_view, 
-    order_detail_view  # ✅ Đã chuyển hàm này về đúng chỗ (Hết lỗi Import)
+    order_detail_view,
+    product_list_view,
+    product_edit_view,
+    product_delete_view,
+    product_create_view,
 )
 
 app_name = 'core'
@@ -45,4 +50,12 @@ urlpatterns = [
     
     # Chi tiết đơn hàng (Xem & Sửa)
     path('dashboard/orders/<str:order_id>/', order_detail_view, name='order_detail'),
+
+    path('dashboard/products/', product_list_view, name='products'),
+
+    path('dashboard/products/edit/<int:product_id>/', product_edit_view, name='product_edit'),
+
+    path('dashboard/products/delete/<int:product_id>/', product_delete_view, name='product_delete'),
+
+    path('dashboard/products/create/', product_create_view, name='product_create'),
 ]

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Thêm sản phẩm - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light" style="min-height: 100vh;">
+    <div class="row">
+        
+        {% include 'includes/sidebar.html' with active_page='products' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="mb-4">
+                <a href="{% url 'core:products' %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+                <h4 class="fw-bold text-dark">Thêm sản phẩm</h4>
+                <p class="text-muted small">Tạo sản phẩm mới</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                            <select class="form-select">
+                                <option selected disabled>-- Chọn danh mục --</option>
+                                <option>Bánh kẹo Tết</option>
+                                <option>Rượu bia</option>
+                                <option>Mứt Tết</option>
+                                <option>Quà biếu</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" value="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Tồn kho <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" value="0">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả</label>
+                            <textarea class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm (tùy chọn)"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ảnh sản phẩm <span class="text-danger">*</span></label>
+                            <div class="border border-dashed p-4 text-center rounded bg-light" style="border-style: dashed !important; border-width: 2px;">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                <div class="fw-bold text-muted">Click để upload ảnh</div>
+                                <p class="small text-muted mb-0">PNG, JPG (tối đa 5 ảnh)</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger fw-bold px-4">Lưu</button>
+                            <a href="{% url 'core:products' %}" class="btn btn-outline-secondary px-4">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}

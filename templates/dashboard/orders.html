@@ -7,58 +7,7 @@
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
         
-        <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
-            <div class="position-sticky pt-3">
-                
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Quản lý chung</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'core:dashboard' %}">
-                            <i class="fas fa-chart-line me-2"></i> Tổng quan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:orders' %}">
-                            <i class="fas fa-file-invoice me-2"></i> Đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-box-open me-2"></i> Sản phẩm
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-users me-2"></i> Khách hàng
-                        </a>
-                    </li>
-                </ul>
-
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Thống kê</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'core:reports' %}">
-                            <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
-                        </a>
-                    </li>
-                </ul>
-
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Cấu hình</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-cog me-2"></i> Cài đặt
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        {% include 'includes/sidebar.html' with active_page='orders' %}
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             
@@ -134,7 +83,6 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-muted small">{{ order.date }}</td>
-                                    
                                     <td class="text-end pe-4">
                                         <a href="{% url 'core:order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold">
                                             <i class="fas fa-eye"></i> Xem
@@ -143,7 +91,7 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
-                                    </tr>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
