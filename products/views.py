@@ -60,6 +60,18 @@ def dashboard_view(request):
     }
  
     return render(request, 'dashboard.html', context)
+# VIEW BÁO CÁO DOANH THU
+@login_required(login_url='login')
+@user_passes_test(is_staff)
+def report_view(request):
+    # Logic tính toán 
+    revenue = Order.objects.filter(status='completed').aggregate(Sum('total_price'))['total_price__sum'] or 0
+    
+    context = {
+        'revenue': revenue,
+        'active_tab': 'report' 
+    }
+    return render(request, 'dashboard/report.html', context)
 
 #  VIEW CHI TIẾT ĐƠN HÀNG 
 @login_required(login_url='login')
