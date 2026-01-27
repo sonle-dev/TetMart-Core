@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quản lý sản phẩm - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light" style="min-height: 100vh;">
+    <div class="row">
+        
+        <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
+            <div class="position-sticky pt-3">
+                
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
+                    <span>Quản lý chung</span>
+                </h6>
+                <ul class="nav flex-column gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard' %}">
+                            <i class="fas fa-chart-line me-2"></i> Tổng quan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard_orders' %}">
+                            <i class="fas fa-file-invoice me-2"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'dashboard_products' %}">
+                            <i class="fas fa-box-open me-2"></i> Sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-effect" href="#">
+                            <i class="fas fa-users me-2"></i> Khách hàng
+                        </a>
+                    </li>
+                </ul>
+                </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-dark">Quản lý Sản phẩm</h4>
+                    <p class="text-muted small">Quản lý danh sách, giá bán và kho hàng</p>
+                </div>
+                <a href="#" class="btn btn-danger shadow-sm fw-bold">
+                    <i class="fas fa-plus me-2"></i> Thêm sản phẩm mới
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary small">
+                                <tr>
+                                    <th class="ps-4">ID</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá bán</th>
+                                    <th>Kho</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">#{{ product.id }}</td>
+                                    <td>
+                                        <div class="rounded border d-flex align-items-center justify-content-center bg-light" style="width: 50px; height: 50px; overflow: hidden;">
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}" alt="" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% else %}
+                                                <i class="fas fa-image text-muted"></i>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ product.name }}</div>
+                                        <div class="small text-muted">{{ product.category.name|default:"Chưa phân loại" }}</div>
+                                    </td>
+                                    <td class="fw-bold text-danger">{{ product.price }}đ</td>
+                                    <td>
+                                        {% if product.stock > 10 %}
+                                            <span class="text-success fw-bold">{{ product.stock }}</span>
+                                        {% elif product.stock > 0 %}
+                                            <span class="text-warning fw-bold">{{ product.stock }} (Sắp hết)</span>
+                                        {% else %}
+                                            <span class="text-danger fw-bold">Hết hàng</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if product.stock > 0 %} <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Đang bán</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill">Ngừng bán</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a href="#" class="btn btn-sm btn-outline-primary me-1" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa không?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fas fa-box-open fa-3x mb-3 opacity-50"></i>
+                                        <p>Chưa có sản phẩm nào trong hệ thống.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-3 border-top-0">
+                    <div class="small text-muted">Hiển thị {{ products.count }} sản phẩm</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: all 0.2s;
+        border-radius: 5px;
+    }
+    .hover-effect:hover {
+        background-color: #ffe5e5;
+        color: #d72323 !important;
+        font-weight: bold;
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}
