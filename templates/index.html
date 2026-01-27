@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3" style="color: var(--tet-text);">
+            Sắm Tết ấm cúng – Trang trí nhà cửa rực rỡ
+        </h1>
+        <p class="lead mb-4 text-muted">
+            Chọn ngay đèn lồng, bao lì xì, hoa mai/đào và nhiều đồ trang trí đẹp
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#products" class="btn btn-primary-tet">Mua sắm ngay</a>
+            <a href="#products" class="btn btn-outline-tet">Xem danh mục</a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Danh mục nổi bật</h4>
+    
+    <div class="row g-4 justify-content-center">
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🏮</div>
+                <span class="cat-name">Đèn lồng</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🧧</div>
+                <span class="cat-name">Bao lì xì</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🌸</div>
+                <span class="cat-name">Hoa mai/đào</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="cat-card">
+                <div class="cat-icon">🎊</div>
+                <span class="cat-name">Dây trang trí</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5" id="products">
+    <h

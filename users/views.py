@@ -85,7 +85,7 @@ def order_list_view(request):
     context = {
         'orders': orders
     }
-    return render(request, 'order_list.html', context)
+    return render(request, 'dashboard/orders.html', context)
 
 # --- 6. CHI TIẾT ĐƠN HÀNG ---
 @login_required

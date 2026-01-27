@@ -8,24 +8,35 @@ from .models import Order, OrderItem
 # xu li mua ngay
 @login_required(login_url='login')
 def buy_now_view(request, product_id):
-    #  Lấy thông tin sản phẩm
+    # Lấy sản phẩm
     product = get_object_or_404(Product, id=product_id)
     
-    #  Tạo đơn hàng tổng 
+    # Lấy số lượng từ Form gửi lên 
+
+    try:
+        qty_from_html = request.POST.get('quantity', 1)
+        quantity = int(qty_from_html)
+        if quantity < 1: quantity = 1 # Không cho âm 
+    except:
+        quantity = 1
+
+    # gia x so luong
+    total_bill = product.price * quantity
+
+    # tạo Order
     order = Order.objects.create(
         user=request.user,
-        total_price=product.price, 
+        total_price=total_bill, 
         status='pending'
     )
     
-    #  Tạo chi tiết đơn hàng
+    # Tạo OrderItem
     OrderItem.objects.create(
         order=order,          
         product=product,      
         price=product.price,  
-        quantity=1            
+        quantity=quantity     
     )
     
-    # 4. Thông báo và chuyển hướng
-    messages.success(request, f"Đã đặt mua thành công: {product.name}!")
+    messages.success(request, f"Đã đặt mua {quantity} sản phẩm: {product.name}!")
     return redirect('home')

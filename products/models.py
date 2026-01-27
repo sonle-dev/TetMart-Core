@@ -1,6 +1,6 @@
 from django.db import models
 
-#  Bảng Danh Mục (Ví dụ: Bánh kẹo, Đồ uống...)
+#  Bảng Danh Mục 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Tên danh mục")
     slug = models.SlugField(unique=True, verbose_name="Link SEO (Slug)") 
