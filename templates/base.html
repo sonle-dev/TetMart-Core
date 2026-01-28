@@ -186,14 +186,14 @@
     document.addEventListener("DOMContentLoaded", function() {
         var alerts = document.querySelectorAll('.alert');
         if (alerts.length > 0) {
-            // Đợi 3 giây rồi tắt
+            
             setTimeout(function() {
                 alerts.forEach(function(alert) {
                     // Dùng API của Bootstrap để đóng alert mượt mà
                     var bsAlert = new bootstrap.Alert(alert);
                     bsAlert.close();
                 });
-            }, 3000); 
+            }, 30000); 
         }
     });
     </script>

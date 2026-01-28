@@ -7,36 +7,7 @@
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
         
-        <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
-            <div class="position-sticky pt-3">
-                
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Quản lý chung</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard' %}">
-                            <i class="fas fa-chart-line me-2"></i> Tổng quan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard_orders' %}">
-                            <i class="fas fa-file-invoice me-2"></i> Đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'dashboard_products' %}">
-                            <i class="fas fa-box-open me-2"></i> Sản phẩm
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-users me-2"></i> Khách hàng
-                        </a>
-                    </li>
-                </ul>
-                </div>
-        </nav>
+        {% include 'includes/sidebar.html' with active_page='products' %}
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             
@@ -45,7 +16,7 @@
                     <h4 class="fw-bold text-dark">Quản lý Sản phẩm</h4>
                     <p class="text-muted small">Quản lý danh sách, giá bán và kho hàng</p>
                 </div>
-                <a href="#" class="btn btn-danger shadow-sm fw-bold">
+                <a href="{% url 'product_create' %}" class="btn btn-danger shadow-sm fw-bold">
                     <i class="fas fa-plus me-2"></i> Thêm sản phẩm mới
                 </a>
             </div>
@@ -93,20 +64,43 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if product.stock > 0 %} <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Đang bán</span>
+                                        {% if product.stock > 0 %} 
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Đang bán</span>
                                         {% else %}
                                             <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill">Ngừng bán</span>
                                         {% endif %}
                                     </td>
+                                    
                                     <td class="text-end pe-4">
-                                        <a href="#" class="btn btn-sm btn-outline-primary me-1" title="Sửa">
+                                        <a href="{% url 'product_edit' product.id %}" class="btn btn-sm btn-outline-primary me-1" title="Sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-outline-danger" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa không?')">
+                                        
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.id }}">
                                             <i class="fas fa-trash-alt"></i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
+
+                                <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow">
+                                            <div class="modal-header border-0 pb-0">
+                                                <h5 class="modal-title fw-bold">Xóa sản phẩm?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body py-4">
+                                                Bạn có chắc chắn muốn xóa sản phẩm <br>
+                                                <strong class="text-danger">{{ product.name }}</strong> không?
+                                            </div>
+                                            <div class="modal-footer border-0 pt-0">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                                <a href="{% url 'product_delete' product.id %}" class="btn btn-danger fw-bold">Xóa ngay</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% empty %}
                                 <tr>
                                     <td colspan="7" class="text-center py-5 text-muted">

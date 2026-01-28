@@ -98,3 +98,33 @@ def order_detail_view(request, pk):
         'active_tab': 'orders'
     }
     return render(request, 'dashboard/order_detail.html', context)
+
+def product_create(request):
+    return render(request, 'dashboard/product_create.html')
+
+# products/views.py
+
+def product_edit(request, pk):
+   
+    fake_product = {
+        'name': 'Giỏ Quà Tết Sum Vầy 2026',
+        'category': 'Quà biếu',
+        'price': 500000,
+        'stock': 50,
+        'description': 'Sản phẩm bán chạy nhất dịp Tết, phù hợp biếu tặng.'
+    }
+    
+    context = {
+        'active_page': 'products',
+        'product': fake_product  
+    }
+    return render(request, 'dashboard/product_edit.html', context)
+
+def product_delete(request, pk):
+   
+    product = get_object_or_404(Product, pk=pk)
+    
+    
+    product.delete()
+    
+    return redirect('product_list')
