@@ -1,0 +1,217 @@
+/* 1. KHAI BÁO BIẾN MÀU (Lấy từ thiết kế Figma của bạn) */
+:root {
+    --tet-primary: #DC2626;       /* Đỏ chủ đạo */
+    --tet-secondary: #FBBF24;     /* Vàng điểm nhấn */
+    --tet-bg: #FFF8F0;           /* Nền kem ấm */
+    --tet-text: #1F2937;          /* Chữ đen xám */
+    --tet-white: #FFFFFF;
+}
+
+body {
+    background-color: var(--tet-bg);
+    color: var(--tet-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
+.navbar-tet {
+    background-color: var(--tet-white);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 15px 0;
+}
+
+.search-box {
+    background: #F3F4F6;
+    border-radius: 99px; /* Bo tròn viên thuốc */
+    padding: 10px 20px;
+    border: none;
+    width: 100%;
+    max-width: 500px;
+    outline: none;
+}
+
+/* 3. HERO SECTION (Banner chữ ở giữa) */
+.hero-section {
+    background: linear-gradient(180deg, #FFE4E6 0%, var(--tet-bg) 100%);
+    padding: 60px 0;
+    text-align: center;
+}
+
+/* 4. CARD DANH MỤC (Trắng, bo góc) */
+/* --- CARD DANH MỤC (Giống thiết kế Figma) --- */
+.cat-card {
+    background: #FFFFFF;         /* Nền trắng */
+    border: 1px solid #FFE4E6;   /* Viền hồng phấn rất nhạt */
+    border-radius: 16px;         /* Bo góc mềm */
+    padding: 30px 15px;          /* Khoảng cách bên trong thoáng */
+    text-align: center;
+    transition: all 0.3s ease;   /* Hiệu ứng mượt */
+    cursor: pointer;
+    height: 100%;                /* Cao bằng nhau */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Bóng mờ rất nhẹ */
+    
+    /* Căn giữa nội dung */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hiệu ứng khi di chuột vào */
+.cat-card:hover {
+    border-color: var(--tet-primary);       /* Viền chuyển đỏ */
+    transform: translateY(-5px);            /* Nổi lên */
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15); /* Bóng đỏ nhẹ */
+}
+
+/* Định dạng Icon (Emoji) */
+.cat-icon {
+    font-size: 3rem;  /* Kích thước icon to */
+    margin-bottom: 15px;
+    line-height: 1;
+}
+
+.cat-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+/* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
+.product-card {
+    background: var(--tet-white);
+    border-radius: 16px;
+    border: none;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.product-img-container {
+    height: 250px; /* Ảnh vuông hoặc chữ nhật đứng */
+    overflow: hidden;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badge trạng thái (Còn hàng) */
+.badge-stock {
+    background-color: var(--tet-primary);
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Nút bấm Đỏ */
+.btn-primary-tet {
+    background-color: var(--tet-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-primary-tet:hover {
+    background-color: #B91C1C; /* Đỏ đậm hơn */
+    color: white;
+}
+
+/* Nút Trắng (Xem danh mục) */
+.btn-outline-tet {
+    background-color: white;
+    color: var(--tet-text);
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 24px;
+}
+
+.btn-outline-tet:hover {
+    background-color: #F9FAFB;
+    border-color: #D1D5DB;
+}
+/* Class chỉnh icon nhỏ trong card sản phẩm */
+.icon-mini {
+    width: 24px !important;  /* Ép chiều rộng 24px */
+    height: px !important; /* Ép chiều cao 24px */
+    object-fit: contain;     /* Giữ nguyên tỉ lệ ảnh không bị méo */
+    margin-right: 5px;       /* Cách chữ ra một chút */
+}
+/* --- TRANG CHI TIẾT SẢN PHẨM --- */
+.product-detail-img-container {
+    background-color: #ffffff; /* Nền trắng */
+    min-height: 400px;         /* Chiều cao tối thiểu */
+    width: 100%;
+    padding: 20px;
+}
+
+/* Nút quay lại */
+.text-decoration-none:hover {
+    color: var(--tet-primary) !important;
+    text-decoration: underline !important;
+}
+
+/* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
+
+/* 1. Hộp chứa chung */
+.quantity-group {
+    width: 130px; /* Rộng hơn một chút */
+    border-radius: 8px; /* Bo góc cả cụm */
+    overflow: hidden; /* Để nút con không bị lòi ra khỏi góc bo */
+    border: 1px solid #d9d9d9; /* Viền mỏng màu xám bao quanh */
+    background-color: #fff; /* Nền trắng sạch */
+}
+
+/* 2. Nút cộng/trừ (+/-) */
+.quantity-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* Bỏ viền riêng của nút */
+    background-color: #f8f9fa; /* Màu nền xám rất nhạt */
+    color: #333; /* Màu chữ đậm */
+    font-weight: 700; /* In đậm dấu +/- */
+    font-size: 1.2rem; /* To hơn một chút */
+    transition: all 0.2s; /* Hiệu ứng mượt mà */
+}
+
+/* Hiệu ứng khi di chuột vào nút */
+.quantity-btn:hover {
+    background-color: #e9ecef; /* Màu nền tối hơn chút khi hover */
+    color: var(--tet-primary); /* Đổi màu chữ sang đỏ Tết */
+}
+
+/* 3. Ô input ở giữa */
+.quantity-input {
+    border: none; /* Bỏ viền */
+    text-align: center;
+    font-weight: 700; /* Số in đậm */
+    font-size: 1.1rem;
+    color: #333;
+    background-color: transparent; /* Nền trong suốt để ăn theo nền hộp chứa */
+    width: 50px; /* Chiều rộng cố định */
+}
+
+/* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
+.quantity-input:focus, .quantity-btn:focus {
+    box-shadow: none;
+    outline: none;
+}

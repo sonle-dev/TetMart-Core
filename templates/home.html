@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-0 mb-5">
+    <div class="bg-danger text-white text-center py-5" style="background: linear-gradient(45deg, #d72323, #ff4d4d);">
+        <h1 class="display-4 fw-bold">🧧 Rinh Quà Tết - Đón Xuân Sang</h1>
+        <p class="lead">Giảm giá lên đến 50% cho các sản phẩm trang trí</p>
+        <button class="btn btn-warning btn-lg fw-bold text-danger shadow">Mua sắm ngay</button>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="text-center fw-bold mb-4" style="color: var(--tet-primary);">🔥 Sản Phẩm Bán Chạy</h2>
+    
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+                <div class="position-relative">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: contain; padding: 1rem;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200" class="card-img-top" alt="No Image">
+                    {% endif %}
+                    <div class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark">-20%</div>
+                </div>
+                
+                <div class="card-body text-center">
+                    <h6 class="card-title fw-bold text-truncate">{{ product.name }}</h6>
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                        <span class="text-danger fw-bold fs-5">{{ product.price }}₫</span>
+                        <small class="text-muted text-decoration-line-through">49.000₫</small>
+                    </div>
+                    
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-danger w-100 rounded-pill">
+                        Xem chi tiết
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'buy_now' product.pk %}" class="btn btn-danger w-100 rounded-pill mt-2 fw-bold shadow-sm">
+                            <i class="bi bi-cart-plus-fill"></i> Chọn Mua
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-secondary w-100 rounded-pill mt-2 shadow-sm">
+                            <i class="bi bi-box-arrow-in-right"></i> Đăng nhập để mua
+                        </a>
+                    {% endif %}
+                    </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
