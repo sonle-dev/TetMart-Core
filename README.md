@@ -92,4 +92,3 @@
 	- static/: Chứa CSS, JS, Images.
 	- database_backup.sql: File backup dữ liệu MySQL trọn gói.
 
-© 2026 Developed by SonLe Team
