@@ -92,3 +92,8 @@
 	- static/: Chứa CSS, JS, Images.
 	- database_backup.sql: File backup dữ liệu MySQL trọn gói.
 
+## 5. Link Video Demo Trang Web Trang Web Đến Thời Điểm Hiện Tại 
+
+https://github.com/user-attachments/assets/d966ce9f-83a9-4e93-8bb5-229d570e2c57
+
+
