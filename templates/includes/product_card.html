@@ -1,0 +1,30 @@
+{# templates/includes/product_card.html #}
+<div class="product-card h-100 d-flex flex-column">
+  <div class="product-img-container">
+    <a href="{% url 'core:product_detail' p.id %}">
+      <img src="{{ p.image }}" alt="{{ p.name }}">
+    </a>
+  </div>
+
+  <div class="p-3 d-flex flex-column flex-grow-1">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span style="font-size: 20px;">{{ p.icon }}</span>
+      <small class="text-muted">{{ p.category }}</small>
+    </div>
+
+    <a href="{% url 'core:product_detail' p.id %}" class="text-decoration-none text-reset">
+      <h6 class="fw-bold mb-2">{{ p.name }}</h6>
+    </a>
+
+    <div class="mt-auto">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-danger fw-bold fs-5">{{ p.price }}đ</span>
+        <span class="badge-stock">Còn hàng</span>
+      </div>
+
+      <a href="{% url 'core:product_detail' p.id %}" class="btn btn-primary-tet w-100">
+        Xem chi tiết
+      </a>
+    </div>
+  </div>
+</div>

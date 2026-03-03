@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 # 1. TẠO KHO DỮ LIỆU GIẢ (MOCK DATA)
 products_data = [
@@ -43,20 +43,88 @@ products_data = [
     }
 ]
 
+# ===== Helper: parse price =====
+def _to_int_price(x):
+    """
+    Convert '150.000' / '150,000' / '150000' -> 150000 (int)
+    """
+    try:
+        s = str(x).replace(".", "").replace(",", "").replace("đ", "").strip()
+        return int(s)
+    except Exception:
+        return None
+
+
 # Hàm hiển thị trang chủ
 def index(request):
-    return render(request, 'index.html')
+    # Nếu trang chủ bạn chưa cần products thì có thể bỏ context.
+    context = {
+        "products": products_data,
+    }
+    return render(request, "index.html", context)
+
+
+# ✅ Trang danh sách sản phẩm (có bộ lọc + search + sort)
+def product_list_view(request):
+    # GET params
+    q = (request.GET.get("q") or "").strip().lower()
+    category = (request.GET.get("category") or "all").strip()
+    price_min = request.GET.get("price_min") or ""
+    price_max = request.GET.get("price_max") or ""
+    sort = request.GET.get("sort") or "newest"
+
+    products = list(products_data)
+
+    # Danh sách danh mục cho dropdown
+    categories = sorted({p.get("category") for p in products if p.get("category")})
+
+    # 1) Search theo tên sản phẩm
+    if q:
+        products = [p for p in products if q in (p.get("name", "").lower())]
+
+    # 2) Filter theo danh mục
+    if category and category != "all":
+        products = [p for p in products if p.get("category") == category]
+
+    # 3) Filter theo khoảng giá
+    min_v = _to_int_price(price_min) if price_min else None
+    max_v = _to_int_price(price_max) if price_max else None
+
+    if min_v is not None:
+        products = [p for p in products if (_to_int_price(p.get("price")) or 0) >= min_v]
+    if max_v is not None:
+        products = [p for p in products if (_to_int_price(p.get("price")) or 0) <= max_v]
+
+    # 4) Sắp xếp
+    # newest: mock chưa có created_at -> giữ nguyên
+    if sort == "price_asc":
+        products.sort(key=lambda p: _to_int_price(p.get("price")) or 10**18)
+    elif sort == "price_desc":
+        products.sort(key=lambda p: _to_int_price(p.get("price")) or -1, reverse=True)
+
+    context = {
+        "products": products,
+        "categories": categories,
+        "filters": {
+            "q": request.GET.get("q", ""),
+            "category": category,
+            "price_min": request.GET.get("price_min", ""),
+            "price_max": request.GET.get("price_max", ""),
+            "sort": sort,
+        },
+    }
+    return render(request, "product_list.html", context)
+
 
 # Hàm hiển thị chi tiết sản phẩm
 def product_detail(request, product_id):
-    product = None
-    for item in products_data:
-        if item['id'] == product_id:
-            product = item
-            break
-    
-    context = {'product': product}
-    return render(request, 'product_detail.html', context)
+    product = next((item for item in products_data if item["id"] == product_id), None)
+    if not product:
+        raise Http404("Sản phẩm không tồn tại")
+
+    context = {"product": product}
+    return render(request, "product_detail.html", context)
+
 
 # ---------------------------------------------------------
 # CÁC HÀM XỬ LÝ TÀI KHOẢN (Auth)
@@ -64,47 +132,39 @@ def product_detail(request, product_id):
 
 def register_view(request):
     """Trang Đăng ký"""
-    if request.method == 'POST':
+    if request.method == "POST":
         # Logic lưu vào DB sẽ viết ở đây sau
-        
-        # Thông báo thành công
-        messages.success(request, 'Đăng ký tài khoản thành công! Vui lòng đăng nhập.')
-        return redirect('core:login')
+        messages.success(request, "Đăng ký tài khoản thành công! Vui lòng đăng nhập.")
+        return redirect("core:login")
 
-    # 👇 ĐÃ SỬA: Trỏ vào thư mục user/register.html
-    return render(request, 'user/register.html')
+    return render(request, "user/register.html")
 
 
 def login_view(request):
     """Trang Đăng nhập"""
-    if request.method == 'POST':
-        # 1. Lấy dữ liệu từ form
-        username_input = request.POST.get('username')
-        password_input = request.POST.get('password')
+    if request.method == "POST":
+        username_input = request.POST.get("username")
+        password_input = request.POST.get("password")
 
-        # 2. Kiểm tra xác thực
         user = authenticate(request, username=username_input, password=password_input)
 
         if user is not None:
-            # ✅ Đăng nhập thành công
             login(request, user)
             messages.success(request, f"Chào mừng {user.username} quay trở lại!")
-            
-            # Kiểm tra xem người dùng có đang muốn vào trang nào trước đó không (ví dụ Dashboard)
-            next_url = request.GET.get('next')
+
+            next_url = request.GET.get("next")
             if next_url:
                 return redirect(next_url)
-            return redirect('core:home')
+
+            return redirect("core:home")
         else:
-            # ❌ Đăng nhập thất bại
             messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng!")
-            
-    # 👇 ĐÃ SỬA: Trỏ vào thư mục user/login.html
-    return render(request, 'user/login.html')
+
+    return render(request, "user/login.html")
 
 
 def logout_view(request):
     """Xử lý Đăng xuất"""
     logout(request)
     messages.success(request, "Đăng xuất thành công! Hẹn gặp lại. 👋")
-    return redirect('core:login')
+    return redirect("core:login")

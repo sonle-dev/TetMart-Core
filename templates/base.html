@@ -28,9 +28,17 @@
     
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 
-                <form class="d-flex w-100 justify-content-center my-2 my-lg-0">
+                <!-- ✅ ĐÃ SỬA: Search form submit sang trang /products/ và gửi q -->
+                <form class="d-flex w-100 justify-content-center my-2 my-lg-0"
+                      method="get"
+                      action="{% url 'core:product_list' %}">
                     <div class="position-relative w-100" style="max-width: 500px;">
-                        <input class="search-box form-control" type="search" placeholder="🔍 Tìm đèn lồng, bao lì xì, hoa mai..." style="background: #F3F4F6; border-radius: 50px; border: none; padding: 10px 20px;">
+                        <input class="search-box form-control"
+                               type="search"
+                               name="q"
+                               value="{{ request.GET.q|default:'' }}"
+                               placeholder="🔍 Tìm đèn lồng, bao lì xì, hoa mai..."
+                               style="background: #F3F4F6; border-radius: 50px; border: none; padding: 10px 20px;">
                     </div>
                 </form>
                 
