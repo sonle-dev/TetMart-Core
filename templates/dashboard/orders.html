@@ -6,66 +6,11 @@
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
-        
-<<<<<<< Updated upstream
-        <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
-            <div class="position-sticky pt-3">
-                
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Quản lý chung</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard' %}">
-                            <i class="fas fa-chart-line me-2"></i> Tổng quan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="#">
-                            <i class="fas fa-file-invoice me-2"></i> Đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link hover-effect {% if active_tab == 'products' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" href="{% url 'dashboard_products' %}">
-                            <i class="fas fa-box-open me-2"></i> Sản phẩm
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-users me-2"></i> Khách hàng
-                        </a>
-                    </li>
-                </ul>
 
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Thống kê</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link hover-effect {% if active_tab == 'report' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" 
-                            href="{% url 'report' %}"> <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
-                        </a>
-                    </li>
-                </ul>
-
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-                    <span>Cấu hình</span>
-                </h6>
-                <ul class="nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
-                            <i class="fas fa-cog me-2"></i> Cài đặt
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-=======
         {% include 'includes/sidebar.html' with active_page='orders' %}
->>>>>>> Stashed changes
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
+
             <div class="mb-4">
                 <h4 class="fw-bold text-dark">Quản lý Đơn hàng</h4>
                 <p class="text-muted small">Xem và cập nhật trạng thái đơn hàng của khách</p>
@@ -122,7 +67,7 @@
                                 {% for order in orders %}
                                 <tr>
                                     <td class="ps-4 fw-bold text-dark">#DH{{ order.id }}</td>
-                                    
+
                                     <td>
                                         <div class="fw-bold">{{ order.user.username }}</div>
                                     </td>
@@ -186,7 +131,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-between align-items-center">
                     <div class="small text-muted">
                         Hiển thị {{ orders|length }} đơn hàng
