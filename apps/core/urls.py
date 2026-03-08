@@ -20,8 +20,12 @@ from apps.dashboard.views import (
     dashboard_view, 
     report_view, 
     order_list_view, 
-    order_detail_view  # ✅ Đã chuyển hàm này về đúng chỗ (Hết lỗi Import)
-)
+    order_detail_view,
+    product_list_view,
+    product_create_view,
+    product_update_view,
+    product_delete_view,
+)                                                     
 
 app_name = 'core'
 
@@ -44,5 +48,11 @@ urlpatterns = [
     path('dashboard/orders/', order_list_view, name='orders'),
     
     # Chi tiết đơn hàng (Xem & Sửa)
-    path('dashboard/orders/<str:order_id>/', order_detail_view, name='order_detail'),
+    path('dashboard/orders/<int:pk>/', order_detail_view, name='order_detail'),
+
+    # === PRODUCTS (Dashboard) ===
+    path('dashboard/products/', product_list_view, name='product_list'),
+    path('dashboard/products/create/', product_create_view, name='product_create'),
+    path('dashboard/products/<int:pk>/update/', product_update_view, name='product_update'),
+    path('dashboard/products/<int:pk>/delete/', product_delete_view, name='product_delete'),
 ]

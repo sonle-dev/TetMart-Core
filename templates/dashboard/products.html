@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quản lý sản phẩm - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light" style="min-height: 100vh;">
+    <div class="row">
+        
+        {% include 'includes/sidebar.html' with active_page='products' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Sản phẩm</h4>
+                    <p class="text-muted small mb-0">Quản lý tất cả sản phẩm</p>
+                </div>
+                <a href="{% url 'core:product_create' %}" class="btn btn-danger fw-bold shadow-sm">
+                    <i class="fas fa-plus me-2"></i> Thêm sản phẩm
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 ps-0"
+                                       placeholder="🔍 Tìm theo tên / mã sản phẩm...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option selected>📂 Danh mục: Tất cả</option>
+                                {% for c in categories %}
+                                    <option>{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option selected>⚡ Trạng thái</option>
+                                <option>Còn hàng</option>
+                                <option>Hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option selected>Mới nhất</option>
+                                <option>Giá tăng dần</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary small">
+                                <tr>
+                                    <th class="ps-4">Ảnh</th>
+                                    <th>Mã SP</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                    <th class="text-center">Kho</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in products %}
+                                <tr>
+                                    <td class="ps-4">
+                                        {% if p.image %}
+                                        <img src="{{ p.image.url }}"
+                                             style="width:45px;height:45px;object-fit:cover;"
+                                             class="rounded border">
+                                        {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted border"
+                                             style="width: 45px; height: 45px;">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="fw-bold text-dark">#SP{{ p.id }}</td>
+
+                                    <td>
+                                        <div class="fw-bold">{{ p.name }}</div>
+                                    </td>
+
+                                    <td>{{ p.category.name }}</td>
+
+                                    <td class="fw-bold text-danger">
+                                        {{ p.price }}đ
+                                    </td>
+                                    
+                                    <td class="text-center {% if p.stock == 0 %}text-danger fw-bold{% endif %}">
+                                        {{ p.stock }}
+                                    </td>
+
+                                    <td>
+                                        {% if p.stock > 0 %}
+                                            <span class="badge bg-success-subtle text-success px-2 py-1 rounded border border-success-subtle">
+                                                <i class="fas fa-check-circle me-1"></i> Còn hàng
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary px-2 py-1 rounded border border-secondary-subtle">
+                                                <i class="fas fa-times-circle me-1"></i> Hết hàng
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-end pe-4">
+                                        <a href="{% url 'core:product_detail' p.id %}"
+                                           class="btn btn-sm btn-outline-primary fw-bold">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger ms-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal{{ p.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <div class="modal fade" id="deleteModal{{ p.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow">
+                                            <div class="modal-header border-0 pb-0">
+                                                <h5 class="modal-title fw-bold">Xóa sản phẩm?</h5>
+                                                <button type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body py-4">
+                                                Bạn có chắc chắn muốn xóa sản phẩm <br>
+                                                <strong class="text-danger">{{ p.name }}</strong> không?
+                                            </div>
+                                            <div class="modal-footer border-0 pt-0">
+                                                <button type="button"
+                                                        class="btn btn-light"
+                                                        data-bs-dismiss="modal">Hủy</button>
+                                                <a href="{% url 'core:product_delete' p.id %}"
+                                                   class="btn btn-danger fw-bold">
+                                                   Xóa ngay
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-end">
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
+                            <li class="page-item active"><a class="page-link bg-danger border-danger" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link text-danger" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link text-danger" href="#">Sau</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<style>
+    .hover-effect:hover {
+        background-color: #ffe5e5;
+        color: #d72323 !important;
+        font-weight: bold;
+    }
+    .bg-success-subtle { background-color: #d1e7dd !important; }
+    .bg-secondary-subtle { background-color: #e2e3e5 !important; }
+</style>
+{% endblock %}

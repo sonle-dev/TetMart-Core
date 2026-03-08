@@ -1,22 +1,45 @@
 import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from products.models import Product
+from django.db.models import Sum
+from orders.models import Order
+
 @login_required(login_url='core:login')
 def dashboard_view(request):
-    
+    orders = Order.objects.all().order_by('-created_at')
+    recent_orders = orders[:5]
+
+    total_orders = orders.count()
+    total_products = Product.objects.count()
+
+    total_revenue = (
+        orders.filter(status='completed')
+        .aggregate(total=Sum('total_price'))['total'] or 0
+    )
+
+    count_new = orders.filter(status='pending').count()
+    count_processing = orders.filter(status='processing').count()
+    count_shipping = orders.filter(status='shipping').count()
+    count_completed = orders.filter(status='completed').count()
+    count_cancelled = orders.filter(status='cancelled').count()
+
     context = {
-        'revenue': '45.200.000',      
-        'count_new': 12,              
-        'count_processing': 8,       
-        'count_shipping': 5,          
-        'count_completed': 45,        
-        'count_cancelled': 3,         
-        
-        # Thêm biến này để bảng danh sách bên dưới không bị lỗi
-        'total_orders': 150,          
-        'total_products': 48          
+        'total_orders': total_orders,
+        'total_products': total_products,
+        'revenue': total_revenue,
+
+        'count_new': count_new,
+        'count_processing': count_processing,
+        'count_shipping': count_shipping,
+        'count_completed': count_completed,
+        'count_cancelled': count_cancelled,
+
+        'recent_orders': recent_orders,
     }
-    return render(request, 'dashboard.html', context)
+
+    return render(request, 'dashboard/dashboard.html', context)
 @login_required(login_url='core:login')
 def report_view(request):
     #  Dữ liệu cho Biểu đồ 
@@ -45,45 +68,7 @@ def report_view(request):
 
 @login_required(login_url='core:login')
 def order_list_view(request):
-    # Dữ liệu giả lập danh sách đơn hàng
-    orders = [
-        {
-            'id': 'DH001', 
-            'customer': 'Nguyễn Văn An', 
-            'phone': '0901234567', 
-            'address': '123 Nguyễn Trãi, Thanh Xuân, Hà Nội',
-            'total': '1.250.000đ', 
-            'status': 'pending', 
-            'date': '05/01/2026'
-        },
-        {
-            'id': 'DH002', 
-            'customer': 'Trần Thị Bình', 
-            'phone': '0912345678', 
-            'address': '456 Láng Hạ, Đống Đa, Hà Nội',
-            'total': '645.000đ', 
-            'status': 'pending', 
-            'date': '05/01/2026'
-        },
-        {
-            'id': 'DH003', 
-            'customer': 'Lê Văn Cường', 
-            'phone': '0923456789', 
-            'address': '789 Giảng Võ, Ba Đình, Hà Nội',
-            'total': '580.000đ', 
-            'status': 'shipping', 
-            'date': '04/01/2026'
-        },
-        {
-            'id': 'DH004', 
-            'customer': 'Phạm Thu Hà', 
-            'phone': '0934567890', 
-            'address': '12 Hàng Bài, Hoàn Kiếm, Hà Nội',
-            'total': '2.100.000đ', 
-            'status': 'completed', 
-            'date': '03/01/2026'
-        },
-    ]
+    orders = Order.objects.select_related('user').all().order_by('-created_at')
 
     context = {
         'orders': orders
@@ -113,3 +98,19 @@ def order_detail_view(request, order_id):
         'order': order
     }
     return render(request, 'dashboard/order_detail.html', context)
+def product_list_view(request):
+    products = Product.objects.all().order_by("-id")
+    return render(request, "dashboard/products.html", {"products": products})
+
+def product_create_view(request):
+    # tạm thời render trang form (nếu bạn đã có form thì xử lý POST sau)
+    return render(request, "dashboard/product_create.html")
+
+def product_update_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, "dashboard/product_edit.html", {"product": product})
+
+def product_delete_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    product.delete()
+    return redirect("core:product_list")

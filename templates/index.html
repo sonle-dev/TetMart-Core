@@ -19,34 +19,118 @@
 
 <div class="container py-5">
     <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Danh mục nổi bật</h4>
-    
+
+    <!-- ✅ BACKEND: categories from DB (giữ nguyên layout card) -->
     <div class="row g-4 justify-content-center">
-        <div class="col-6 col-md-3">
-            <div class="cat-card">
-                <div class="cat-icon">🏮</div>
-                <span class="cat-name">Đèn lồng</span>
+        {% for c in categories %}
+            <div class="col-6 col-md-3">
+                <a class="text-decoration-none" href="{% url 'core:home' %}">
+                    <div class="cat-card">
+                        <!-- giữ icon như frontend (nếu chưa có field icon thì dùng mặc định) -->
+                        <div class="cat-icon">
+                            {{ c.icon|default:"🏮" }}
+                        </div>
+                        <span class="cat-name">{{ c.name }}</span>
+                    </div>
+                </a>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="cat-card">
-                <div class="cat-icon">🧧</div>
-                <span class="cat-name">Bao lì xì</span>
+        {% empty %}
+            <!-- fallback nếu chưa có category trong DB -->
+            <div class="col-12 text-center text-muted small">
+                Chưa có danh mục trong database.
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="cat-card">
-                <div class="cat-icon">🌸</div>
-                <span class="cat-name">Hoa mai/đào</span>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="cat-card">
-                <div class="cat-icon">🎊</div>
-                <span class="cat-name">Dây trang trí</span>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
 <div class="container pb-5" id="products">
-    <h
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Sản phẩm bán chạy</h4>
+
+    <div class="row g-4">
+
+        <!-- ✅ BACKEND: products from DB (giữ nguyên product card) -->
+        {% for p in products %}
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="product-card h-100 d-flex flex-column">
+                    <div class="product-img-container">
+                        <a href="{% url 'core:product_detail' p.id %}">
+                            {% if p.image %}
+                                <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                            {% else %}
+                                <!-- fallback nếu chưa upload ảnh -->
+                                <img src="{% static 'img/placeholder-product.jpg' %}" alt="{{ p.name }}">
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span style="font-size: 20px;">🏮</span>
+                            <small class="text-muted">{{ p.category.name }}</small>
+                        </div>
+
+                        <a href="{% url 'core:product_detail' p.id %}" class="text-decoration-none text-reset">
+                            <h6 class="fw-bold mb-2">{{ p.name }}</h6>
+                        </a>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-danger fw-bold fs-5">{{ p.price }}đ</span>
+
+                                {% if p.stock|default:0 > 0 %}
+                                    <span class="badge-stock">Còn hàng</span>
+                                {% else %}
+                                    <span class="badge-stock" style="opacity: .6;">Hết hàng</span>
+                                {% endif %}
+                            </div>
+
+                            <a href="{% url 'core:product_detail' p.id %}" class="btn btn-primary-tet w-100">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center text-muted small">
+                Chưa có sản phẩm trong database.
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<div class="container mb-5">
+    <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Lý do chọn Tet Mart</h4>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038767.png" width="60" class="mb-3" alt="Dễ chọn">
+                <h6 class="fw-bold mb-2">Dễ chọn – Dễ mua</h6>
+                <p class="text-muted small mb-0">
+                    Giao diện đơn giản, dễ sử dụng, tìm kiếm nhanh chóng.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.freepik.com/512/9149/9149134.png" width="60" class="mb-3" alt="Chất lượng">
+                <h6 class="fw-bold mb-2">Sản phẩm chất lượng</h6>
+                <p class="text-muted small mb-0">
+                    Đa dạng mẫu mã, hàng tuyển chọn kỹ càng, giá cả phải chăng.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100 border border-light">
+                <img src="https://cdn-icons-png.freepik.com/512/9198/9198191.png" width="60" class="mb-3" alt="Thanh toán">
+                <h6 class="fw-bold mb-2">Thanh toán COD</h6>
+                <p class="text-muted small mb-0">
+                    Thanh toán khi nhận hàng an toàn, kiểm tra hàng thoải mái.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
