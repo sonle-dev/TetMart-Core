@@ -31,7 +31,7 @@
                 <!-- ✅ BACKEND: Search form (giữ nguyên UI, chỉ thêm action/method/name/value) -->
                 <form class="d-flex w-100 justify-content-center my-2 my-lg-0"
                       method="get"
-                      action="{% url 'core:home' %}">
+                      action="{% url 'core:products' %}">
                     <div class="position-relative w-100" style="max-width: 500px;">
                         <input
                             class="search-box form-control"
@@ -46,12 +46,14 @@
                 
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
                     
+
                     <!-- ✅ BACKEND: Cart badge dynamic -->
                     <li class="nav-item">
                         <a class="nav-link text-dark position-relative" href="{% url 'core:home' %}">
                             <i class="fas fa-shopping-cart fs-5"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                                 {{ cart_count|default:0 }}
+
                             </span>
                         </a>
                     </li>
@@ -73,11 +75,13 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 {% endif %}
+
                                 <li><a class="dropdown-item" href="{% url 'core:orders' %}">📄 Đơn mua</a></li>
                                 <li><a class="dropdown-item" href="{% url 'core:orders' %}">⚙️ Tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-danger fw-bold" href="{% url 'logout' %}">
+
                                         🚪 Đăng xuất
                                     </a>
                                 </li>
@@ -174,8 +178,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     {% block scripts %}{% endblock %}
-<<<<<<< Updated upstream
     
     <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -192,8 +196,18 @@
         }
     });
     </script>
-</body> 
-=======
+
+
+    <!-- ✅ THÊM MỚI: Toast container (để hiện thông báo lưu thành công/lỗi) -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="appToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div id="appToastBody" class="toast-body">Thông báo</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    
 </body>
->>>>>>> Stashed changes
 </html>

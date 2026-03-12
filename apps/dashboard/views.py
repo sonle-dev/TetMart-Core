@@ -114,3 +114,4 @@ def product_delete_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect("core:product_list")
+

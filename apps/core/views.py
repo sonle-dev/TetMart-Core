@@ -27,6 +27,7 @@ def index(request):
     return render(request, "index.html", context)
 
 
+
 # =========================
 # PRODUCT DETAIL - LẤY THẬT TỪ DATABASE
 # =========================
@@ -51,6 +52,7 @@ def login_view(request):
         password_input = request.POST.get("password")
 
         user = authenticate(request, username=username_input, password=password_input)
+
         if user is not None:
             login(request, user)
             messages.success(request, f"🎉 Chào mừng {user.username} quay trở lại!")
@@ -80,3 +82,46 @@ def dashboard_view(request):
     }
     # nếu file của bạn nằm: templates/dashboard/dashboard.html
     return render(request, "dashboard/dashboard.html", context)
+
+def product_list_view(request):
+    products = Product.objects.filter(is_active=True)
+    categories = Category.objects.all()
+
+    q = request.GET.get('q')
+    category = request.GET.get('category')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    sort = request.GET.get('sort')
+
+    if q:
+        products = products.filter(name__icontains=q)
+
+    if category:
+        products = products.filter(category__name=category)
+
+    if min_price:
+        products = products.filter(price__gte=min_price)
+
+    if max_price:
+        products = products.filter(price__lte=max_price)
+
+    if sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    else:
+        products = products.order_by('-id')
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'selected_category': category,
+        'q': q,
+        'min_price': min_price,
+        'max_price': max_price,
+        'sort': sort,
+    }
+    return render(request, 'product_list.html', context)
+
+def dashboard_product_list(request):
+    return render(request, "dashboard/product_list.html")

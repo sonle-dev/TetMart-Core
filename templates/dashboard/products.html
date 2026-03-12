@@ -26,11 +26,8 @@
                     <div class="row g-3">
                         <div class="col-md-5">
                             <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0 ps-0"
-                                       placeholder="🔍 Tìm theo tên / mã sản phẩm...">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" placeholder="🔍 Tìm theo tên / mã sản phẩm...">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -79,14 +76,14 @@
                                 <tr>
                                     <td class="ps-4">
                                         {% if p.image %}
-                                        <img src="{{ p.image.url }}"
-                                             style="width:45px;height:45px;object-fit:cover;"
-                                             class="rounded border">
+                                            <img src="{{ p.image.url }}"
+                                                 style="width: 45px; height: 45px; object-fit: cover;"
+                                                 class="rounded border"
+                                                 alt="{{ p.name }}">
                                         {% else %}
-                                        <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted border"
-                                             style="width: 45px; height: 45px;">
-                                            <i class="fas fa-image"></i>
-                                        </div>
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted border" style="width: 45px; height: 45px;">
+                                                <i class="fas fa-image"></i>
+                                            </div>
                                         {% endif %}
                                     </td>
 
@@ -96,11 +93,15 @@
                                         <div class="fw-bold">{{ p.name }}</div>
                                     </td>
 
-                                    <td>{{ p.category.name }}</td>
-
-                                    <td class="fw-bold text-danger">
-                                        {{ p.price }}đ
+                                    <td>
+                                        {% if p.category %}
+                                            {{ p.category.name }}
+                                        {% else %}
+                                            Chưa phân loại
+                                        {% endif %}
                                     </td>
+
+                                    <td class="fw-bold text-danger">{{ p.price }}đ</td>
                                     
                                     <td class="text-center {% if p.stock == 0 %}text-danger fw-bold{% endif %}">
                                         {{ p.stock }}
@@ -119,8 +120,7 @@
                                     </td>
 
                                     <td class="text-end pe-4">
-                                        <a href="{% url 'core:product_detail' p.id %}"
-                                           class="btn btn-sm btn-outline-primary fw-bold">
+                                        <a href="{% url 'core:product_update' p.id %}" class="btn btn-sm btn-outline-primary fw-bold">
                                             <i class="fas fa-edit"></i> Sửa
                                         </a>
                                         
@@ -133,14 +133,15 @@
                                     </td>
                                 </tr>
 
-                                <div class="modal fade" id="deleteModal{{ p.id }}" tabindex="-1">
+                                <div class="modal fade" id="deleteModal{{ p.id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 shadow">
                                             <div class="modal-header border-0 pb-0">
                                                 <h5 class="modal-title fw-bold">Xóa sản phẩm?</h5>
                                                 <button type="button"
                                                         class="btn-close"
-                                                        data-bs-dismiss="modal"></button>
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body py-4">
                                                 Bạn có chắc chắn muốn xóa sản phẩm <br>
@@ -158,6 +159,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        Chưa có sản phẩm nào.
+                                    </td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>

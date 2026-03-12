@@ -1,0 +1,47 @@
+{# templates/includes/product_card.html #}
+{% load static %}
+
+<div class="product-card h-100 d-flex flex-column">
+  <div class="product-img-container">
+    <a href="{% url 'core:product_detail' p.id %}">
+      {% if p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}">
+      {% else %}
+        <img src="{% static 'img/placeholder-product.jpg' %}" alt="{{ p.name }}">
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="p-3 d-flex flex-column flex-grow-1">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span style="font-size: 20px;">🏮</span>
+      <small class="text-muted">
+        {% if p.category %}
+          {{ p.category.name }}
+        {% else %}
+          Chưa phân loại
+        {% endif %}
+      </small>
+    </div>
+
+    <a href="{% url 'core:product_detail' p.id %}" class="text-decoration-none text-reset">
+      <h6 class="fw-bold mb-2">{{ p.name }}</h6>
+    </a>
+
+    <div class="mt-auto">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-danger fw-bold fs-5">{{ p.price }}đ</span>
+
+        {% if p.stock > 0 %}
+          <span class="badge-stock">Còn hàng</span>
+        {% else %}
+          <span class="badge-stock" style="opacity: 0.6;">Hết hàng</span>
+        {% endif %}
+      </div>
+
+      <a href="{% url 'core:product_detail' p.id %}" class="btn btn-primary-tet w-100">
+        Xem chi tiết
+      </a>
+    </div>
+  </div>
+</div>

@@ -6,11 +6,11 @@
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
-        
+
         {% include 'includes/sidebar.html' with active_page='dashboard' %}
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
+
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
                 <h2 class="h2 fw-bold text-danger">Dashboard</h2>
                 <div class="btn-toolbar mb-2 mb-md-0">
@@ -90,9 +90,7 @@
                     <h5 class="fw-bold m-0 text-dark">
                         <i class="fas fa-list-alt me-2 text-danger"></i> Đơn hàng gần đây
                     </h5>
-                    <a href="{% url 'core:orders' %}" class="btn btn-sm btn-light text-danger fw-bold">
-                        Xem tất cả
-                    </a>
+                    <a href="{% url 'core:orders' %}" class="btn btn-sm btn-light text-danger fw-bold">Xem tất cả</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -108,24 +106,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 {% for order in recent_orders %}
                                 <tr>
                                     <td class="ps-4 fw-bold">#DH{{ order.id }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="bg-light rounded-circle p-2 me-2 text-danger fw-bold">
-                                                {{ order.user.username }}
+                                                {{ order.full_name|slice:":1"|upper }}
                                             </div>
                                             <span>{{ order.full_name }}</span>
                                         </div>
                                     </td>
-                                    <td class="text-muted">
-                                        {{ order.created_at|date:"d/m/Y" }}
-                                    </td>
-                                    <td class="fw-bold text-danger">
-                                        {{ order.total_price|floatformat:0 }}đ
-                                    </td>
+                                    <td class="text-muted">{{ order.created_at|date:"d/m/Y" }}</td>
+                                    <td class="fw-bold text-danger">{{ order.total_price|floatformat:0 }}đ</td>
                                     <td>
                                         {% if order.status == "pending" %}
                                             <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Đơn mới</span>
@@ -137,6 +130,8 @@
                                             <span class="badge bg-success px-3 py-2 rounded-pill">Hoàn thành</span>
                                         {% elif order.status == "cancelled" %}
                                             <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">{{ order.status }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end pe-4">
@@ -155,7 +150,6 @@
                                     </td>
                                 </tr>
                                 {% endfor %}
-
                             </tbody>
                         </table>
                     </div>

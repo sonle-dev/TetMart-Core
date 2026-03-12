@@ -1,4 +1,6 @@
+
 /* 1. KHAI BÁO BIẾN MÀU (Lấy từ thiết kế Figma của bạn) */
+
 :root {
     --tet-primary: #DC2626;       /* Đỏ chủ đạo */
     --tet-secondary: #FBBF24;     /* Vàng điểm nhấn */
@@ -13,7 +15,10 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+
 /* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
+
+
 .navbar-tet {
     background-color: var(--tet-white);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -30,12 +35,15 @@ body {
     outline: none;
 }
 
+
 /* 3. HERO SECTION (Banner chữ ở giữa) */
+
 .hero-section {
     background: linear-gradient(180deg, #FFE4E6 0%, var(--tet-bg) 100%);
     padding: 60px 0;
     text-align: center;
 }
+
 
 /* 4. CARD DANH MỤC (Trắng, bo góc) */
 /* --- CARD DANH MỤC (Giống thiết kế Figma) --- */
@@ -57,6 +65,7 @@ body {
     justify-content: center;
 }
 
+
 /* Hiệu ứng khi di chuột vào */
 .cat-card:hover {
     border-color: var(--tet-primary);       /* Viền chuyển đỏ */
@@ -67,6 +76,7 @@ body {
 /* Định dạng Icon (Emoji) */
 .cat-icon {
     font-size: 3rem;  /* Kích thước icon to */
+
     margin-bottom: 15px;
     line-height: 1;
 }
@@ -76,7 +86,10 @@ body {
     color: #333;
     font-size: 1.1rem;
 }
+
 /* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
+
+
 .product-card {
     background: var(--tet-white);
     border-radius: 16px;
@@ -87,11 +100,13 @@ body {
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .product-img-container {
-    height: 250px; /* Ảnh vuông hoặc chữ nhật đứng */
+    height: 250px;
+
     overflow: hidden;
     background: #f9f9f9;
     display: flex;
@@ -105,7 +120,9 @@ body {
     object-fit: cover;
 }
 
+
 /* Badge trạng thái (Còn hàng) */
+
 .badge-stock {
     background-color: var(--tet-primary);
     color: white;
@@ -114,6 +131,7 @@ body {
     border-radius: 4px;
     font-weight: 600;
 }
+
 
 /* Nút bấm Đỏ */
 .btn-primary-tet {
@@ -127,11 +145,13 @@ body {
 }
 
 .btn-primary-tet:hover {
+
     background-color: #B91C1C; /* Đỏ đậm hơn */
     color: white;
 }
 
 /* Nút Trắng (Xem danh mục) */
+
 .btn-outline-tet {
     background-color: white;
     color: var(--tet-text);
@@ -145,26 +165,29 @@ body {
     background-color: #F9FAFB;
     border-color: #D1D5DB;
 }
-/* Class chỉnh icon nhỏ trong card sản phẩm */
+
 .icon-mini {
-    width: 24px !important;  /* Ép chiều rộng 24px */
-    height: px !important; /* Ép chiều cao 24px */
-    object-fit: contain;     /* Giữ nguyên tỉ lệ ảnh không bị méo */
-    margin-right: 5px;       /* Cách chữ ra một chút */
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+    margin-right: 5px;
 }
+
 /* --- TRANG CHI TIẾT SẢN PHẨM --- */
 .product-detail-img-container {
-    background-color: #ffffff; /* Nền trắng */
-    min-height: 400px;         /* Chiều cao tối thiểu */
+    background-color: #ffffff;
+    min-height: 400px;
     width: 100%;
     padding: 20px;
 }
+
 
 /* Nút quay lại */
 .text-decoration-none:hover {
     color: var(--tet-primary) !important;
     text-decoration: underline !important;
 }
+
 
 /* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
 
@@ -185,33 +208,117 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none; /* Bỏ viền riêng của nút */
-    background-color: #f8f9fa; /* Màu nền xám rất nhạt */
-    color: #333; /* Màu chữ đậm */
-    font-weight: 700; /* In đậm dấu +/- */
-    font-size: 1.2rem; /* To hơn một chút */
-    transition: all 0.2s; /* Hiệu ứng mượt mà */
+    border: none;
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.2s;
 }
 
-/* Hiệu ứng khi di chuột vào nút */
 .quantity-btn:hover {
-    background-color: #e9ecef; /* Màu nền tối hơn chút khi hover */
-    color: var(--tet-primary); /* Đổi màu chữ sang đỏ Tết */
+    background-color: #e9ecef;
+    color: var(--tet-primary);
 }
 
-/* 3. Ô input ở giữa */
 .quantity-input {
-    border: none; /* Bỏ viền */
+    border: none;
     text-align: center;
-    font-weight: 700; /* Số in đậm */
+    font-weight: 700;
     font-size: 1.1rem;
     color: #333;
-    background-color: transparent; /* Nền trong suốt để ăn theo nền hộp chứa */
-    width: 50px; /* Chiều rộng cố định */
+    background-color: transparent;
+    width: 50px;
 }
 
-/* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
 .quantity-input:focus, .quantity-btn:focus {
     box-shadow: none;
     outline: none;
+}
+
+
+/* =========================================================
+   ✅ BỘ LỌC (FILTER) - CHUẨN, KHÔNG TRÙNG LẶP
+   Dùng cho /products/
+   ========================================================= */
+
+/* Khung viền bao trọn toàn bộ bộ lọc */
+.filter-wrap{
+  background: #fff;
+  border: 2px solid rgba(220, 38, 38, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+/* filter-card bên trong: bỏ viền/bóng để không bị 2 lớp */
+.filter-wrap .filter-card{
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.filter-wrap .filter-title{
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: var(--tet-text);
+}
+
+.filter-wrap .filter-group{
+  margin-bottom: 14px;
+}
+
+.filter-wrap .filter-label{
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--tet-text);
+  font-size: 14px;
+}
+
+.filter-wrap .form-control,
+.filter-wrap .form-select{
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  background: #fff;
+}
+
+.filter-wrap .form-control:focus,
+.filter-wrap .form-select:focus{
+  border-color: rgba(220, 38, 38, 0.35);
+  box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.10);
+}
+
+.preview-item{ position: relative; }
+.preview-img{
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  background: #f8f9fa;
+}
+.preview-remove{
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-meta{
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

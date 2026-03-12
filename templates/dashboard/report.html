@@ -22,7 +22,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'core:product_list' %}">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:products' %}">
                             <i class="fas fa-box-open me-2"></i> Sản phẩm
                         </a>
                     </li>
@@ -31,8 +31,7 @@
                 <h6 class="sidebar-heading px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">Thống kê</h6>
                 <ul class="nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" 
-                           href="{% url 'core:reports' %}">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:reports' %}">
                             <i class="fas fa-chart-bar me-2"></i> Báo cáo / Thống kê
                         </a>
                     </li>
@@ -51,24 +50,18 @@
 
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <form method="GET" action="{% url 'core:reports' %}"
-                          class="d-flex align-items-center gap-2">
+                    <form method="GET" action="{% url 'core:reports' %}" class="d-flex align-items-center gap-2">
                         <i class="fas fa-calendar-alt text-muted"></i>
                         <span class="fw-bold text-muted">Khoảng thời gian:</span>
-                        <select name="range"
-                                class="form-select form-select-sm fw-bold"
-                                style="width: 150px; border-color: #ddd;">
+                        <select name="range" class="form-select form-select-sm fw-bold" style="width: 150px; border-color: #ddd;">
                             <option value="7days">7 ngày qua</option>
                             <option value="month">Tháng này</option>
                             <option value="quarter">Quý này</option>
                         </select>
-                        <button type="submit" class="btn btn-outline-dark btn-sm fw-bold">
-                            Lọc
-                        </button>
+                        <button type="submit" class="btn btn-outline-dark btn-sm fw-bold">Lọc</button>
                     </form>
 
-                    <a href="{% url 'core:reports' %}"
-                       class="btn btn-outline-dark btn-sm fw-bold">
+                    <a href="{% url 'core:reports' %}" class="btn btn-outline-dark btn-sm fw-bold">
                         <i class="fas fa-download me-2"></i> Xuất báo cáo
                     </a>
                 </div>
@@ -124,15 +117,16 @@
                             {% for p in top_products %}
                             <tr>
                                 <td class="ps-4">
-                                    <span class="badge bg-danger rounded-circle me-2"
-                                          style="width: 25px; height: 25px; line-height: 18px;">
-                                          {{ forloop.counter }}
-                                    </span>
+                                    <span class="badge bg-danger rounded-circle me-2" style="width: 25px; height: 25px; line-height: 18px;">{{ forloop.counter }}</span>
                                     <span class="fw-bold text-dark">{{ p.name }}</span>
                                 </td>
                                 <td class="text-center fw-bold text-secondary">{{ p.sold }}</td>
-                                <td class="text-end pe-4 fw-bold text-success">
-                                    {{ p.revenue }}đ
+                                <td class="text-end pe-4 fw-bold text-success">{{ p.revenue }}đ</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    Chưa có dữ liệu sản phẩm bán chạy.
                                 </td>
                             </tr>
                             {% endfor %}
@@ -144,4 +138,51 @@
         </main>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = JSON.parse('{{ chart_labels_json|safe }}');
+    const data = JSON.parse('{{ chart_data_json|safe }}');
+
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: data,
+                backgroundColor: '#d72323',
+                borderRadius: 4,
+                barPercentage: 0.6,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { borderDash: [5, 5] }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+    .hover-effect:hover {
+        background-color: #ffe5e5;
+        color: #d72323 !important;
+        font-weight: bold;
+    }
+</style>
 {% endblock %}

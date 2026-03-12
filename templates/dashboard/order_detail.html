@@ -17,12 +17,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'orders:admin_list' %}">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:orders' %}">
                             <i class="fas fa-file-invoice me-2"></i> Đơn hàng
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:product_list' %}">
                             <i class="fas fa-box-open me-2"></i> Sản phẩm
                         </a>
                     </li>
@@ -33,7 +33,7 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             
             <div class="d-flex align-items-center mb-4">
-                <a href="{% url 'orders:admin_list' %}" class="btn btn-light border me-3">
+                <a href="{% url 'core:orders' %}" class="btn btn-light border me-3">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Địa chỉ:</div>
-                                <div class="col-md-9">{{ order.shipping_address }}</div>
+                                <div class="col-md-9">{{ order.address }}</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Ghi chú:</div>
@@ -70,17 +70,19 @@
                             <div class="row">
                                 <div class="col-md-3 text-muted">Trạng thái:</div>
                                 <div class="col-md-9">
-
                                     {% if order.status == "pending" %}
                                         <span class="badge bg-warning text-dark px-3 rounded-pill border border-warning">Chờ xử lý</span>
+                                    {% elif order.status == "processing" %}
+                                        <span class="badge bg-danger px-3 rounded-pill border border-danger">Chờ xử lý</span>
                                     {% elif order.status == "shipping" %}
                                         <span class="badge bg-info px-3 rounded-pill border border-info">Đang giao</span>
                                     {% elif order.status == "completed" %}
                                         <span class="badge bg-success px-3 rounded-pill border border-success">Hoàn thành</span>
                                     {% elif order.status == "cancelled" %}
                                         <span class="badge bg-secondary px-3 rounded-pill border border-secondary">Đã hủy</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary px-3 rounded-pill border border-secondary">{{ order.status }}</span>
                                     {% endif %}
-
                                 </div>
                             </div>
                         </div>
@@ -106,9 +108,12 @@
                                         <td class="ps-4 py-3">{{ item.product.name }}</td>
                                         <td class="text-center">{{ item.quantity }}</td>
                                         <td class="text-end">{{ item.price }}đ</td>
-                                        <td class="text-end pe-4 fw-bold text-dark">
-                                            {{ item.price|floatformat:0|add:""|floatformat:0 }}
-                                            {{ item.price|mul:item.quantity }}đ
+                                        <td class="text-end pe-4 fw-bold text-dark">{{ item.total }}đ</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            Chưa có sản phẩm trong đơn hàng.
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -116,9 +121,7 @@
                                 <tfoot class="bg-light">
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold py-3">Tổng tiền:</td>
-                                        <td class="text-end pe-4 fw-bold text-danger fs-5">
-                                            {{ order.total_amount }}đ
-                                        </td>
+                                        <td class="text-end pe-4 fw-bold text-danger fs-5">{{ order.total_price }}đ</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -134,7 +137,7 @@
                             <h6 class="fw-bold m-0">Cập nhật trạng thái</h6>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{% url 'orders:admin_update_status' order.id %}">
+                            <form method="POST" action="">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label class="form-label small text-muted fw-bold">Trạng thái đơn hàng</label>
@@ -146,9 +149,7 @@
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-danger w-100 fw-bold mb-2">Lưu trạng thái</button>
-                                <a href="{% url 'orders:admin_cancel' order.id %}" class="btn btn-outline-secondary w-100">
-                                    Hủy đơn
-                                </a>
+                                <button type="button" class="btn btn-outline-secondary w-100">Hủy đơn</button>
                             </form>
                         </div>
                     </div>

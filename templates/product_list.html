@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Danh mục sản phẩm{% endblock %}
+
+{% block content %}
+<section class="py-4" style="background: var(--tet-bg, #fff7f2);">
+  <div class="container">
+    <h2 class="fw-bold mb-1">Sản phẩm trang trí Tết</h2>
+    <div class="text-muted mb-4">
+      {% if filters.q %}
+        Kết quả tìm kiếm cho: <span class="fw-semibold">“{{ filters.q }}”</span>
+      {% else %}
+        Chọn danh mục và lọc theo nhu cầu
+      {% endif %}
+    </div>
+
+    <div class="row g-4">
+      <!-- Filter -->
+      <div class="col-12 col-lg-3">
+        {% include "includes/product_filters.html" %}
+      </div>
+
+      <!-- Products -->
+      <div class="col-12 col-lg-9">
+        <div class="row g-4">
+          {% for p in products %}
+            <div class="col-12 col-sm-6 col-md-4">
+              {% include "includes/product_card.html" %}
+            </div>
+          {% empty %}
+            <div class="col-12">
+              <div class="alert alert-light border">
+                Không tìm thấy sản phẩm phù hợp.
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
