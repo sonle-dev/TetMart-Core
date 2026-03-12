@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> feature/backend
 # 🧨 TetMart - Hệ thống Quản lý Bán hàng & Kho vận
 
 > **Tech Lead:** Lê Hồng Sơn
@@ -45,6 +40,7 @@
 # Clone dự án
  git clone https://github.com/sonle-dev/TetMart-Core.git
 
+
 # Di chuyển vào thư mục
  cd TetMart-Core
 
@@ -74,11 +70,8 @@
 
 3.	Cấu hình kết nối:
 	Mở file: tetmart/settings.py
-<<<<<<< HEAD
-	Tìm đoạn DATABASES, sửa lại PASSWORD cho đúng với máy của bạn.
-=======
+
 	Tìm đoạn DATABASES, sửa lại PASSWORD cho đúng với máy.
->>>>>>> feature/backend
 
 ### Bước 4: Chạy Server
     python manage.py runserver
@@ -106,7 +99,3 @@
 https://github.com/user-attachments/assets/d966ce9f-83a9-4e93-8bb5-229d570e2c57
 
 
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> feature/backend
