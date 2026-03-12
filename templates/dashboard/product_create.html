@@ -7,6 +7,7 @@
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
         
+<<<<<<< HEAD
         <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
             <div class="position-sticky pt-3">
                 
@@ -46,20 +47,46 @@
                 </a>
                 <h4 class="fw-bold text-dark">Thêm sản phẩm</h4>
                 <p class="text-muted small">Tạo sản phẩm mới vào kho</p>
+=======
+        {% include 'includes/sidebar.html' with active_page='products' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="mb-4">
+                <a href="{% url 'core:product_list' %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+                <h4 class="fw-bold text-dark">Thêm sản phẩm</h4>
+                <p class="text-muted small">Tạo sản phẩm mới</p>
+>>>>>>> feature/backend
             </div>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
+<<<<<<< HEAD
                     <form method="POST" enctype="multipart/form-data">
+=======
+                    <form id="productCreateForm"
+                          method="POST"
+                          action="{% url 'core:product_create' %}"
+                          enctype="multipart/form-data"
+                          novalidate>
+>>>>>>> feature/backend
                         {% csrf_token %}
                         
                         <div class="mb-3">
                             <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+<<<<<<< HEAD
                             <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
+=======
+                            <input id="productName" name="name" type="text" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                            <div class="invalid-feedback">Vui lòng nhập tên sản phẩm.</div>
+>>>>>>> feature/backend
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+<<<<<<< HEAD
                             <select class="form-select">
                                 <option selected disabled>-- Chọn danh mục --</option>
                                 <option>Bánh kẹo Tết</option>
@@ -67,26 +94,50 @@
                                 <option>Mứt Tết</option>
                                 <option>Quà biếu</option>
                             </select>
+=======
+                            <select id="productCategory" name="category" class="form-select" required>
+                                <option value="" selected disabled>-- Chọn danh mục --</option>
+                                {% for c in categories %}
+                                    <option value="{{ c.id }}">{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn danh mục.</div>
+>>>>>>> feature/backend
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
+<<<<<<< HEAD
                                 <input type="number" class="form-control" value="0">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Tồn kho <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" value="0">
+=======
+                                <input id="productPrice" name="price" type="number" class="form-control" value="0" min="1" required>
+                                <div class="invalid-feedback">Giá phải lớn hơn 0.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Tồn kho <span class="text-danger">*</span></label>
+                                <input id="productStock" name="stock" type="number" class="form-control" value="0" min="0" required>
+                                <div class="invalid-feedback">Tồn kho phải ≥ 0.</div>
+>>>>>>> feature/backend
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Mô tả</label>
+<<<<<<< HEAD
                             <textarea class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm (tùy chọn)"></textarea>
+=======
+                            <textarea id="productDesc" name="description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm (tùy chọn)"></textarea>
+>>>>>>> feature/backend
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">Ảnh sản phẩm <span class="text-danger">*</span></label>
+<<<<<<< HEAD
                             <div class="border p-4 text-center rounded bg-light" style="border-style: dashed !important; border-width: 2px; border-color: #ccc;">
                                 <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                 <div class="fw-bold text-muted">Click để upload ảnh</div>
@@ -98,6 +149,32 @@
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-danger fw-bold px-4">Lưu sản phẩm</button>
                             <a href="{% url 'product_list' %}" class="btn btn-outline-secondary px-4">Hủy</a>
+=======
+
+                            <div id="uploadDropzone"
+                                 class="border border-dashed p-4 text-center rounded bg-light"
+                                 style="border-style: dashed !important; border-width: 2px; cursor: pointer;">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                <div class="fw-bold text-muted">Click để upload ảnh</div>
+                                <p class="small text-muted mb-0">PNG, JPG, WEBP (tối đa 5 ảnh • mỗi ảnh ≤ 2MB)</p>
+                            </div>
+
+                            <input
+                                id="productImages"
+                                type="file"
+                                name="image"
+                                class="d-none"
+                                accept="image/png,image/jpeg,image/webp"
+                            />
+
+                            <div id="uploadError" class="alert alert-danger py-2 px-3 mt-2 d-none"></div>
+                            <div id="previewGrid" class="row g-2 mt-2"></div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger fw-bold px-4">Lưu</button>
+                            <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary px-4">Hủy</a>
+>>>>>>> feature/backend
                         </div>
                     </form>
                 </div>
@@ -106,4 +183,174 @@
         </main>
     </div>
 </div>
+<<<<<<< HEAD
+=======
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/upload_images.js' %}"></script>
+
+<script>
+    function showToast(message, type = "success") {
+        let toastEl = document.getElementById("appToast");
+        let toastBody = document.getElementById("appToastBody");
+
+        if (!toastEl || !toastBody) {
+            const wrap = document.createElement("div");
+            wrap.className = "toast-container position-fixed bottom-0 end-0 p-3";
+            wrap.style.zIndex = "1080";
+            wrap.innerHTML = `
+                <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div id="appToastBody" class="toast-body"></div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(wrap);
+            toastEl = document.getElementById("appToast");
+            toastBody = document.getElementById("appToastBody");
+        }
+
+        toastBody.textContent = message;
+
+        toastEl.classList.remove("text-bg-success", "text-bg-danger", "text-bg-warning", "text-bg-info");
+        toastEl.classList.add(type === "error" ? "text-bg-danger" : "text-bg-success");
+
+        const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2500 });
+        toast.show();
+    }
+
+    (function () {
+        const form = document.getElementById("productCreateForm");
+        if (!form) return;
+
+        const nameEl = document.getElementById("productName");
+        const catEl = document.getElementById("productCategory");
+        const priceEl = document.getElementById("productPrice");
+        const stockEl = document.getElementById("productStock");
+
+        const imgInput = document.getElementById("productImages");
+        const dropzone = document.getElementById("uploadDropzone");
+        const uploadError = document.getElementById("uploadError");
+
+        if (dropzone && imgInput) {
+            dropzone.addEventListener("click", () => imgInput.click());
+        }
+
+        function setInvalid(el) {
+            if (el) el.classList.add("is-invalid");
+        }
+
+        function clearInvalid(el) {
+            if (el) el.classList.remove("is-invalid");
+        }
+
+        function showUploadError(msg) {
+            if (!uploadError) return;
+            uploadError.textContent = msg;
+            uploadError.classList.remove("d-none");
+            if (dropzone) dropzone.classList.add("border-danger");
+        }
+
+        function clearUploadError() {
+            if (!uploadError) return;
+            uploadError.textContent = "";
+            uploadError.classList.add("d-none");
+            if (dropzone) dropzone.classList.remove("border-danger");
+        }
+
+        [nameEl, catEl, priceEl, stockEl].forEach((el) => {
+            if (!el) return;
+            el.addEventListener("input", () => clearInvalid(el));
+            el.addEventListener("change", () => clearInvalid(el));
+        });
+
+        if (imgInput) {
+            imgInput.addEventListener("change", () => {
+                clearUploadError();
+
+                const previewGrid = document.getElementById("previewGrid");
+                if (!previewGrid) return;
+                previewGrid.innerHTML = "";
+
+                const files = Array.from(imgInput.files || []);
+                files.forEach((file) => {
+                    if (!file.type.startsWith("image/")) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const col = document.createElement("div");
+                        col.className = "col-6 col-md-3";
+
+                        col.innerHTML = `
+                            <div class="border rounded p-1 bg-white shadow-sm">
+                                <img src="${e.target.result}" class="img-fluid rounded" alt="preview">
+                            </div>
+                        `;
+                        previewGrid.appendChild(col);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            [nameEl, catEl, priceEl, stockEl].forEach(clearInvalid);
+            clearUploadError();
+
+            let ok = true;
+            let firstInvalid = null;
+
+            const nameVal = (nameEl?.value || "").trim();
+            if (!nameVal) {
+                ok = false;
+                setInvalid(nameEl);
+                firstInvalid = firstInvalid || nameEl;
+            }
+
+            const catVal = catEl?.value || "";
+            if (!catVal) {
+                ok = false;
+                setInvalid(catEl);
+                firstInvalid = firstInvalid || catEl;
+            }
+
+            const priceVal = Number(priceEl?.value || 0);
+            if (!Number.isFinite(priceVal) || priceVal <= 0) {
+                ok = false;
+                setInvalid(priceEl);
+                firstInvalid = firstInvalid || priceEl;
+            }
+
+            const stockVal = Number(stockEl?.value || 0);
+            if (!Number.isFinite(stockVal) || stockVal < 0) {
+                ok = false;
+                setInvalid(stockEl);
+                firstInvalid = firstInvalid || stockEl;
+            }
+
+            const filesCount = imgInput?.files?.length || 0;
+            if (filesCount === 0) {
+                ok = false;
+                showUploadError("Vui lòng chọn ít nhất 1 ảnh sản phẩm.");
+                firstInvalid = firstInvalid || dropzone;
+            }
+
+            if (!ok) {
+                showToast("Vui lòng kiểm tra lại dữ liệu!", "error");
+                if (firstInvalid && firstInvalid.scrollIntoView) {
+                    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                if (firstInvalid && firstInvalid.focus) firstInvalid.focus();
+                return;
+            }
+
+            form.submit();
+        });
+    })();
+</script>
+>>>>>>> feature/backend
 {% endblock %}

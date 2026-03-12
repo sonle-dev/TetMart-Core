@@ -13,7 +13,11 @@ def is_staff(user):
 @user_passes_test(is_staff)
 def dashboard_orders_view(request):
     orders = Order.objects.all().order_by('-created_at')
+<<<<<<< HEAD
     context = {'orders': orders, 'active_tab': 'orders'}
+=======
+    context = {'orders': orders, 'active_page': 'orders'}
+>>>>>>> feature/backend
     
     return render(request, 'dashboard/orders.html', context)
 
@@ -22,16 +26,28 @@ def dashboard_orders_view(request):
 @user_passes_test(is_staff)
 def dashboard_products_view(request):
     products = Product.objects.all().order_by('-id')
+<<<<<<< HEAD
     context = {'products': products, 'active_tab': 'products'}
     return render(request, 'dashboard/product_list.html', context)
+=======
+    context = {'products': products, 'active_page': 'products'}
+    return render(request, 'dashboard/products.html', context)
+>>>>>>> feature/backend
 
 #  VIEW TRANG CHỦ 
 def home(request):
     products = Product.objects.filter(is_active=True)
+<<<<<<< HEAD
     return render(request, 'home.html', {'products': products})
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
+=======
+    return render(request, 'index.html', {'products': products})
+
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+>>>>>>> feature/backend
     return render(request, 'product_detail.html', {'product': product})
 
 # VIEW DASHBOARD TỔNG QUAN 
@@ -47,7 +63,11 @@ def dashboard_view(request):
     count_cancelled = Order.objects.filter(status='cancelled').count()
     
     # Lấy 5 đơn mới nhất
+<<<<<<< HEAD
     recent_orders = Order.objects.all().order_by('-created_at')[:5]
+=======
+    recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
+>>>>>>> feature/backend
 
     context = {
         'revenue': revenue,
@@ -56,10 +76,17 @@ def dashboard_view(request):
         'count_completed': count_completed,
         'count_cancelled': count_cancelled,
         'recent_orders': recent_orders,
+<<<<<<< HEAD
         'active_tab': 'dashboard'
     }
  
     return render(request, 'dashboard.html', context)
+=======
+        'active_page': 'dashboard'
+    }
+ 
+    return render(request, 'dashboard/dashboard.html', context)
+>>>>>>> feature/backend
 # VIEW BÁO CÁO DOANH THU
 @login_required(login_url='login')
 @user_passes_test(is_staff)
@@ -69,7 +96,11 @@ def report_view(request):
     
     context = {
         'revenue': revenue,
+<<<<<<< HEAD
         'active_tab': 'report' 
+=======
+        'active_page': 'report' 
+>>>>>>> feature/backend
     }
     return render(request, 'dashboard/report.html', context)
 
@@ -86,6 +117,7 @@ def order_detail_view(request, pk):
             order.save()
             return redirect('order_detail', pk=pk)
 
+<<<<<<< HEAD
     try:
         order_items = order.items.all()
     except:
@@ -97,6 +129,17 @@ def order_detail_view(request, pk):
         'order_items': order_items,
         'active_tab': 'orders'
     }
+=======
+    
+
+    context = {
+        'order': order,
+        'active_page': 'orders'
+    }
+<<<<<<< Updated upstream
+    return render(request, 'dashboard/order_detail.html', context)
+=======
+>>>>>>> feature/backend
     return render(request, 'dashboard/order_detail.html', context)
 
 def product_create(request):
@@ -127,4 +170,9 @@ def product_delete(request, pk):
     
     product.delete()
     
+<<<<<<< HEAD
     return redirect('product_list')
+=======
+    return redirect('product_list')
+>>>>>>> Stashed changes
+>>>>>>> feature/backend

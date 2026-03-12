@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Chi tiết đơn hàng #{{ order.id }} - Tet Mart{% endblock %}
+{% block title %}Chi tiết đơn hàng {{ order.id }} - Tet Mart{% endblock %}
 
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
@@ -12,28 +12,28 @@
                 <h6 class="sidebar-heading px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">Quản lý chung</h6>
                 <ul class="nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard' %}">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:dashboard' %}">
                             <i class="fas fa-chart-line me-2"></i> Tổng quan
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="#">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:orders' %}">
                             <i class="fas fa-file-invoice me-2"></i> Đơn hàng
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="#">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'core:product_list' %}">
                             <i class="fas fa-box-open me-2"></i> Sản phẩm
                         </a>
                     </li>
                 </ul>
-             </div>
+            </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             
             <div class="d-flex align-items-center mb-4">
-                <a href="{% url 'dashboard' %}" class="btn btn-light border me-3">
+                <a href="{% url 'core:orders' %}" class="btn btn-light border me-3">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
@@ -54,6 +54,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Họ tên:</div>
                                 <div class="col-md-9 fw-bold">{{ order.full_name|default:order.user.username }}</div>
+
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">SĐT:</div>
@@ -70,9 +71,19 @@
                             <div class="row">
                                 <div class="col-md-3 text-muted">Trạng thái:</div>
                                 <div class="col-md-9">
-                                    <span class="badge bg-warning text-dark px-3 rounded-pill border border-warning">
-                                        {{ order.get_status_display }}
-                                    </span>
+                                    {% if order.status == "pending" %}
+                                        <span class="badge bg-warning text-dark px-3 rounded-pill border border-warning">Chờ xử lý</span>
+                                    {% elif order.status == "processing" %}
+                                        <span class="badge bg-danger px-3 rounded-pill border border-danger">Chờ xử lý</span>
+                                    {% elif order.status == "shipping" %}
+                                        <span class="badge bg-info px-3 rounded-pill border border-info">Đang giao</span>
+                                    {% elif order.status == "completed" %}
+                                        <span class="badge bg-success px-3 rounded-pill border border-success">Hoàn thành</span>
+                                    {% elif order.status == "cancelled" %}
+                                        <span class="badge bg-secondary px-3 rounded-pill border border-secondary">Đã hủy</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary px-3 rounded-pill border border-secondary">{{ order.status }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -93,20 +104,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for item in order_items %}
+                                    {% for item in order.items.all %}
                                     <tr>
-                                        <td class="ps-4 py-3">
-                                            <div class="d-flex align-items-center">
-                                                {% if item.product.image %}
-                                                    <img src="{{ item.product.image.url }}" width="40" class="rounded me-2">
-                                                {% endif %}
-                                                {{ item.product.name }}
-                                            </div>
-                                        </td>
+                                        <td class="ps-4 py-3">{{ item.product.name }}</td>
                                         <td class="text-center">{{ item.quantity }}</td>
                                         <td class="text-end">{{ item.price }}đ</td>
-                                        <td class="text-end pe-4 fw-bold text-dark">
-                                            {% widthratio item.price 1 item.quantity %}đ
+                                        <td class="text-end pe-4 fw-bold text-dark">{{ item.total }}đ</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            Chưa có sản phẩm trong đơn hàng.
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -130,18 +138,19 @@
                             <h6 class="fw-bold m-0">Cập nhật trạng thái</h6>
                         </div>
                         <div class="card-body">
-                            <form method="POST">
+                            <form method="POST" action="">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label class="form-label small text-muted fw-bold">Trạng thái đơn hàng</label>
-                                    <select name="status" class="form-select">
-                                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Chờ xử lý</option>
-                                        <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Đang giao hàng</option>
-                                        <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Hoàn thành</option>
-                                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
+                                    <select class="form-select" name="status">
+                                        <option value="pending" {% if order.status == "pending" %}selected{% endif %}>Chờ xử lý</option>
+                                        <option value="shipping" {% if order.status == "shipping" %}selected{% endif %}>Đang giao hàng</option>
+                                        <option value="completed" {% if order.status == "completed" %}selected{% endif %}>Hoàn thành</option>
+                                        <option value="cancelled" {% if order.status == "cancelled" %}selected{% endif %}>Đã hủy</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-danger w-100 fw-bold mb-2">Lưu trạng thái</button>
+                                <button type="button" class="btn btn-outline-secondary w-100">Hủy đơn</button>
                             </form>
                         </div>
                     </div>
