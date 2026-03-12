@@ -38,7 +38,8 @@
 ### Bước 1: Lấy code về máy
 
 # Clone dự án
- git clone [https://github.com/sonle-dev/TetMart.git](https://github.com/sonle-dev/TetMart.git)
+ git clone https://github.com/sonle-dev/TetMart-Core.git
+
 
 # Di chuyển vào thư mục
  cd TetMart-Core
@@ -69,7 +70,8 @@
 
 3.	Cấu hình kết nối:
 	Mở file: tetmart/settings.py
-	Tìm đoạn DATABASES, sửa lại PASSWORD cho đúng với máy của bạn.
+
+	Tìm đoạn DATABASES, sửa lại PASSWORD cho đúng với máy.
 
 ### Bước 4: Chạy Server
     python manage.py runserver

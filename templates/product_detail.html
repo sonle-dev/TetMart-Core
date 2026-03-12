@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <a href="{% url 'core:home' %}" class="text-decoration-none text-muted fw-bold">
+        <i class="fas fa-arrow-left me-1"></i> Quay lại
+    </a>
+</div>
+
+<div class="container mb-5">
+    <div class="row gx-5">
+
+        <div class="col-md-6 mb-4">
+            <div class="product-detail-img-container rounded-4 overflow-hidden border-0 shadow-sm bg-white d-flex align-items-center justify-content-center">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/placeholder-product.jpg' %}{% endif %}"
+                     class="img-fluid" style="max-height: 500px;" alt="{{ product.name }}">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span style="font-size: 20px;">🏮</span>
+                <span class="text-muted small">
+                    {% if product.category %}
+                        {{ product.category.name }}
+                    {% else %}
+                        Danh mục sản phẩm
+                    {% endif %}
+                </span>
+            </div>
+
+            <h2 class="fw-bold mb-3" style="color: var(--tet-text);">{{ product.name }}</h2>
+            <h3 class="text-danger fw-bold mb-3">{{ product.price }}đ</h3>
+
+            <div class="mb-4">
+                {% if product.stock|default:0 > 0 %}
+                    <span class="badge bg-danger px-3 py-2 rounded-pill">Còn hàng</span>
+                {% else %}
+                    <span class="badge bg-secondary px-3 py-2 rounded-pill">Hết hàng</span>
+                {% endif %}
+            </div>
+
+            <p class="text-muted mb-4" style="line-height: 1.6;">
+                {{ product.description|default_if_none:"" }}
+            </p>
+
+            <form method="POST" action="{% url 'cart:add' product.id %}">
+                {% csrf_token %}
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="fw-bold small text-muted">Số lượng:</span>
+
+                    <div class="input-group quantity-group" style="width: 140px;">
+                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
+
+                        <input type="number"
+                               name="quantity"
+                               id="quantity-input"
+                               class="form-control quantity-input text-center bg-white"
+                               value="1"
+                               min="1"
+                               readonly>
+
+                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm" style="background-color: #d72323; border: none;">
+                    Thêm vào giỏ
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5 pt-4">
+    <h5 class="fw-bold mb-4" style="color: var(--tet-text);">Sản phẩm liên quan</h5>
+
+    <div class="row g-4">
+        {% for p in related_products %}
+            <div class="col-6 col-md-3">
+                <div class="product-card h-100 d-flex flex-column shadow-sm">
+                    <div class="product-img-container">
+                        <a href="{% url 'core:product_detail' p.id %}">
+                            <img src="{% if p.image %}{{ p.image.url }}{% else %}{% static 'img/placeholder-product.jpg' %}{% endif %}" alt="{{ p.name }}">
+                        </a>
+                    </div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span style="font-size: 20px;">🏮</span>
+                            <small class="text-muted">
+                                {% if p.category %}
+                                    {{ p.category.name }}
+                                {% else %}
+                                    Danh mục
+                                {% endif %}
+                            </small>
+                        </div>
+                        <a href="{% url 'core:product_detail' p.id %}" class="text-decoration-none text-reset">
+                            <h6 class="fw-bold mb-2">{{ p.name }}</h6>
+                        </a>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-danger fw-bold fs-5">{{ p.price }}đ</span>
+                                {% if p.stock|default:0 > 0 %}
+                                    <span class="badge-stock">Còn hàng</span>
+                                {% else %}
+                                    <span class="badge-stock" style="opacity:.6;">Hết hàng</span>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'core:product_detail' p.id %}" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center text-muted small">
+                Chưa có sản phẩm liên quan.
+            </div>
+        {% endfor %}
+>>>>>>> feature/backend
+    </div>
+</div>
+
+<script>
+    function handleQuantity(amount) {
+        const input = document.getElementById('quantity-input');
+        let currentQty = parseInt(input.value);
+        let newQty = currentQty + amount;
+
+        if (newQty < 1) {
+            newQty = 1;
+        }
+
+        input.value = newQty;
+    }
+</script>
+
+<style>
+    .quantity-btn:hover {
+        background-color: #ffe5e5;
+        color: #d72323;
+        border-color: #d72323 !important;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+{% endblock %}
