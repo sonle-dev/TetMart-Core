@@ -7,10 +7,7 @@
     <title>{% block title %}Tet Mart - Sắm Tết Đậm Đà Bản Sắc{% endblock %}</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<<<<<<< HEAD
-=======
     
->>>>>>> feature/backend
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -21,11 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-tet sticky-top bg-white border-bottom">
         <div class="container align-items-center">
             
-<<<<<<< HEAD
-            <a class="navbar-brand fw-bold fs-4" href="{% url 'home' %}" style="color: var(--tet-primary);">
-=======
             <a class="navbar-brand fw-bold fs-4" href="{% url 'core:home' %}" style="color: var(--tet-primary);">
->>>>>>> feature/backend
                 <i class="fas fa-lantern"></i> Tet Mart
             </a>
     
@@ -35,11 +28,6 @@
     
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 
-<<<<<<< HEAD
-                <form class="d-flex w-100 justify-content-center my-2 my-lg-0">
-                    <div class="position-relative w-100" style="max-width: 500px;">
-                        <input class="search-box form-control" type="search" placeholder="🔍 Tìm đèn lồng, bao lì xì, hoa mai..." style="background: #F3F4F6; border-radius: 50px; border: none; padding: 10px 20px;">
-=======
                 <!-- ✅ BACKEND: Search form (giữ nguyên UI, chỉ thêm action/method/name/value) -->
                 <form class="d-flex w-100 justify-content-center my-2 my-lg-0"
                       method="get"
@@ -53,19 +41,11 @@
                             placeholder="🔍 Tìm đèn lồng, bao lì xì, hoa mai..."
                             style="background: #F3F4F6; border-radius: 50px; border: none; padding: 10px 20px;"
                         >
->>>>>>> feature/backend
                     </div>
                 </form>
                 
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
                     
-<<<<<<< HEAD
-                    <li class="nav-item">
-                        <a class="nav-link text-dark position-relative" href="#">
-                            <i class="fas fa-shopping-cart fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                0
-=======
 
                     <!-- ✅ BACKEND: Cart badge dynamic -->
                     <li class="nav-item">
@@ -74,7 +54,6 @@
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                                 {{ cart_count|default:0 }}
 
->>>>>>> feature/backend
                             </span>
                         </a>
                     </li>
@@ -90,23 +69,12 @@
                                 
                                 {% if user.is_staff %}
                                     <li>
-<<<<<<< HEAD
-                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'dashboard' %}">
-=======
                                         <a class="dropdown-item fw-bold text-danger" href="{% url 'core:dashboard' %}">
->>>>>>> feature/backend
                                             <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 {% endif %}
-<<<<<<< HEAD
-                                <li><a class="dropdown-item" href="#">📄 Đơn mua</a></li>
-                                <li><a class="dropdown-item" href="#">⚙️ Tài khoản</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item text-danger fw-bold" href="{% url 'logout' %}">
-=======
 
                                 <li><a class="dropdown-item" href="{% url 'core:orders' %}">📄 Đơn mua</a></li>
                                 <li><a class="dropdown-item" href="{% url 'core:orders' %}">⚙️ Tài khoản</a></li>
@@ -114,7 +82,6 @@
                                 <li>
                                     <a class="dropdown-item text-danger fw-bold" href="{% url 'logout' %}">
 
->>>>>>> feature/backend
                                         🚪 Đăng xuất
                                     </a>
                                 </li>
@@ -142,48 +109,6 @@
         </div>
     </nav>
 
-<<<<<<< HEAD
-    <main class="flex-grow-1 position-relative">
-        
-        {% if messages %}
-            <div class="floating-alert-container">
-                {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-lg border-0 d-flex align-items-center" role="alert">
-                        {% if message.tags == 'error' %}
-                            <i class="fas fa-exclamation-triangle me-2 fs-5"></i>
-                        {% else %}
-                            <i class="fas fa-check-circle me-2 fs-5"></i>
-                        {% endif %}
-                        
-                        <span class="fw-bold">{{ message }}</span>
-                        
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <style>
-                .floating-alert-container {
-                    position: fixed;     /* Trôi nổi */
-                    top: 100px;          /* Cách mép trên 100px (để dưới Header) */
-                    left: 50%;           /* Ra giữa màn hình */
-                    transform: translateX(-50%); /* Căn chính giữa chuẩn xác */
-                    z-index: 9999;       /* Đè lên mọi thứ */
-                    width: auto;
-                    min-width: 350px;    /* Độ rộng tối thiểu */
-                    max-width: 90%;
-                }
-                .floating-alert-container .alert {
-                    border-radius: 50px; /* Bo tròn kiểu viên thuốc */
-                    padding: 12px 25px;
-                    background-color: rgba(255, 255, 255, 0.95); /* Nền trắng hơi trong suốt */
-                    border-left: 5px solid; /* Viền trái tạo điểm nhấn */
-                }
-                .alert-success { border-left-color: #198754; }
-                .alert-danger { border-left-color: #dc3545; }
-            </style>
-        {% endif %}
-=======
     <main class="flex-grow-1">
         
         {% if messages %}
@@ -206,7 +131,6 @@
             </div>
         {% endif %}
 
->>>>>>> feature/backend
         {% block content %}
         {% endblock %}
     </main>
@@ -240,11 +164,7 @@
                     <h6 class="fw-bold mb-3">Liên hệ</h6>
                     <ul class="list-unstyled text-muted small">
                         <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-danger"></i> ĐH CNTT & TT Thái Nguyên</li>
-<<<<<<< HEAD
-                        <li class="mb-2"><i class="fas fa-phone me-2 text-danger"></i> 0348.063.722</li>
-=======
                         <li class="mb-2"><i class="fas fa-phone me-2 text-danger"></i> 0987.654.321</li>
->>>>>>> feature/backend
                         <li class="mb-2"><i class="fas fa-envelope me-2 text-danger"></i> support@tetmart.vn</li>
                     </ul>
                 </div>
@@ -258,34 +178,19 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
     {% block scripts %}{% endblock %}
     
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         var alerts = document.querySelectorAll('.alert');
         if (alerts.length > 0) {
-<<<<<<< HEAD
-            
-=======
             // Đợi 3 giây rồi tắt
->>>>>>> feature/backend
             setTimeout(function() {
                 alerts.forEach(function(alert) {
                     // Dùng API của Bootstrap để đóng alert mượt mà
                     var bsAlert = new bootstrap.Alert(alert);
                     bsAlert.close();
                 });
-<<<<<<< HEAD
-            }, 30000); 
-        }
-    });
-    </script>
-</body> 
-=======
             }, 3000); 
         }
     });
@@ -304,5 +209,4 @@
 
     
 </body>
->>>>>>> feature/backend
 </html>

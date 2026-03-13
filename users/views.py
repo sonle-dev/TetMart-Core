@@ -12,35 +12,16 @@ from .forms import CustomUserCreationForm
 # Import Model Order
 from orders.models import Order 
 
-<<<<<<< HEAD
-# --- 1. LOGIC ĐĂNG KÝ (Đã sửa chuẩn) ---
-def register_view(request):
-    if request.method == 'POST':
-        # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm thay vì UserCreationForm
-=======
 # 1. LOGIC ĐĂNG KÝ
 def register_view(request):
     if request.method == 'POST':
         
->>>>>>> feature/backend
         form = CustomUserCreationForm(request.POST) 
         
         if form.is_valid():
             user = form.save() 
             login(request, user) # Đăng nhập luôn sau khi đăng ký
             messages.success(request, f"Chào mừng {user.username} đến với TetMart!")
-<<<<<<< HEAD
-            return redirect('home') 
-        else:
-            # Nếu form lỗi (vd: mật khẩu không khớp), in lỗi ra
-            messages.error(request, "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.")
-    else:
-        # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm tạo form rỗng
-        form = CustomUserCreationForm()
-    
-    # 👇 QUAN TRỌNG: Dòng này nằm ngoài cùng, thẳng hàng với if/else
-    return render(request, 'users/register.html', {'form': form})
-=======
             return redirect('core:home') 
         else:
             
@@ -51,7 +32,6 @@ def register_view(request):
     
     
     return render(request, 'user/register.html', {'form': form})
->>>>>>> feature/backend
 
 # --- 2. LOGIC ĐĂNG NHẬP ---
 def login_view(request):
