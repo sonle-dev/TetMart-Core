@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Giỏ hàng - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Giỏ hàng của bạn</h2>
+            <p class="text-muted mb-0">Kiểm tra lại sản phẩm trước khi đặt hàng.</p>
+        </div>
+
+        <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary">
+            Tiếp tục mua sắm
+        </a>
+    </div>
+
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    {% for item in items %}
+                    <div class="p-3 border-bottom">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-2 col-4">
+                                <img
+                                    src="{{ item.image }}"
+                                    alt="{{ item.name }}"
+                                    class="img-fluid rounded"
+                                    style="width: 100%; height: 90px; object-fit: cover;"
+                                >
+                            </div>
+
+                            <div class="col-md-4 col-8">
+                                <a href="{% url 'core:product_detail' item.id %}" class="text-decoration-none text-dark">
+                                    <h6 class="fw-bold mb-1">{{ item.name }}</h6>
+                                </a>
+                                <div class="text-muted small">{{ item.category }}</div>
+                                <div class="text-danger fw-bold mt-2">{{ item.price_display }}đ</div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <form method="POST" action="{% url 'cart:update' item.id %}" class="d-flex gap-2">
+                                    {% csrf_token %}
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        min="1"
+                                        value="{{ item.quantity }}"
+                                        class="form-control"
+                                    >
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        Cập nhật
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="col-md-2 text-md-end">
+                                <div class="fw-bold">{{ item.subtotal_display }}đ</div>
+                            </div>
+
+                            <div class="col-md-1 text-md-end">
+                                <form method="POST" action="{% url 'cart:remove' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Tóm tắt giỏ hàng</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng số lượng</span>
+                        <strong>{{ total_quantity }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tạm tính</span>
+                        <strong class="text-danger">{{ total_price_display }}đ</strong>
+                    </div>
+
+                    <button type="button" class="btn btn-danger w-100 mb-2" disabled>
+                        Thanh toán
+                    </button>
+
+                    <form method="POST" action="{% url 'cart:clear' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary w-100">
+                            Xóa toàn bộ giỏ hàng
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <h4 class="fw-bold mb-3">Giỏ hàng đang trống</h4>
+            <p class="text-muted mb-4">Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+            <a href="{% url 'core:product_list' %}" class="btn btn-danger">
+                Mua sắm ngay
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
