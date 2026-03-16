@@ -13,6 +13,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+
 /* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
 .navbar-tet {
     background-color: var(--tet-white);
@@ -77,6 +78,7 @@ body {
     font-size: 1.1rem;
 }
 /* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
+
 .product-card {
     background: var(--tet-white);
     border-radius: 16px;
@@ -92,6 +94,13 @@ body {
 
 .product-img-container {
     height: 250px; /* Ảnh vuông hoặc chữ nhật đứng */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.product-img-container {
+    height: 250px;
+
     overflow: hidden;
     background: #f9f9f9;
     display: flex;
@@ -104,6 +113,7 @@ body {
     height: 100%;
     object-fit: cover;
 }
+
 
 /* Badge trạng thái (Còn hàng) */
 .badge-stock {
@@ -127,11 +137,13 @@ body {
 }
 
 .btn-primary-tet:hover {
+
     background-color: #B91C1C; /* Đỏ đậm hơn */
     color: white;
 }
 
 /* Nút Trắng (Xem danh mục) */
+
 .btn-outline-tet {
     background-color: white;
     color: var(--tet-text);
@@ -145,6 +157,7 @@ body {
     background-color: #F9FAFB;
     border-color: #D1D5DB;
 }
+
 /* Class chỉnh icon nhỏ trong card sản phẩm */
 .icon-mini {
     width: 24px !important;  /* Ép chiều rộng 24px */
@@ -156,6 +169,18 @@ body {
 .product-detail-img-container {
     background-color: #ffffff; /* Nền trắng */
     min-height: 400px;         /* Chiều cao tối thiểu */
+
+.icon-mini {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+/* --- TRANG CHI TIẾT SẢN PHẨM --- */
+.product-detail-img-container {
+    background-color: #ffffff;
+    min-height: 400px;
     width: 100%;
     padding: 20px;
 }
@@ -165,6 +190,7 @@ body {
     color: var(--tet-primary) !important;
     text-decoration: underline !important;
 }
+
 
 /* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
 
@@ -211,7 +237,117 @@ body {
 }
 
 /* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
+    border: none;
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+.quantity-btn:hover {
+    background-color: #e9ecef;
+    color: var(--tet-primary);
+}
+
+.quantity-input {
+    border: none;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
+    background-color: transparent;
+    width: 50px;
+}
+
 .quantity-input:focus, .quantity-btn:focus {
     box-shadow: none;
     outline: none;
+}
+
+
+/* =========================================================
+   ✅ BỘ LỌC (FILTER) - CHUẨN, KHÔNG TRÙNG LẶP
+   Dùng cho /products/
+   ========================================================= */
+
+/* Khung viền bao trọn toàn bộ bộ lọc */
+.filter-wrap{
+  background: #fff;
+  border: 2px solid rgba(220, 38, 38, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+/* filter-card bên trong: bỏ viền/bóng để không bị 2 lớp */
+.filter-wrap .filter-card{
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.filter-wrap .filter-title{
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: var(--tet-text);
+}
+
+.filter-wrap .filter-group{
+  margin-bottom: 14px;
+}
+
+.filter-wrap .filter-label{
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--tet-text);
+  font-size: 14px;
+}
+
+.filter-wrap .form-control,
+.filter-wrap .form-select{
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  background: #fff;
+}
+
+.filter-wrap .form-control:focus,
+.filter-wrap .form-select:focus{
+  border-color: rgba(220, 38, 38, 0.35);
+  box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.10);
+}
+
+.preview-item{ position: relative; }
+.preview-img{
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  background: #f8f9fa;
+}
+.preview-remove{
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-meta{
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

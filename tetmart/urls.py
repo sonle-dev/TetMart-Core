@@ -15,7 +15,7 @@ urlpatterns = [
 
     # --- Trang chủ và Chi tiết sản phẩm (Public) ---
     path('', home, name='home'),
-    path('product/<int:pk>/', product_detail, name='product_detail'),
+    path('product/<slug:slug>/', product_detail, name='product_detail'),
 
     # --- Xác thực (Login/Register) ---
     path('auth/', include('users.urls')),
@@ -28,16 +28,16 @@ urlpatterns = [
     path('dashboard/orders/', product_views.dashboard_orders_view, name='dashboard_orders'),
     
     # --- Dashboard Báo cáo ---
-    # (Lưu ý: Bạn đang import report_view từ product_views, check kỹ lại xem nó nằm ở đâu nhé)
     path('dashboard/report/', product_views.report_view, name='report'),
 
-    # 👇👇👇 SỬA QUAN TRỌNG Ở ĐÂY 👇👇👇
-    # Thay vì trỏ trực tiếp view, ta dùng include để nối sang file products/urls.py
-    # Lúc này nó sẽ có cả trang danh sách (path '') và trang tạo mới (path 'create/')
+    
     path('dashboard/products/', include('products.urls')), 
     
     # --- Mua ngay ---
     path('buy-now/<int:product_id>/', buy_now_view, name='buy_now'),
+
+    #Danh sach san pham
+    path('products/', product_views.product_list_view, name='product_list'),
 ]
 
 if settings.DEBUG:
