@@ -45,12 +45,16 @@
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
                     
                     <li class="nav-item">
-                        <a class="nav-link text-dark position-relative" href="#">
-                            <i class="fas fa-shopping-cart fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                2
+                        <a class="nav-link text-dark position-relative" href="{% url 'cart:detail' %}">
+                             <i class="fas fa-shopping-cart fs-5"></i>
+                             <span
+                                 id="cart-count-badge"
+                                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                 style="font-size: 0.6rem;"
+                            >
+                                {{ cart_total_quantity|default:0 }}
                             </span>
-                        </a>
+                         </a>
                     </li>
                     
                     {% if user.is_authenticated %}
@@ -181,7 +185,97 @@
             </div>
         </div>
     </div>
+<div
+    id="ajax-toast-container"
+    class="position-fixed start-50 translate-middle-x px-3"
+    style="top: 90px; z-index: 1080; width: min(92vw, 720px); pointer-events: none;"
+></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toastContainer = document.getElementById('ajax-toast-container');
+    const cartBadge = document.getElementById('cart-count-badge');
 
+    function showAjaxToast(message, type) {
+        if (!toastContainer) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'alert shadow-sm border-0 mb-2';
+        toast.classList.add(type === 'error' ? 'alert-danger' : 'alert-success');
+        toast.style.pointerEvents = 'auto';
+        toast.style.transition = 'opacity 0.25s ease';
+
+        const content = document.createElement('div');
+        content.className = 'd-flex align-items-center justify-content-between gap-3';
+
+        const text = document.createElement('span');
+        text.textContent = message;
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close';
+
+        closeButton.addEventListener('click', function () {
+            toast.remove();
+        });
+
+        content.appendChild(text);
+        content.appendChild(closeButton);
+        toast.appendChild(content);
+        toastContainer.appendChild(toast);
+
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            setTimeout(function () {
+                toast.remove();
+            }, 250);
+        }, 2500);
+    }
+
+    document.querySelectorAll('.js-ajax-add-to-cart').forEach(function (form) {
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonHtml = submitButton ? submitButton.innerHTML : '';
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Đang thêm...';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new FormData(form),
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Không thể thêm vào giỏ hàng.');
+                }
+
+                if (cartBadge && typeof data.cart_total_quantity !== 'undefined') {
+                    cartBadge.textContent = data.cart_total_quantity;
+                }
+
+                showAjaxToast(data.message, 'success');
+            } catch (error) {
+                showAjaxToast(error.message || 'Có lỗi xảy ra.', 'error');
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonHtml;
+                }
+            }
+        });
+    });
+});
+</script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

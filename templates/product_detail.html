@@ -34,31 +34,38 @@
                 {{ product.desc }}
             </p>
 
-            <form method="POST" action="#">
-                {% csrf_token %}
-                
-                <div class="d-flex align-items-center gap-3 mb-4">
-                    <span class="fw-bold small text-muted">Số lượng:</span>
-                    
-                    <div class="input-group quantity-group" style="width: 140px;">
-                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
-                        
-                        <input type="number" 
-                               name="quantity" 
-                               id="quantity-input" 
-                               class="form-control quantity-input text-center bg-white" 
-                               value="1" 
-                               min="1" 
-                               readonly>
-                               
-                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
-                    </div>
-                </div>
+            <form method="POST" action="{% url 'cart:add' product.id %}" class="js-ajax-add-to-cart">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
 
-                <button type="submit" class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm" style="background-color: #d72323; border: none;">
-                    Thêm vào giỏ
-                </button>
-            </form>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <span class="fw-bold small text-muted">Số lượng:</span>
+
+        <div class="input-group quantity-group" style="width: 140px;">
+            <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
+
+            <input
+                type="number"
+                name="quantity"
+                id="quantity-input"
+                class="form-control quantity-input text-center bg-white"
+                value="1"
+                min="1"
+                readonly
+            >
+
+            <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
+        </div>
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm"
+        style="background-color: #d72323; border: none;"
+    >
+        Thêm vào giỏ
+    </button>
+</form>
             </div>
     </div>
 </div>
