@@ -90,7 +90,7 @@
                     <h5 class="fw-bold m-0 text-dark">
                         <i class="fas fa-list-alt me-2 text-danger"></i> Đơn hàng gần đây
                     </h5>
-                    <a href="{% url 'core:orders' %}" class="btn btn-sm btn-light text-danger fw-bold">Xem tất cả</a>
+                    <a href="{% url 'dashboard_orders' %}" class="btn btn-sm btn-light text-danger fw-bold">Xem tất cả</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -114,28 +114,26 @@
                                             <div class="bg-light rounded-circle p-2 me-2 text-danger fw-bold">
                                                 {{ order.full_name|slice:":1"|upper }}
                                             </div>
-                                            <span>{{ order.full_name }}</span>
+                                            <div class="fw-bold">{{ order.full_name|default:order.user.username }}</div>
                                         </div>
                                     </td>
                                     <td class="text-muted">{{ order.created_at|date:"d/m/Y" }}</td>
                                     <td class="fw-bold text-danger">{{ order.total_price|floatformat:0 }}đ</td>
                                     <td>
-                                        {% if order.status == "pending" %}
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Đơn mới</span>
-                                        {% elif order.status == "processing" %}
-                                            <span class="badge bg-danger px-3 py-2 rounded-pill">Chờ xử lý</span>
-                                        {% elif order.status == "shipping" %}
-                                            <span class="badge bg-info px-3 py-2 rounded-pill">Đang giao</span>
-                                        {% elif order.status == "completed" %}
-                                            <span class="badge bg-success px-3 py-2 rounded-pill">Hoàn thành</span>
-                                        {% elif order.status == "cancelled" %}
-                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
+                                        {% if order.status == 'new' %}
+                                            <span class="badge bg-warning text-dark">Đơn mới</span>
+                                        {% elif order.status == 'pending' %}
+                                            <span class="badge bg-danger text-dark">Chờ xử lý</span>
+                                        {% elif order.status == 'shipping' %}
+                                            <span class="badge bg-info text-dark">Đang giao</span>
+                                        {% elif order.status == 'completed' %}
+                                            <span class="badge bg-success">Hoàn thành</span>
                                         {% else %}
-                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">{{ order.status }}</span>
+                                            <span class="badge bg-secondary">Đã hủy</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a href="{% url 'core:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-outline-danger">

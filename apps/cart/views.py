@@ -1,9 +1,7 @@
 from django.shortcuts import render
 
-<<<<<<< HEAD
-# Create your views here.
-    
-=======
+
+
 def cart_detail(request):
     
     return render(request, "cart/detail.html")
@@ -23,4 +21,3 @@ def add(request, product_id):
     request.session["cart"] = cart
 
     return redirect("cart:detail")
->>>>>>> feature/backend

@@ -4,7 +4,7 @@
   <div class="filter-card">
     <div class="filter-title">Bộ lọc</div>
 
-    <form method="get" action="{% url 'core:products' %}">
+    <form method="get" action="{% url 'product_list' %}">
       {% if filters.q %}
         <input type="hidden" name="q" value="{{ filters.q }}">
       {% endif %}
@@ -42,7 +42,7 @@
 
       <div class="d-grid gap-2 mt-3">
         <button type="submit" class="btn btn-outline-secondary">Áp dụng</button>
-        <a class="btn btn-light border" href="{% url 'core:product_list' %}">Xóa lọc</a>
+        <a class="btn btn-light border" href="{% url 'product_list' %}">Xóa lọc</a>
       </div>
     </form>
   </div>

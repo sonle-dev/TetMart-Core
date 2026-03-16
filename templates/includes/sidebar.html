@@ -7,26 +7,22 @@
         <ul class="nav flex-column gap-2">
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'dashboard' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'core:dashboard' %}">
+                   href="{% url 'dashboard' %}">
                     <i class="fas fa-chart-line me-2"></i> Tổng quan
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'orders' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'core:orders' %}">
+                   href="{% url 'dashboard_orders' %}">
                     <i class="fas fa-file-invoice me-2"></i> Đơn hàng
-                    {% if active_page != 'orders' and pending_count > 0 %}
-                        <span class="badge bg-warning text-dark ms-2">
-                            {{ pending_count }}
-                        </span>
-                    {% endif %}
+                    {% if active_page != 'orders' %}<span class="badge bg-warning text-dark ms-2">5</span>{% endif %}
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'products' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'core:products' %}">
+                    href="{% url 'dashboard_products' %}">
                     <i class="fas fa-box-open me-2"></i> Sản phẩm
                 </a>
             </li>
@@ -44,7 +40,7 @@
         <ul class="nav flex-column gap-2">
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'reports' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'core:reports' %}">
+                   href="{% url 'report' %}">
                     <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
                 </a>
             </li>

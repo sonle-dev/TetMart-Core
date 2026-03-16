@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 /* 1. KHAI BÁO BIẾN MÀU (Lấy từ thiết kế Figma của bạn) */
-=======
-
-/* 1. KHAI BÁO BIẾN MÀU (Lấy từ thiết kế Figma của bạn) */
-
->>>>>>> feature/backend
 :root {
     --tet-primary: #DC2626;       /* Đỏ chủ đạo */
     --tet-secondary: #FBBF24;     /* Vàng điểm nhấn */
@@ -19,14 +13,8 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-<<<<<<< HEAD
-/* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
-=======
 
 /* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
-
-
->>>>>>> feature/backend
 .navbar-tet {
     background-color: var(--tet-white);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -43,23 +31,13 @@ body {
     outline: none;
 }
 
-<<<<<<< HEAD
 /* 3. HERO SECTION (Banner chữ ở giữa) */
-=======
-
-/* 3. HERO SECTION (Banner chữ ở giữa) */
-
->>>>>>> feature/backend
 .hero-section {
     background: linear-gradient(180deg, #FFE4E6 0%, var(--tet-bg) 100%);
     padding: 60px 0;
     text-align: center;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
 /* 4. CARD DANH MỤC (Trắng, bo góc) */
 /* --- CARD DANH MỤC (Giống thiết kế Figma) --- */
 .cat-card {
@@ -80,10 +58,6 @@ body {
     justify-content: center;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
 /* Hiệu ứng khi di chuột vào */
 .cat-card:hover {
     border-color: var(--tet-primary);       /* Viền chuyển đỏ */
@@ -94,10 +68,6 @@ body {
 /* Định dạng Icon (Emoji) */
 .cat-icon {
     font-size: 3rem;  /* Kích thước icon to */
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
     margin-bottom: 15px;
     line-height: 1;
 }
@@ -107,14 +77,8 @@ body {
     color: #333;
     font-size: 1.1rem;
 }
-<<<<<<< HEAD
-/* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
-=======
-
 /* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
 
-
->>>>>>> feature/backend
 .product-card {
     background: var(--tet-white);
     border-radius: 16px;
@@ -125,13 +89,11 @@ body {
 
 .product-card:hover {
     transform: translateY(-5px);
-<<<<<<< HEAD
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .product-img-container {
     height: 250px; /* Ảnh vuông hoặc chữ nhật đứng */
-=======
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
                 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
@@ -139,7 +101,6 @@ body {
 .product-img-container {
     height: 250px;
 
->>>>>>> feature/backend
     overflow: hidden;
     background: #f9f9f9;
     display: flex;
@@ -153,13 +114,8 @@ body {
     object-fit: cover;
 }
 
-<<<<<<< HEAD
-/* Badge trạng thái (Còn hàng) */
-=======
 
 /* Badge trạng thái (Còn hàng) */
-
->>>>>>> feature/backend
 .badge-stock {
     background-color: var(--tet-primary);
     color: white;
@@ -169,10 +125,6 @@ body {
     font-weight: 600;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
 /* Nút bấm Đỏ */
 .btn-primary-tet {
     background-color: var(--tet-primary);
@@ -185,19 +137,13 @@ body {
 }
 
 .btn-primary-tet:hover {
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/backend
     background-color: #B91C1C; /* Đỏ đậm hơn */
     color: white;
 }
 
 /* Nút Trắng (Xem danh mục) */
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/backend
 .btn-outline-tet {
     background-color: white;
     color: var(--tet-text);
@@ -211,7 +157,7 @@ body {
     background-color: #F9FAFB;
     border-color: #D1D5DB;
 }
-<<<<<<< HEAD
+
 /* Class chỉnh icon nhỏ trong card sản phẩm */
 .icon-mini {
     width: 24px !important;  /* Ép chiều rộng 24px */
@@ -223,7 +169,6 @@ body {
 .product-detail-img-container {
     background-color: #ffffff; /* Nền trắng */
     min-height: 400px;         /* Chiều cao tối thiểu */
-=======
 
 .icon-mini {
     width: 24px !important;
@@ -236,25 +181,17 @@ body {
 .product-detail-img-container {
     background-color: #ffffff;
     min-height: 400px;
->>>>>>> feature/backend
     width: 100%;
     padding: 20px;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
 /* Nút quay lại */
 .text-decoration-none:hover {
     color: var(--tet-primary) !important;
     text-decoration: underline !important;
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/backend
 /* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
 
 /* 1. Hộp chứa chung */
@@ -274,7 +211,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-<<<<<<< HEAD
     border: none; /* Bỏ viền riêng của nút */
     background-color: #f8f9fa; /* Màu nền xám rất nhạt */
     color: #333; /* Màu chữ đậm */
@@ -301,7 +237,6 @@ body {
 }
 
 /* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
-=======
     border: none;
     background-color: #f8f9fa;
     color: #333;
@@ -325,13 +260,10 @@ body {
     width: 50px;
 }
 
->>>>>>> feature/backend
 .quantity-input:focus, .quantity-btn:focus {
     box-shadow: none;
     outline: none;
 }
-<<<<<<< HEAD
-=======
 
 
 /* =========================================================
@@ -419,4 +351,3 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
->>>>>>> feature/backend

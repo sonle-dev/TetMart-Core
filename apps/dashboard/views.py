@@ -1,7 +1,6 @@
 import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
 @login_required(login_url='core:login')
 def dashboard_view(request):
     
@@ -18,7 +17,6 @@ def dashboard_view(request):
         'total_products': 48          
     }
     return render(request, 'dashboard.html', context)
-=======
 from django.shortcuts import render, redirect, get_object_or_404
 from products.models import Product
 from django.db.models import Sum
@@ -58,13 +56,16 @@ def dashboard_view(request):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
->>>>>>> feature/backend
 @login_required(login_url='core:login')
 def report_view(request):
     #  Dữ liệu cho Biểu đồ 
     chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
     chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
-<<<<<<< HEAD
+@login_required(login_url='core:login')
+def report_view(request):
+    #  Dữ liệu cho Biểu đồ 
+    chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
+    chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
 
     #  Dữ liệu Top sản phẩm bán chạy
     top_products = [
@@ -156,7 +157,6 @@ def order_detail_view(request, order_id):
         'order': order
     }
     return render(request, 'dashboard/order_detail.html', context)
-=======
 
     #  Dữ liệu Top sản phẩm bán chạy
     top_products = [
@@ -226,5 +226,3 @@ def product_delete_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect("core:product_list")
-
->>>>>>> feature/backend

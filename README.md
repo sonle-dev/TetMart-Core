@@ -169,7 +169,6 @@ Bước 1: Lấy code về máy
 # Clone dự án
 git clone https://github.com/sonle-dev/TetMart-Core.git
 
-
 # Di chuyển vào thư mục
 cd TetMart-Core
 
@@ -252,4 +251,4 @@ database_backup.sql
 
 🎥 5. Video Demo Hệ Thống
 
-  https://github.com/user-attachments/assets/d966ce9f-83a9-4e93-8bb5-229d570e2
+https://github.com/user-attachments/assets/d966ce9f-83a9-4e93-8bb5-229d570e2

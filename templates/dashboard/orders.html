@@ -6,7 +6,6 @@
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
-<<<<<<< HEAD
         
         <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
             <div class="position-sticky pt-3">
@@ -26,7 +25,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link hover-effect {% if active_tab == 'products' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" href="{% url 'product_list' %}">
+                        <a class="nav-link hover-effect {% if active_tab == 'products' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" href="{% url 'dashboard_products' %}">
                             <i class="fas fa-box-open me-2"></i> Sản phẩm
                         </a>
                     </li>
@@ -42,8 +41,8 @@
                 </h6>
                 <ul class="nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link hover-effect {% if active_tab == 'report' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" 
-                            href="{% url 'report' %}"> <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
+                        <a class="nav-link hover-effect {% if active_tab == 'report' %}active text-white bg-danger rounded fw-bold{% else %}text-dark{% endif %}" href="{% url 'report' %}">
+                            <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
                         </a>
                     </li>
                 </ul>
@@ -62,14 +61,7 @@
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
-=======
 
-        {% include 'includes/sidebar.html' with active_page='orders' %}
-
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-
->>>>>>> feature/backend
             <div class="mb-4">
                 <h4 class="fw-bold text-dark">Quản lý Đơn hàng</h4>
                 <p class="text-muted small">Xem và cập nhật trạng thái đơn hàng của khách</p>
@@ -80,16 +72,10 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="input-group">
-<<<<<<< HEAD
-                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT...">
-=======
                                 <span class="input-group-text bg-white border-end-0">
                                     <i class="fas fa-search text-muted"></i>
                                 </span>
-                                <input type="text" class="form-control border-start-0 ps-0"
-                                       placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT...">
->>>>>>> feature/backend
+                                <input type="text" class="form-control border-start-0 ps-0" placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT...">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -127,51 +113,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-<<<<<<< HEAD
-                                {% for order in orders %}
-                                <tr>
-                                    <td class="ps-4 fw-bold text-dark">#{{ order.id }}</td>
-                                    <td>
-                                        <div class="fw-bold">{{ order.full_name|default:order.user.username }}</div>
-                                    </td>
-                                    <td>{{ order.phone }}</td>
-                                    <td class="text-muted small" style="max-width: 200px;">
-                                        <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ order.address|truncatechars:30 }}
-                                    </td>
-                                    <td class="fw-bold text-danger">{{ order.total_price }}đ</td>
-                                    <td>
-                                        {% if order.status == 'pending' %}
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill border border-warning">Chờ xử lý</span>
-                                        {% elif order.status == 'shipping' %}
-                                            <span class="badge bg-info text-dark px-3 py-2 rounded-pill border border-info">Đang giao</span>
-                                        {% elif order.status == 'completed' %}
-                                            <span class="badge bg-success px-3 py-2 rounded-pill border border-success">Hoàn thành</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-muted small">{{ order.created_at|date:"d/m/Y" }}</td>
-                                    
-                                    <td class="text-end pe-4">
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold">
-                                            <i class="fas fa-eye"></i> Xem
-                                        </a>
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-danger ms-1">
-=======
-
                                 {% for order in orders %}
                                 <tr>
                                     <td class="ps-4 fw-bold text-dark">#DH{{ order.id }}</td>
 
                                     <td>
-                                        <div class="fw-bold">{{ order.user.username }}</div>
+                                        <div class="fw-bold">{{ order.full_name|default:order.user.username }}</div>
                                     </td>
 
                                     <td>{{ order.phone }}</td>
 
                                     <td class="text-muted small" style="max-width: 200px;">
                                         <i class="fas fa-map-marker-alt text-danger me-1"></i>
-                                        {{ order.address }}
+                                        {{ order.shipping_address|default:order.address|truncatechars:30 }}
                                     </td>
 
                                     <td class="fw-bold text-danger">
@@ -179,8 +133,12 @@
                                     </td>
 
                                     <td>
-                                        {% if order.status == 'pending' %}
+                                        {% if order.status == 'new' %}
                                             <span class="badge bg-warning text-dark px-3 py-2 rounded-pill border border-warning">
+                                                Đơn mới
+                                            </span>
+                                        {% elif order.status == 'pending' %}
+                                            <span class="badge bg-danger text-white px-3 py-2 rounded-pill border border-danger">
                                                 Chờ xử lý
                                             </span>
                                         {% elif order.status == 'shipping' %}
@@ -203,49 +161,26 @@
                                     </td>
 
                                     <td class="text-end pe-4">
-                                        <a href="{% url 'core:order_detail' order.pk %}"
-                                           class="btn btn-sm btn-outline-primary fw-bold">
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold">
                                             <i class="fas fa-eye"></i> Xem
                                         </a>
-
-                                        <a href="{% url 'core:order_detail' order.id %}"
-                                           class="btn btn-sm btn-outline-danger ms-1">
->>>>>>> feature/backend
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-danger ms-1">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-<<<<<<< HEAD
                                     <td colspan="8" class="text-center py-4 text-muted">
-=======
-                                    <td colspan="8" class="text-center text-muted py-4">
->>>>>>> feature/backend
                                         Chưa có đơn hàng nào.
                                     </td>
                                 </tr>
                                 {% endfor %}
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/backend
                             </tbody>
                         </table>
                     </div>
                 </div>
-<<<<<<< HEAD
                 
-                <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-between align-items-center">
-                    <div class="small text-muted">Hiển thị {{ orders.count }} đơn hàng</div>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                            <li class="page-item active"><a class="page-link bg-danger border-danger" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link text-danger" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link text-danger" href="#">Sau</a></li>
-=======
-
                 <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-between align-items-center">
                     <div class="small text-muted">
                         Hiển thị {{ orders|length }} đơn hàng
@@ -267,7 +202,6 @@
                             <li class="page-item">
                                 <a class="page-link text-danger" href="#">Sau</a>
                             </li>
->>>>>>> feature/backend
                         </ul>
                     </nav>
                 </div>

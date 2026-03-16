@@ -12,26 +12,26 @@ from .forms import CustomUserCreationForm
 # Import Model Order
 from orders.models import Order 
 
-# 1. LOGIC ĐĂNG KÝ
+# --- 1. LOGIC ĐĂNG KÝ (Đã sửa chuẩn) ---
 def register_view(request):
     if request.method == 'POST':
-        
+        # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm thay vì UserCreationForm
         form = CustomUserCreationForm(request.POST) 
         
         if form.is_valid():
             user = form.save() 
             login(request, user) # Đăng nhập luôn sau khi đăng ký
             messages.success(request, f"Chào mừng {user.username} đến với TetMart!")
-            return redirect('core:home') 
+            return redirect('home') 
         else:
-            
+            # Nếu form lỗi (vd: mật khẩu không khớp), in lỗi ra
             messages.error(request, "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.")
     else:
-
+        # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm tạo form rỗng
         form = CustomUserCreationForm()
     
-    
-    return render(request, 'user/register.html', {'form': form})
+    # 👇 QUAN TRỌNG: Dòng này nằm ngoài cùng, thẳng hàng với if/else
+    return render(request, 'users/register.html', {'form': form})
 
 # --- 2. LOGIC ĐĂNG NHẬP ---
 def login_view(request):
@@ -39,31 +39,31 @@ def login_view(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)
+            login(request, user) 
             messages.success(request, f"Chào mừng {user.username} quay trở lại!")
-
-            # Staff -> dashboard
+            
+            # Nếu là Staff thì chuyển thẳng vào Dashboard
             if user.is_staff:
-                return redirect('core:dashboard')
-            return redirect('core:home')
-
-        messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng.")
+                return redirect('dashboard')
+            return redirect('home')
+        else:
+            messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng.")
     else:
         form = AuthenticationForm()
+    
+    return render(request, 'users/login.html', {'form': form})
 
-    return render(request, 'user/login.html', {'form': form})
-
-# 3. LOGIC ĐĂNG XUẤT 
+# --- 3. LOGIC ĐĂNG XUẤT ---
 def logout_view(request):
     logout(request)
     messages.info(request, "Đã đăng xuất thành công.") 
     return redirect('login') 
 
-# HÀM KIỂM TRA QUYỀN
+# --- HÀM KIỂM TRA QUYỀN (Helper) ---
 def is_staff(user):
     return user.is_staff
 
-# 4. DASHBOARD 
+# --- 4. DASHBOARD ---
 @login_required
 @user_passes_test(is_staff) 
 def dashboard_view(request):
@@ -77,8 +77,7 @@ def dashboard_view(request):
     }
     return render(request, 'dashboard.html', context)
 
-# 5. DANH SÁCH ĐƠN HÀNG
-
+# --- 5. DANH SÁCH ĐƠN HÀNG ---
 @login_required
 @user_passes_test(is_staff)
 def order_list_view(request):
@@ -88,7 +87,7 @@ def order_list_view(request):
     }
     return render(request, 'dashboard/orders.html', context)
 
-# 6. CHI TIẾT ĐƠN HÀNG
+# --- 6. CHI TIẾT ĐƠN HÀNG ---
 @login_required
 @user_passes_test(is_staff)
 def order_detail_view(request, pk):

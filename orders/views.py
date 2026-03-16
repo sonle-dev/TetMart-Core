@@ -27,7 +27,7 @@ def buy_now_view(request, product_id):
     order = Order.objects.create(
         user=request.user,
         total_price=total_bill, 
-        status='pending'
+        status='new'
     )
     
     # Tạo OrderItem

@@ -3,7 +3,7 @@
 
 <div class="product-card h-100 d-flex flex-column">
   <div class="product-img-container">
-    <a href="{% url 'core:product_detail' p.id %}">
+    <a href="{% url 'product_detail' p.slug %}">
       {% if p.image %}
         <img src="{{ p.image.url }}" alt="{{ p.name }}">
       {% else %}
@@ -24,7 +24,7 @@
       </small>
     </div>
 
-    <a href="{% url 'core:product_detail' p.id %}" class="text-decoration-none text-reset">
+    <a href="{% url 'product_detail' p.slug %}" class="text-decoration-none text-reset">
       <h6 class="fw-bold mb-2">{{ p.name }}</h6>
     </a>
 
@@ -39,7 +39,7 @@
         {% endif %}
       </div>
 
-      <a href="{% url 'core:product_detail' p.id %}" class="btn btn-primary-tet w-100">
+      <a href="{% url 'product_detail' p.slug %}" class="btn btn-primary-tet w-100">
         Xem chi tiết
       </a>
     </div>
