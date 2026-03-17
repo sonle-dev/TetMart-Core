@@ -4,44 +4,145 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import Http404
 
 # 1. TẠO KHO DỮ LIỆU GIẢ (MOCK DATA)
+from django.shortcuts import render
+from django.http import Http404
+
+
 products_data = [
     {
-        'id': 1,
-        'name': 'Đèn lồng đỏ truyền thống',
-        'price': '150.000',
-        'image': 'https://salt.tikicdn.com/cache/750x750/ts/product/d0/20/7a/12a86847c2310137452d921356247c18.jpg.webp',
-        'category': 'Đèn lồng',
-        'icon': '🏮',
-        'desc': 'Đèn lồng vải nhung đỏ thắm, khung thép chắc chắn, mang lại may mắn.'
+        "id": 1,
+        "name": "Đèn lồng đỏ truyền thống",
+        "price": "150.000",
+        "category": "Đèn lồng",
+        "image": "https://...",
+        "icon": "🏮",
     },
     {
-        'id': 2,
-        'name': 'Cành hoa mai vàng',
-        'price': '180.000',
-        'image': 'https://bizweb.dktcdn.net/100/443/076/products/trang-tri-tet-hoa-dao-dong.jpg',
-        'category': 'Hoa mai/đào',
-        'icon': '🌸',
-        'desc': 'Cành hoa mai giả cao cấp, màu sắc tươi tắn, bền đẹp suốt mùa Tết.'
+        "id": 2,
+        "name": "Cành hoa mai vàng",
+        "price": "180.000",
+        "category": "Hoa mai/đào",
+        "image": "https://...",
+        "icon": "🌸",
     },
     {
-        'id': 3,
-        'name': 'Bao lì xì hoa mai vàng',
-        'price': '25.000',
-        'image': 'https://salt.tikicdn.com/cache/w1200/ts/product/6e/c8/10/7c462744d03d09a06655c65b5302636a.jpg',
-        'category': 'Bao lì xì',
-        'icon': '🧧',
-        'desc': 'Combo 10 bao lì xì giấy cứng, in họa tiết rồng vàng sang trọng.'
+        "id": 3,
+        "name": "Bao lì xì hoa mai vàng",
+        "price": "25.000",
+        "category": "Bao lì xì",
+        "image": "https://...",
+        "icon": "🧧",
     },
     {
-        'id': 4,
-        'name': 'Dây treo chữ Phúc',
-        'price': '45.000',
-        'image': 'https://vn-test-11.slatic.net/p/3c73499427b20387498c89599d14620f.jpg',
-        'category': 'Dây trang trí',
-        'icon': '🎊',
-        'desc': 'Dây treo trang trí cửa nhà, mang ý nghĩa Phúc Lộc Thọ toàn gia.'
+        "id": 4,
+        "name": "Dây treo trang trí Tết",
+        "price": "45.000",
+        "category": "Dây trang trí",
+        "image": "https://...",
+        "icon": "🎊",
+    },
+]   # <- PHẢI CÓ DÒNG NÀY ĐỂ ĐÓNG products_data
+
+
+product_reviews_data = {
+    1: [
+        {
+            "name": "Nguyễn Hoàng Phúc",
+            "rating": 5,
+            "comment": "Đèn lồng đẹp, màu đỏ tươi, chất liệu ổn. Treo lên nhìn rất nổi bật và đúng như mô tả.",
+            "created_at": "12/03/2026",
+            "verified_purchase": True,
+        },
+        {
+            "name": "Trần Mỹ Linh",
+            "rating": 4,
+            "comment": "Đóng gói kỹ, sản phẩm đẹp. Mình mong dây treo dày hơn một chút thì sẽ tốt hơn.",
+            "created_at": "09/03/2026",
+            "verified_purchase": True,
+        },
+    ],
+    2: [
+        {
+            "name": "Phạm Thu Hà",
+            "rating": 5,
+            "comment": "Cành hoa mai lên màu đẹp, chụp ảnh rất ấn tượng. Để trang trí phòng khách rất hợp.",
+            "created_at": "13/03/2026",
+            "verified_purchase": True,
+        },
+    ],
+    3: [
+        {
+            "name": "Võ Thành Đạt",
+            "rating": 5,
+            "comment": "Bao lì xì giấy cứng, màu in đẹp, cầm tay chắc chắn. Rất đáng tiền.",
+            "created_at": "11/03/2026",
+            "verified_purchase": True,
+        },
+    ],
+    4: [
+        {
+            "name": "Huỳnh Gia Hân",
+            "rating": 4,
+            "comment": "Dây treo đẹp, lên hình ổn. Màu sắc giống ảnh và dễ lắp đặt.",
+            "created_at": "10/03/2026",
+            "verified_purchase": True,
+        },
+    ],
+}
+
+
+def build_product_reviews(product_id):
+    raw_reviews = product_reviews_data.get(product_id, [])
+    reviews = []
+    total_rating = 0
+
+    for item in raw_reviews:
+        rating = max(1, min(5, int(item.get("rating", 5))))
+        total_rating += rating
+
+        reviews.append({
+            **item,
+            "rating": rating,
+            "filled_stars": range(rating),
+            "empty_stars": range(5 - rating),
+        })
+
+    review_total = len(reviews)
+    average_rating = round(total_rating / review_total, 1) if review_total else 0
+    average_star_count = max(0, min(5, round(average_rating)))
+
+    rating_breakdown = []
+    for star in range(5, 0, -1):
+        count = sum(1 for review in reviews if review["rating"] == star)
+        percent = int((count / review_total) * 100) if review_total else 0
+        rating_breakdown.append({
+            "star": star,
+            "count": count,
+            "percent": percent,
+        })
+
+    return {
+        "reviews": reviews,
+        "review_total": review_total,
+        "average_rating": f"{average_rating:.1f}" if review_total else "0.0",
+        "average_full_stars": range(average_star_count),
+        "average_empty_stars": range(5 - average_star_count),
+        "rating_breakdown": rating_breakdown,
     }
-]
+
+
+def product_detail(request, product_id):
+    product = next((item for item in products_data if item["id"] == product_id), None)
+    if not product:
+        raise Http404("Sản phẩm không tồn tại")
+
+    review_context = build_product_reviews(product_id)
+
+    context = {
+        "product": product,
+        **review_context,
+    }
+    return render(request, "product_detail.html", context)
 
 # ===== Helper: parse price =====
 def _to_int_price(x):
@@ -122,9 +223,13 @@ def product_detail(request, product_id):
     if not product:
         raise Http404("Sản phẩm không tồn tại")
 
-    context = {"product": product}
-    return render(request, "product_detail.html", context)
+    review_context = build_product_reviews(product_id)
 
+    context = {
+        "product": product,
+        **review_context,
+    }
+    return render(request, "product_detail.html", context)
 
 # ---------------------------------------------------------
 # CÁC HÀM XỬ LÝ TÀI KHOẢN (Auth)
