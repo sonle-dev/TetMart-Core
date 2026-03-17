@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http import Http404
 
+
 # 1. TẠO KHO DỮ LIỆU GIẢ (MOCK DATA)
 from django.shortcuts import render
 from django.http import Http404
@@ -89,7 +90,29 @@ product_reviews_data = {
         },
     ],
 }
+def get_daily_suggestions():
+    if not products_data:
+        return []
 
+    return [dict(product) for product in products_data[:4]]
+
+    day_seed = date.today().timetuple().tm_yday
+    shift = day_seed % len(suggestions)
+    rotated = suggestions[shift:] + suggestions[:shift]
+
+    daily_notes = [
+        "Gợi ý nổi bật hôm nay",
+        "Dễ phối cùng không gian Tết",
+        "Món đáng mua trong ngày",
+        "Phù hợp trang trí nhanh",
+    ]
+
+    selected = rotated[:4]
+
+    for idx, product in enumerate(selected):
+        product["daily_note"] = daily_notes[idx % len(daily_notes)]
+
+    return selected
 
 def build_product_reviews(product_id):
     raw_reviews = product_reviews_data.get(product_id, [])
@@ -158,10 +181,11 @@ def _to_int_price(x):
 
 # Hàm hiển thị trang chủ
 def index(request):
-    # Nếu trang chủ bạn chưa cần products thì có thể bỏ context.
     context = {
-        "products": products_data,
-    }
+    "products": products_data,
+    "daily_suggestions": get_daily_suggestions(),
+}
+
     return render(request, "index.html", context)
 
 
