@@ -482,11 +482,12 @@ body {
     }
 }
 /* ===== GOI Y HANG NGAY ===== */
-/* ===== GOI Y HANG NGAY ===== */
 .daily-suggestion-section {
     background: transparent;
 }
-
+.card.rounded-4 {
+    border-radius: 20px !important;
+}
 
 
 

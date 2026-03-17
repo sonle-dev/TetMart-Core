@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render, redirect  # 👈 Đã thêm redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 # =========================================================
@@ -10,26 +10,34 @@ from django.contrib.auth.decorators import login_required
 def dashboard_view(request):
     """Trang chủ Dashboard - Tổng quan"""
     context = {
-        'revenue': '45.200.000',      # Doanh thu
-        'count_new': 12,              # Đơn mới
-        'count_processing': 8,        # Chờ xử lý
-        'count_shipping': 5,          # Đang giao
-        'count_completed': 45,        # Hoàn thành
-        'count_cancelled': 3,         # Đã hủy
-        'total_orders': 150,          # Tổng đơn (cho bảng)
-        'total_products': 48          # Tổng sản phẩm
+        'revenue': '45.200.000',
+        'count_new': 12,
+        'count_processing': 8,
+        'count_shipping': 5,
+        'count_completed': 45,
+        'count_cancelled': 3,
+        'total_orders': 150,
+        'total_products': 48
     }
     return render(request, 'dashboard/dashboard.html', context)
+
 
 @login_required(login_url='core:login')
 def report_view(request):
     """Trang Báo cáo doanh thu & Biểu đồ"""
-    
-    # 1. Dữ liệu Biểu đồ (7 ngày gần nhất)
+
+    # 1. Dữ liệu biểu đồ doanh thu 7 ngày gần nhất
     chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
     chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
 
-    # 2. Top sản phẩm bán chạy
+    # 2. Biểu đồ mới: Số đơn hàng theo ngày
+    order_chart_data = [12, 15, 19, 17, 23, 21, 27]
+
+    # 3. Biểu đồ mới: Doanh thu theo danh mục
+    category_labels = ["Bánh kẹo Tết", "Mứt Tết", "Rượu bia", "Hộp quà Tết"]
+    category_data = [3250000, 1840000, 5120000, 2790000]
+
+    # 4. Top sản phẩm bán chạy
     top_products = [
         {'id': 1, 'name': 'Bánh quy bơ Danisa 454g', 'sold': 45, 'revenue': '6.525.000'},
         {'id': 2, 'name': 'Rượu vang đỏ Chile 750ml', 'sold': 38, 'revenue': '17.100.000'},
@@ -43,8 +51,17 @@ def report_view(request):
         'total_orders': 7,
         'cancel_rate': '14.3',
         'top_products': top_products,
+
+        # Biểu đồ cũ
         'chart_labels_json': json.dumps(chart_labels),
         'chart_data_json': json.dumps(chart_data),
+
+        # Biểu đồ mới 1: số đơn hàng
+        'order_chart_data_json': json.dumps(order_chart_data),
+
+        # Biểu đồ mới 2: doanh thu theo danh mục
+        'category_labels_json': json.dumps(category_labels),
+        'category_data_json': json.dumps(category_data),
     }
     return render(request, 'dashboard/report.html', context)
 
@@ -63,6 +80,7 @@ def order_list_view(request):
         {'id': 'DH004', 'customer': 'Phạm Thu Hà', 'phone': '0934567890', 'address': '12 Hàng Bài, HN', 'total': '2.100.000đ', 'status': 'completed', 'date': '03/01/2026'},
     ]
     return render(request, 'dashboard/orders.html', {'orders': orders})
+
 
 @login_required(login_url='core:login')
 def order_detail_view(request, order_id):
@@ -100,6 +118,7 @@ def product_list_view(request):
     ]
     return render(request, 'dashboard/products.html', {'products': products})
 
+
 @login_required(login_url='core:login')
 def product_edit_view(request, product_id):
     """Form chỉnh sửa sản phẩm"""
@@ -115,13 +134,14 @@ def product_edit_view(request, product_id):
     }
     return render(request, 'dashboard/product_edit.html', {'product': product})
 
+
 @login_required(login_url='core:login')
 def product_delete_view(request, product_id):
     """Xử lý xóa sản phẩm"""
     # Logic xóa DB sẽ nằm ở đây: Product.objects.get(id=product_id).delete()
-    
-    # Xóa xong quay lại danh sách
     return redirect('core:products')
+
+
 @login_required(login_url='core:login')
 def product_create_view(request):
     """Trang thêm sản phẩm mới"""
