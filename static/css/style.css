@@ -169,7 +169,7 @@ body {
 .product-detail-img-container {
     background-color: #ffffff; /* Nền trắng */
     min-height: 400px;         /* Chiều cao tối thiểu */
-
+}
 .icon-mini {
     width: 24px !important;
     height: 24px !important;
@@ -236,14 +236,6 @@ body {
     width: 50px; /* Chiều rộng cố định */
 }
 
-/* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
-    border: none;
-    background-color: #f8f9fa;
-    color: #333;
-    font-weight: 700;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-}
 
 .quantity-btn:hover {
     background-color: #e9ecef;
@@ -350,4 +342,182 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* --- DANH GIA SAN PHAM --- */
+.review-section-title {
+    color: var(--tet-text);
+}
+
+.review-summary-card,
+.review-form-card,
+.review-list-card {
+    background: #ffffff;
+    border-radius: 24px;
+}
+
+.review-score {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--tet-primary);
+}
+
+.review-stars {
+    color: #F59E0B;
+    font-size: 1rem;
+}
+
+.review-stars .empty {
+    color: #D1D5DB;
+}
+
+.review-progress {
+    height: 10px;
+    background: #F3F4F6;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.review-progress .progress-bar {
+    background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+}
+
+.review-progress-label {
+    width: 52px;
+    font-weight: 600;
+    color: var(--tet-text);
+    font-size: 14px;
+}
+
+.review-progress-count {
+    min-width: 28px;
+    text-align: right;
+    color: #6B7280;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.review-input {
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    padding: 12px 14px;
+}
+
+.review-input:focus {
+    border-color: rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.10);
+}
+
+.rating-select {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.star-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 52px;
+    height: 52px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s ease;
+}
+
+.star-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
+.star-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.star-icon {
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+
+.star-shape {
+    fill: #ffffff;
+    stroke: #e0a91f;
+    stroke-width: 1.4;
+    transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.star-btn.active .star-shape,
+.star-btn.hovered .star-shape {
+    fill: #f7c948;
+    stroke: #d9a11a;
+}
+
+@media (max-width: 767.98px) {
+    .rating-select {
+        gap: 10px;
+    }
+
+    .star-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .star-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .star-btn {
+        font-size: 2rem;
+    }
+}
+
+.review-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #FDE68A 0%, #FCA5A5 100%);
+    color: #991B1B;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.review-item {
+    padding: 1.25rem 0;
+}
+
+.review-item:first-child {
+    padding-top: 0;
+}
+
+.review-bought-badge,
+.review-verified-badge {
+    background: rgba(220, 38, 38, 0.08);
+    color: var(--tet-primary);
+    border: 1px solid rgba(220, 38, 38, 0.15);
+    font-weight: 600;
+}
+
+@media (max-width: 767.98px) {
+    .review-score {
+        font-size: 2.6rem;
+    }
+
+    .rating-select label {
+        font-size: 1.7rem;
+    }
+}
+/* ===== GOI Y HANG NGAY ===== */
+.daily-suggestion-section {
+    background: transparent;
 }

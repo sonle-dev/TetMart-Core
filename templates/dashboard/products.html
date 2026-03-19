@@ -16,7 +16,7 @@
                     <h4 class="fw-bold text-dark mb-0">Sản phẩm</h4>
                     <p class="text-muted small mb-0">Quản lý tất cả sản phẩm</p>
                 </div>
-                <a href="{% url 'core:product_create' %}" class="btn btn-danger fw-bold shadow-sm">
+                <a href="{% url 'product_create' %}" class="btn btn-danger fw-bold shadow-sm">
                     <i class="fas fa-plus me-2"></i> Thêm sản phẩm
                 </a>
             </div>
@@ -120,7 +120,7 @@
                                     </td>
 
                                     <td class="text-end pe-4">
-                                        <a href="{% url 'core:product_update' p.id %}" class="btn btn-sm btn-outline-primary fw-bold">
+                                        <a href="{% url 'product_update' p.id %}" class="btn btn-sm btn-outline-primary fw-bold">
                                             <i class="fas fa-edit"></i> Sửa
                                         </a>
                                         

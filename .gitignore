@@ -1,8 +1,12 @@
 venv/
 .venv/
 .env
+.venv
 __pycache__/
 *.pyc
 db.sqlite3
 media/
-
+__pycache__/
+*.pyc
+git rm -r --cached __pycache__
+git rm -r --cached */__pycache__

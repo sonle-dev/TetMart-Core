@@ -31,7 +31,7 @@ def register_view(request):
         form = CustomUserCreationForm()
     
     # 👇 QUAN TRỌNG: Dòng này nằm ngoài cùng, thẳng hàng với if/else
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'user/register.html', {'form': form})
 
 # --- 2. LOGIC ĐĂNG NHẬP ---
 def login_view(request):
@@ -51,7 +51,7 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     
-    return render(request, 'users/login.html', {'form': form})
+    return render(request, 'user/login.html', {'form': form})
 
 # --- 3. LOGIC ĐĂNG XUẤT ---
 def logout_view(request):

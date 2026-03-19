@@ -56,17 +56,13 @@ def dashboard_view(request):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
-@login_required(login_url='core:login')
-def report_view(request):
-    #  Dữ liệu cho Biểu đồ 
-    chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
-    chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
-@login_required(login_url='core:login')
-def report_view(request):
-    #  Dữ liệu cho Biểu đồ 
-    chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
-    chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
 
+@login_required(login_url='login')
+def report_view(request):
+    #  Dữ liệu cho Biểu đồ 
+    chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
+    chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
+    chart_data = [int(x) for x in chart_data]
     #  Dữ liệu Top sản phẩm bán chạy
     top_products = [
         {'id': 1, 'name': 'Bánh quy bơ Danisa 454g', 'sold': 45, 'revenue': '6.525.000'},
@@ -176,7 +172,7 @@ def order_detail_view(request, order_id):
         'chart_labels_json': json.dumps(chart_labels),
         'chart_data_json': json.dumps(chart_data),
     }
-    return render(request, 'dashboard/report.html', context)
+        return render(request, 'dashboard/report.html', context)
 
 @login_required(login_url='core:login')
 def order_list_view(request):

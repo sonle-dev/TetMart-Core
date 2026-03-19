@@ -39,9 +39,18 @@
         {% endif %}
       </div>
 
-      <a href="{% url 'product_detail' p.slug %}" class="btn btn-primary-tet w-100">
+      <a href="{% url 'product_detail' p.slug %}" class="btn btn-primary-tet w-100 mb-2">
         Xem chi tiết
-      </a>
-    </div>
-  </div>
+    </a>
+
+    <form method="POST" action="{% url 'cart:add' p.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit" class="btn btn-outline-danger w-100">
+            Thêm vào giỏ
+        </button>
+    </form>
+</div>
+</div>
 </div>
