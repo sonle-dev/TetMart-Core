@@ -10,7 +10,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -235,12 +235,13 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            const submitButton = form.querySelector('button[type="submit"]');
+            const submitButton = event.submitter || form.querySelector('button[type="submit"]');
             const originalButtonHtml = submitButton ? submitButton.innerHTML : '';
+            const redirectUrl = submitButton ? submitButton.dataset.redirect : '';
 
             if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.innerHTML = 'Đang thêm...';
+                submitButton.innerHTML = redirectUrl ? 'Đang chuyển...' : 'Đang thêm...';
             }
 
             try {
@@ -261,6 +262,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (cartBadge && typeof data.cart_total_quantity !== 'undefined') {
                     cartBadge.textContent = data.cart_total_quantity;
+                }
+
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                    return;
                 }
 
                 showAjaxToast(data.message, 'success');
