@@ -41,7 +41,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <form method="POST" action="{% url 'cart:update' item.id %}" class="d-flex gap-2">
+                                <form method="POST" action="{% url 'cart:update' item.slug %}" class="d-flex gap-2">
                                     {% csrf_token %}
                                     <input
                                         type="number"

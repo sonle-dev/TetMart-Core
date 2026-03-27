@@ -29,17 +29,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     
 # KHAI BÁO APPS CỦA DỰ ÁN
    # 'apps.core',
    # 'apps.accounts',
    # 'apps.catalog',
-   # 'apps.cart',
-   # 'apps.orders',
+    #'apps.orders',
    # 'apps.dashboard',
+    'apps.cart',
+    'orders',
     'users',
     'products',
-    'orders',
+    
 ]
 
 MIDDLEWARE = [

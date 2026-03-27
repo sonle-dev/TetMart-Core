@@ -1,12 +1,16 @@
+from datetime import datetime, timedelta, time
 import json
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from products.models import Product, Category
-from orders.models import Order, OrderItem
-from django.db.models import Sum, Count, F
-from datetime import timedelta
-from django.utils import timezone
+from orders.models import Order
+from django.db.models import Sum, Count, F, DecimalField, ExpressionWrapper
 from django.db.models.functions import TruncDate
+from django.utils import timezone
+from collections import defaultdict
+from orders.models import Order, OrderItem
+
 
 # Hàm kiểm tra admin
 def is_staff(user):
@@ -17,7 +21,15 @@ def is_staff(user):
 @user_passes_test(is_staff)
 def dashboard_orders_view(request):
     orders = Order.objects.all().order_by('-created_at')
-    context = {'orders': orders, 'active_page': 'orders'}
+
+    for order in orders:
+        order.formatted_total_price = f"{int(order.total_price or 0):,}".replace(",", ".")
+
+    context = {
+        'orders': orders,
+        'active_page': 'orders',
+    }
+
     return render(request, 'dashboard/orders.html', context)
 
 # VIEW DANH SÁCH SẢN PHẨM
@@ -25,19 +37,14 @@ def dashboard_orders_view(request):
 @user_passes_test(is_staff)
 def dashboard_products_view(request):
     products = Product.objects.all().order_by('-id')
-    context = {'products': products, 'active_tab': 'products'}
-    return render(request, 'dashboard/products.html', context)
+    context = {'products': products, 'active_page': 'products'}
+    return render(request, 'dashboard/product_list.html', context)
     
 
 #  VIEW TRANG CHỦ 
 def home(request):
     products = Product.objects.filter(is_active=True)
-    daily_suggestions = products[:4]
-
-    return render(request, 'index.html', {
-        'products': products,
-        'daily_suggestions': daily_suggestions,
-    })
+    return render(request, 'index.html', {'products': products})
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -47,139 +54,171 @@ def product_detail(request, slug):
 
 # VIEW DASHBOARD TỔNG QUAN 
 @login_required(login_url='login')
-@user_passes_test(is_staff)
 def dashboard_view(request):
-    # Tính toán số liệu
-    revenue = Order.objects.filter(status='completed').aggregate(Sum('total_price'))['total_price__sum'] or 0
-    
-    count_new = Order.objects.filter(status='pending').count()
-    count_shipping = Order.objects.filter(status='shipping').count()
-    count_completed = Order.objects.filter(status='completed').count()
-    count_cancelled = Order.objects.filter(status='cancelled').count()
-    
-    # Lấy 5 đơn mới nhất
-    recent_orders = Order.objects.all().order_by('-created_at')[:5]
-    recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
-    recent_orders = Order.objects.all().order_by('-created_at')[:5]
+    orders = Order.objects.all().order_by('-created_at')
+    recent_orders = list(orders[:5])
 
+    total_orders = orders.count()
+    total_products = Product.objects.count()
+
+    total_revenue = (
+        orders.filter(status='completed')
+        .aggregate(total=Sum('total_price'))['total'] or 0
+    )
+
+    formatted_revenue = f"{int(total_revenue):,}".replace(",", ".")
+
+    for order in recent_orders:
+        order.formatted_total_price = f"{int(order.total_price or 0):,}".replace(",", ".")
+
+    count_new = orders.filter(status='new').count()
+    count_processing = orders.filter(status='pending').count()
+    count_shipping = orders.filter(status='shipping').count()
+    count_completed = orders.filter(status='completed').count()
+    count_cancelled = orders.filter(status='cancelled').count()
+
+    
     context = {
-        'revenue': revenue,
+        'formatted_revenue': formatted_revenue,
+        'total_orders': total_orders,
+        'total_products': total_products,
         'count_new': count_new,
+        'count_processing': count_processing,
         'count_shipping': count_shipping,
         'count_completed': count_completed,
         'count_cancelled': count_cancelled,
         'recent_orders': recent_orders,
-        'active_tab': 'dashboard'
     }
- 
- 
     return render(request, 'dashboard/dashboard.html', context)
 # VIEW BÁO CÁO DOANH THU
 @login_required(login_url='login')
-@user_passes_test(is_staff)
 def report_view(request):
-    today = timezone.now().date()
-    start_date = today - timedelta(days=6)
+    days = int(request.GET.get('days', 7))
+    start_day = timezone.localdate() - timedelta(days=days - 1)
+    start_dt = timezone.make_aware(datetime.combine(start_day, time.min))
 
-    # ===== Dữ liệu tổng quan toàn hệ thống =====
-    all_orders = Order.objects.all()
-    completed_orders = all_orders.filter(status='completed')
-    cancelled_orders = all_orders.filter(status='cancelled')
+    orders = Order.objects.filter(created_at__gte=start_dt)
+    completed_orders = orders.filter(status='completed')
+    cancelled_orders = orders.filter(status='cancelled')
 
     total_revenue = completed_orders.aggregate(
         total=Sum('total_price')
     )['total'] or 0
 
-    total_orders = all_orders.count()
+    total_orders = completed_orders.count()
     cancelled_count = cancelled_orders.count()
-    cancel_rate = round((cancelled_count / total_orders) * 100, 1) if total_orders > 0 else 0
+    cancel_rate = round((cancelled_count / total_orders) * 100, 1) if total_orders else 0
 
-        # ===== Biểu đồ theo ngày (gom bằng Python, ổn định hơn TruncDate) =====
-    from collections import defaultdict
-
-    order_count_map = defaultdict(int)
-    revenue_map = defaultdict(float)
-
-    for order in Order.objects.exclude(created_at__isnull=True):
-        day = order.created_at.date()
-        order_count_map[day] += 1
-
-    for order in Order.objects.filter(status='completed').exclude(created_at__isnull=True):
-        day = order.created_at.date()
-        revenue_map[day] += float(order.total_price or 0)
-
-    all_days = sorted(set(list(order_count_map.keys()) + list(revenue_map.keys())))
-    all_days = all_days[-7:]
-
-    labels = [day.strftime('%d/%m') for day in all_days]
-    order_data = [order_count_map.get(day, 0) for day in all_days]
-    revenue_data = [revenue_map.get(day, 0) for day in all_days]
-
-    if not labels:
-        labels = ['Không có dữ liệu']
-        order_data = [0]
-        revenue_data = [0]
-
-    print("all_days =", all_days)
-    print("labels =", labels)
-    print("order_data =", order_data)
-    print("revenue_data =", revenue_data)
-    # ===== Top sản phẩm bán chạy (toàn bộ đơn completed) =====
-    top_products_qs = (
-        OrderItem.objects
-        .filter(order__status='completed')
-        .values('product__name')
-        .annotate(
-            sold=Sum('quantity'),
-            revenue=Sum(F('quantity') * F('price'))
-        )
-        .order_by('-sold')[:5]
+    revenue_by_day = (
+        completed_orders
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(total=Sum('total_price'))
+        .order_by('day')
     )
 
-    top_products = [
-        {
-            'name': item['product__name'],
-            'sold': item['sold'] or 0,
-            'revenue': item['revenue'] or 0,
-        }
-        for item in top_products_qs
-    ]
-
-    # ===== Tỉ trọng doanh thu theo danh mục (toàn bộ đơn completed) =====
-    category_qs = (
+    orders_by_day = (
+        completed_orders
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+    
+    category_revenue = (
         OrderItem.objects
-        .filter(order__status='completed')
+        .filter(order__status='completed', order__created_at__gte=start_dt)
         .values('product__category__name')
         .annotate(
-            revenue=Sum(F('quantity') * F('price'))
+            revenue=Sum(
+                ExpressionWrapper(
+                    F('price') * F('quantity'),
+                    output_field=DecimalField(max_digits=12, decimal_places=0)
+                )
+            )
         )
         .order_by('-revenue')
     )
 
-    category_labels = []
-    category_data = []
+    top_products = (
+        OrderItem.objects
+        .filter(order__status='completed', order__created_at__gte=start_dt)
+        .values('product__id', 'product__name')
+        .annotate(
+            sold=Sum('quantity'),
+            revenue=Sum(
+                ExpressionWrapper(
+                    F('price') * F('quantity'),
+                    output_field=DecimalField(max_digits=12, decimal_places=0)
+                )
+            )
+        )
+        .order_by('-sold')[:5]
+    )
 
-    for item in category_qs:
-        category_labels.append(item['product__category__name'] or 'Chưa phân loại')
-        category_data.append(float(item['revenue'] or 0))
+   
+    # map doanh thu theo ngày bằng CHUỖI ngày
+    revenue_map = {
+        item['day'].strftime('%d/%m'): float(item['total'] or 0)
+        for item in revenue_by_day if item['day']
+    }
 
+    # map số đơn theo ngày bằng CHUỖI ngày
+    order_map = {
+        item['day'].strftime('%d/%m'): item['total']
+        for item in orders_by_day if item['day']
+    }
+
+    # tạo đủ danh sách ngày theo bộ lọc
+    all_day_objs = [start_day + timedelta(days=i) for i in range(days)]
+    all_days = [day.strftime('%d/%m') for day in all_day_objs]
+
+    # gom doanh thu và số đơn theo ngày bằng Python
+    revenue_map = defaultdict(float)
+    order_map = defaultdict(int)
+
+    for order in completed_orders:
+        order_day = timezone.localtime(order.created_at).date().strftime('%d/%m')
+        revenue_map[order_day] += float(order.total_price or 0)
+        order_map[order_day] += 1
+
+    chart_labels = all_days
+    chart_data = [revenue_map.get(day, 0) for day in all_days]
+
+    order_chart_labels = all_days
+    order_chart_data = [order_map.get(day, 0) for day in all_days]
+
+    category_labels = [item['product__category__name'] or 'Khác' for item in category_revenue]
+    category_data = [float(item['revenue']) for item in category_revenue]
+
+    formatted_top_products = []
+    for item in top_products:
+        formatted_top_products.append({
+            'name': item['product__name'],
+            'sold': item['sold'],
+            'revenue': f"{int(item['revenue'] or 0):,}".replace(",", "."),
+        })
+    
     context = {
-        'total_revenue': total_revenue,
+        'total_revenue': f"{int(total_revenue):,}".replace(",", "."),
         'total_orders': total_orders,
         'cancel_rate': cancel_rate,
-        'top_products': top_products,
+        'top_products': formatted_top_products,
 
-        'chart_labels_json': json.dumps(labels),
-        'chart_data_json': json.dumps(revenue_data),
-        'order_chart_data_json': json.dumps(order_data),
+        'chart_labels_json': json.dumps(chart_labels),
+        'chart_data_json': json.dumps(chart_data),
+
+        'order_chart_labels_json': json.dumps(order_chart_labels),
+        'order_chart_data_json': json.dumps(order_chart_data),
+
         'category_labels_json': json.dumps(category_labels),
         'category_data_json': json.dumps(category_data),
 
         'active_page': 'report',
+        'days': days,
     }
 
     return render(request, 'dashboard/report.html', context)
-
 #  VIEW CHI TIẾT ĐƠN HÀNG 
 @login_required(login_url='login')
 @user_passes_test(is_staff)
@@ -202,7 +241,7 @@ def order_detail_view(request, pk):
     context = {
         'order': order,
         'order_items': order_items,
-        'active_tab': 'orders'
+        'active_page': 'orders'
     }
 
     
@@ -286,3 +325,10 @@ def product_list_view(request):
     }
     return render(request, 'product_list.html', context)
     
+@login_required
+def dashboard_products_view(request):
+    products = Product.objects.all()
+    return render(request, 'dashboard/products.html', {
+        'products': products,
+        'active_page': 'products'
+    })

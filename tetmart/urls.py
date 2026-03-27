@@ -38,9 +38,9 @@ urlpatterns = [
 
     #Danh sach san pham
     path('products/', product_views.product_list_view, name='product_list'),
-    #gio hang
+
     path('cart/', include('apps.cart.urls')),
-  
+    path('orders/', include('apps.orders.urls')),
 ]
 
 if settings.DEBUG:

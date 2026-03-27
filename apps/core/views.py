@@ -52,7 +52,7 @@ def product_detail(request, product_id):
     product = None
     for item in products_data:
         if item['id'] == product_id:
-            product = item
+            product = item``
             break
     
     context = {'product': product}
