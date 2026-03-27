@@ -20,7 +20,11 @@ class Order(models.Model):
     note = models.TextField(blank=True, null=True, verbose_name="Ghi chú")
 
     total_price = models.DecimalField(max_digits=12, decimal_places=0, default=0, verbose_name="Tổng tiền")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name="Trạng thái")
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new'
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Ngày đặt")
 
     def __str__(self):
