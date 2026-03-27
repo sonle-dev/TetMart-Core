@@ -973,6 +973,14 @@ body {
     border-color: #d72323;
 }
 
+.btn-buy-now {
+    background: #fff7f7;
+    color: #d72323;
+    border: 1px solid rgba(215, 35, 35, 0.25);
+}
 
-
-
+.btn-buy-now:hover {
+    background: #fff0f0;
+    color: #d72323;
+    border-color: #d72323;
+}

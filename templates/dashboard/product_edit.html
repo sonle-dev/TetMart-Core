@@ -4,73 +4,121 @@
 {% block title %}Sửa sản phẩm - Tet Mart{% endblock %}
 
 {% block content %}
-<div class="container-fluid bg-light" style="min-height: 100vh;">
-    <div class="row">
-        
-        {% include 'includes/sidebar.html' with active_page='products' %}
+<div class="container-fluid py-4" style="background: #f8fafc; min-height: calc(100vh - 90px);">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='products' %}
+        </div>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
+        <div class="col-lg-9 col-xl-10">
             <div class="mb-4">
-                <a href="{% url 'core:products' %}" class="text-decoration-none text-muted mb-2 d-inline-block">
-                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                <a href="{% url 'core:products' %}" class="text-decoration-none text-muted fw-semibold">
+                    ← Quay lại danh sách
                 </a>
-                <h4 class="fw-bold text-dark">Sửa sản phẩm</h4>
-                <p class="text-muted small">Cập nhật thông tin sản phẩm</p>
+                <h3 class="fw-bold mt-2 mb-1" style="color: var(--tet-text);">Sửa sản phẩm</h3>
+                <p class="text-muted mb-0">Cập nhật thông tin sản phẩm</p>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" value="{{ product.name }}">
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
-                            <select class="form-select">
-                                <option>{{ product.category }}</option>
-                                <option>Rượu bia</option>
-                                <option>Mứt Tết</option>
-                            </select>
-                        </div>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    class="form-control rounded-3"
+                                    value="{{ product.name }}"
+                                    placeholder="Nhập tên sản phẩm"
+                                >
+                            </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                                <select name="category" class="form-select rounded-3">
+                                    <option value="Bánh kẹo Tết" {% if product.category == 'Bánh kẹo Tết' %}selected{% endif %}>Bánh kẹo Tết</option>
+                                    <option value="Mứt Tết" {% if product.category == 'Mứt Tết' %}selected{% endif %}>Mứt Tết</option>
+                                    <option value="Rượu bia" {% if product.category == 'Rượu bia' %}selected{% endif %}>Rượu bia</option>
+                                    <option value="Hộp quà Tết" {% if product.category == 'Hộp quà Tết' %}selected{% endif %}>Hộp quà Tết</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
                                 <label class="form-label fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" value="{{ product.price }}">
+                                <input
+                                    type="number"
+                                    name="price"
+                                    class="form-control rounded-3"
+                                    value="{{ product.price }}"
+                                    placeholder="145000"
+                                >
                             </div>
-                            <div class="col-md-6 mb-3">
+
+                            <div class="col-md-3">
                                 <label class="form-label fw-bold">Tồn kho <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" value="{{ product.stock }}">
+                                <input
+                                    type="number"
+                                    name="stock"
+                                    class="form-control rounded-3"
+                                    value="{{ product.stock }}"
+                                    placeholder="50"
+                                >
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Mô tả</label>
+                                <textarea
+                                    name="description"
+                                    rows="5"
+                                    class="form-control rounded-3"
+                                    placeholder="Nhập mô tả sản phẩm"
+                                >{{ product.description }}</textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Ảnh sản phẩm</label>
+                                <input
+                                    type="file"
+                                    name="image"
+                                    class="form-control rounded-3"
+                                >
+                                {% if product.image %}
+                                <div class="mt-3 d-flex align-items-center gap-3">
+                                    <div
+                                        class="bg-light border rounded-3 d-flex align-items-center justify-content-center text-muted"
+                                        style="width: 80px; height: 80px;"
+                                    >
+                                        <i class="fas fa-image fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">Ảnh hiện tại</div>
+                                        <div class="text-muted small">{{ product.image }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Mô tả</label>
-                            <textarea class="form-control" rows="4">{{ product.description }}</textarea>
-                        </div>
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            <button
+                                type="submit"
+                                class="btn btn-danger fw-bold px-4 rounded-3"
+                                style="background-color:#d72323; border:none;"
+                            >
+                                <i class="fas fa-save me-2"></i>Lưu thay đổi
+                            </button>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Ảnh sản phẩm</label>
-                            <div class="border border-dashed p-4 text-center rounded bg-light" style="border-style: dashed !important; border-width: 2px;">
-                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                <p class="small text-muted mb-0">Click để upload ảnh mới</p>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-danger fw-bold px-4">Lưu thay đổi</button>
-                            <a href="{% url 'core:products' %}" class="btn btn-outline-secondary px-4">Hủy</a>
+                            <a href="{% url 'core:products' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
+                                Hủy
+                            </a>
                         </div>
                     </form>
                 </div>
             </div>
-
-        </main>
+        </div>
     </div>
 </div>
 {% endblock %}

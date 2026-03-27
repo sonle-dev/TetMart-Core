@@ -26,18 +26,14 @@ def dashboard_view(request):
 def report_view(request):
     """Trang Báo cáo doanh thu & Biểu đồ"""
 
-    # 1. Dữ liệu biểu đồ doanh thu 7 ngày gần nhất
     chart_labels = ["30/12", "31/12", "01/01", "02/01", "03/01", "04/01", "05/01"]
     chart_data = [4200000, 5100000, 6800000, 5900000, 7200000, 6500000, 8600000]
 
-    # 2. Biểu đồ mới: Số đơn hàng theo ngày
     order_chart_data = [12, 15, 19, 17, 23, 21, 27]
 
-    # 3. Biểu đồ mới: Doanh thu theo danh mục
     category_labels = ["Bánh kẹo Tết", "Mứt Tết", "Rượu bia", "Hộp quà Tết"]
     category_data = [3250000, 1840000, 5120000, 2790000]
 
-    # 4. Top sản phẩm bán chạy
     top_products = [
         {'id': 1, 'name': 'Bánh quy bơ Danisa 454g', 'sold': 45, 'revenue': '6.525.000'},
         {'id': 2, 'name': 'Rượu vang đỏ Chile 750ml', 'sold': 38, 'revenue': '17.100.000'},
@@ -51,15 +47,9 @@ def report_view(request):
         'total_orders': 7,
         'cancel_rate': '14.3',
         'top_products': top_products,
-
-        # Biểu đồ cũ
         'chart_labels_json': json.dumps(chart_labels),
         'chart_data_json': json.dumps(chart_data),
-
-        # Biểu đồ mới 1: số đơn hàng
         'order_chart_data_json': json.dumps(order_chart_data),
-
-        # Biểu đồ mới 2: doanh thu theo danh mục
         'category_labels_json': json.dumps(category_labels),
         'category_data_json': json.dumps(category_data),
     }
@@ -138,13 +128,220 @@ def product_edit_view(request, product_id):
 @login_required(login_url='core:login')
 def product_delete_view(request, product_id):
     """Xử lý xóa sản phẩm"""
-    # Logic xóa DB sẽ nằm ở đây: Product.objects.get(id=product_id).delete()
     return redirect('core:products')
 
 
 @login_required(login_url='core:login')
 def product_create_view(request):
     """Trang thêm sản phẩm mới"""
-    # Logic xử lý lưu dữ liệu (POST) sẽ viết sau
-    # Hiện tại chỉ hiển thị form trống
     return render(request, 'dashboard/product_create.html')
+
+
+# =========================================================
+# 4. NHÓM QUẢN LÝ KHÁCH HÀNG (CUSTOMERS)
+# =========================================================
+
+def lay_danh_sach_khach_hang_mau():
+    danh_sach_khach_hang = [
+        {
+            'id': 1,
+            'ma_khach_hang': 'KH001',
+            'ho_ten': 'Nguyễn Văn An',
+            'so_dien_thoai': '0901234567',
+            'email': 'an.nguyen@gmail.com',
+            'tinh_thanh': 'Hà Nội',
+            'dia_chi': '123 Nguyễn Trãi, Thanh Xuân, Hà Nội',
+            'so_don_hang': 1,
+            'tong_chi_tieu_hien_thi': '250.000đ',
+            'tong_chi_tieu': 250000,
+            'trang_thai': 'khach_moi',
+            'ngay_tham_gia_hien_thi': '05/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-05',
+            'ghi_chu': 'Khách mới đăng ký đầu tháng 1.',
+        },
+        {
+            'id': 2,
+            'ma_khach_hang': 'KH002',
+            'ho_ten': 'Trần Thị Bình',
+            'so_dien_thoai': '0912345678',
+            'email': 'binh.tran@gmail.com',
+            'tinh_thanh': 'Đà Nẵng',
+            'dia_chi': '45 Nguyễn Văn Linh, Hải Châu, Đà Nẵng',
+            'so_don_hang': 8,
+            'tong_chi_tieu_hien_thi': '2.180.000đ',
+            'tong_chi_tieu': 2180000,
+            'trang_thai': 'than_thiet',
+            'ngay_tham_gia_hien_thi': '08/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-08',
+            'ghi_chu': 'Khách hàng mua lặp lại nhiều lần.',
+        },
+        {
+            'id': 3,
+            'ma_khach_hang': 'KH003',
+            'ho_ten': 'Lê Văn Cường',
+            'so_dien_thoai': '0923456789',
+            'email': 'cuong.le@gmail.com',
+            'tinh_thanh': 'Hải Phòng',
+            'dia_chi': '78 Lạch Tray, Ngô Quyền, Hải Phòng',
+            'so_don_hang': 3,
+            'tong_chi_tieu_hien_thi': '690.000đ',
+            'tong_chi_tieu': 690000,
+            'trang_thai': 'ngung_hoat_dong',
+            'ngay_tham_gia_hien_thi': '11/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-11',
+            'ghi_chu': 'Đã lâu chưa quay lại mua hàng.',
+        },
+        {
+            'id': 4,
+            'ma_khach_hang': 'KH004',
+            'ho_ten': 'Phạm Thu Hà',
+            'so_dien_thoai': '0934567890',
+            'email': 'ha.pham@gmail.com',
+            'tinh_thanh': 'TP. Hồ Chí Minh',
+            'dia_chi': '12 Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh',
+            'so_don_hang': 15,
+            'tong_chi_tieu_hien_thi': '5.960.000đ',
+            'tong_chi_tieu': 5960000,
+            'trang_thai': 'vip',
+            'ngay_tham_gia_hien_thi': '15/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-15',
+            'ghi_chu': 'Khách VIP, ưu tiên chăm sóc.',
+        },
+        {
+            'id': 5,
+            'ma_khach_hang': 'KH005',
+            'ho_ten': 'Vũ Minh Đức',
+            'so_dien_thoai': '0945678901',
+            'email': 'duc.vu@gmail.com',
+            'tinh_thanh': 'Bắc Ninh',
+            'dia_chi': '90 Lý Thái Tổ, Bắc Ninh',
+            'so_don_hang': 6,
+            'tong_chi_tieu_hien_thi': '1.240.000đ',
+            'tong_chi_tieu': 1240000,
+            'trang_thai': 'than_thiet',
+            'ngay_tham_gia_hien_thi': '17/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-17',
+            'ghi_chu': 'Thường mua quà Tết cho doanh nghiệp.',
+        },
+        {
+            'id': 6,
+            'ma_khach_hang': 'KH006',
+            'ho_ten': 'Đặng Hải Yến',
+            'so_dien_thoai': '0956789012',
+            'email': 'yen.dang@gmail.com',
+            'tinh_thanh': 'Thái Nguyên',
+            'dia_chi': 'Khu đô thị Yên Bình, Phổ Yên, Thái Nguyên',
+            'so_don_hang': 1,
+            'tong_chi_tieu_hien_thi': '420.000đ',
+            'tong_chi_tieu': 420000,
+            'trang_thai': 'khach_moi',
+            'ngay_tham_gia_hien_thi': '19/01/2026',
+            'ngay_tham_gia_sap_xep': '2026-01-19',
+            'ghi_chu': 'Mới mua đơn đầu tiên.',
+        },
+    ]
+
+    for khach_hang in danh_sach_khach_hang:
+        khach_hang['ky_tu_dai_dien'] = khach_hang['ho_ten'].split()[-1][0].upper()
+
+    return danh_sach_khach_hang
+
+
+@login_required(login_url='core:login')
+def customer_list_view(request):
+    """Danh sách khách hàng"""
+    danh_sach_khach_hang = lay_danh_sach_khach_hang_mau()
+
+    tu_khoa = (request.GET.get('q') or '').strip().lower()
+    trang_thai = (request.GET.get('status') or 'tat_ca').strip()
+    sap_xep = (request.GET.get('sort') or 'moi_nhat').strip()
+
+    ket_qua = list(danh_sach_khach_hang)
+
+    if tu_khoa:
+        ket_qua = [
+            kh for kh in ket_qua
+            if tu_khoa in kh['ho_ten'].lower()
+            or tu_khoa in kh['ma_khach_hang'].lower()
+            or tu_khoa in kh['so_dien_thoai'].lower()
+            or tu_khoa in kh['email'].lower()
+        ]
+
+    if trang_thai != 'tat_ca':
+        ket_qua = [kh for kh in ket_qua if kh['trang_thai'] == trang_thai]
+
+    if sap_xep == 'ten_a_z':
+        ket_qua.sort(key=lambda kh: kh['ho_ten'])
+    elif sap_xep == 'nhieu_don_nhat':
+        ket_qua.sort(key=lambda kh: kh['so_don_hang'], reverse=True)
+    elif sap_xep == 'chi_tieu_cao_nhat':
+        ket_qua.sort(key=lambda kh: kh['tong_chi_tieu'], reverse=True)
+    elif sap_xep == 'cu_nhat':
+        ket_qua.sort(key=lambda kh: kh['ngay_tham_gia_sap_xep'])
+    else:
+        ket_qua.sort(key=lambda kh: kh['ngay_tham_gia_sap_xep'], reverse=True)
+
+    context = {
+        'danh_sach_khach_hang': ket_qua,
+        'bo_loc': {
+            'q': request.GET.get('q', ''),
+            'status': trang_thai,
+            'sort': sap_xep,
+        },
+        'tong_khach_hang': len(danh_sach_khach_hang),
+        'khach_moi': sum(1 for kh in danh_sach_khach_hang if kh['trang_thai'] == 'khach_moi'),
+        'khach_hang_than_thiet': sum(1 for kh in danh_sach_khach_hang if kh['trang_thai'] == 'than_thiet'),
+        'khach_vip': sum(1 for kh in danh_sach_khach_hang if kh['trang_thai'] == 'vip'),
+        'khach_ngung_hoat_dong': sum(1 for kh in danh_sach_khach_hang if kh['trang_thai'] == 'ngung_hoat_dong'),
+    }
+    return render(request, 'dashboard/customers.html', context)
+
+
+@login_required(login_url='core:login')
+def customer_create_view(request):
+    """Trang thêm khách hàng"""
+    return render(request, 'dashboard/customer_create.html')
+
+
+@login_required(login_url='core:login')
+def customer_detail_view(request, customer_id):
+    """Trang chi tiết khách hàng"""
+    danh_sach_khach_hang = lay_danh_sach_khach_hang_mau()
+    khach_hang = next((kh for kh in danh_sach_khach_hang if kh['id'] == customer_id), None)
+
+    if not khach_hang:
+        return redirect('core:customers')
+
+    don_hang_gan_day = [
+        {'ma_don': 'DH101', 'ngay_dat': '21/01/2026', 'tong_tien': '250.000đ', 'trang_thai': 'Hoàn thành'},
+        {'ma_don': 'DH082', 'ngay_dat': '18/01/2026', 'tong_tien': '420.000đ', 'trang_thai': 'Đang giao'},
+        {'ma_don': 'DH063', 'ngay_dat': '15/01/2026', 'tong_tien': '180.000đ', 'trang_thai': 'Chờ xử lý'},
+    ]
+
+    return render(
+        request,
+        'dashboard/customer_detail.html',
+        {
+            'khach_hang': khach_hang,
+            'don_hang_gan_day': don_hang_gan_day,
+        }
+    )
+
+
+@login_required(login_url='core:login')
+def customer_lock_view(request, customer_id):
+    """Trang tạm khóa khách hàng"""
+    danh_sach_khach_hang = lay_danh_sach_khach_hang_mau()
+    khach_hang = next((kh for kh in danh_sach_khach_hang if kh['id'] == customer_id), None)
+
+    if not khach_hang:
+        return redirect('core:customers')
+
+    if request.method == 'POST':
+        return redirect('core:customers')
+
+    return render(
+        request,
+        'dashboard/customer_lock.html',
+        {'khach_hang': khach_hang}
+    )
