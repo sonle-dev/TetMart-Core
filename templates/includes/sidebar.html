@@ -14,7 +14,7 @@
 
         <a
             href="{% url 'core:orders' %}"
-            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+            class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'orders' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
             <span><i class="bi bi-receipt me-2"></i>Đơn hàng</span>
@@ -45,12 +45,13 @@
     </div>
 
     <div class="d-grid gap-2">
-        <a
+          <a
             href="{% url 'core:reports' %}"
-            class="btn text-start rounded-3 fw-semibold {% if active_page == 'reports' %}text-white{% else %}btn-light{% endif %}"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'reports' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
-            <i class="bi bi-graph-up-arrow me-2"></i>Báo cáo doanh thu
+            <span><i class="bi bi-receipt me-2"></i>Báo cáo doanh thu</span>
+            
         </a>
     </div>
 
@@ -59,12 +60,18 @@
     </div>
 
     <div class="d-grid gap-2">
-        <a
-            href="#"
-            class="btn btn-light text-start rounded-3 fw-semibold"
-            style="border:1px solid #eee;"
+      
+    </div>
+    <a
+            href="{% url 'core:permissions' %}"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'permissions' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
-            <i class="bi bi-gear me-2"></i>Cài đặt
+            <span><i class="bi bi-receipt me-2"></i>Phân Quyền</span>
+            
         </a>
     </div>
-</div>
+
+   
+    
+    

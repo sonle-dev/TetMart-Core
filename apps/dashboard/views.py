@@ -345,3 +345,7 @@ def customer_lock_view(request, customer_id):
         'dashboard/customer_lock.html',
         {'khach_hang': khach_hang}
     )
+@login_required(login_url='core:login')
+def permission_list_view(request):
+    """Trang phân quyền - frontend demo"""
+    return render(request, 'dashboard/permissions.html')
