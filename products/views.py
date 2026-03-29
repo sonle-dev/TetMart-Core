@@ -44,7 +44,14 @@ def dashboard_products_view(request):
 #  VIEW TRANG CHỦ 
 def home(request):
     products = Product.objects.filter(is_active=True)
-    return render(request, 'index.html', {'products': products})
+
+    daily_suggestions = Product.objects.filter(is_active=True).order_by('?')[:4]
+
+
+    return render(request, 'index.html', {
+        'products': products,
+        'daily_suggestions': daily_suggestions
+    })
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)

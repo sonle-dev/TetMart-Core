@@ -109,30 +109,34 @@
     <main class="flex-grow-1">
         
         {% if messages %}
-            <div class="container mt-3">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        {% for message in messages %}
-                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center" role="alert">
-                                {% if message.tags == 'error' %}
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                {% else %}
-                                    <i class="fas fa-check-circle me-2"></i>
-                                {% endif %}
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    </div>
+        <div
+            id="toast-container"
+            class="position-fixed top-0 start-50 translate-middle-x p-3"
+            style="z-index: 1080; margin-top: 90px; width: min(92vw, 720px); pointer-events: none;"
+        >
+            {% for message in messages %}
+                <div
+                    class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center mb-2 app-alert"
+                    role="alert"
+                    style="pointer-events: auto;"
+                >
+                    {% if message.tags == 'error' %}
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                    {% else %}
+                        <i class="fas fa-check-circle me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-white pt-5 pb-3 border-top mt-5" style="border-color: #ffe4e6 !important;">
+    <`footer class="bg-white pt-5 pb-3 mt-5" style="border-top: 2px solid #ffe4e6;"></>
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
@@ -193,7 +197,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const toastContainer = document.getElementById('ajax-toast-container');
-    const cartBadge = document.getElementById('cart-count-badge');
+    const cartBadge = document.getElementById('cart-count-badge');8
 
     function showAjaxToast(message, type) {
         if (!toastContainer) return;
@@ -273,6 +277,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('#toast-container .app-alert');
+
+    alerts.forEach((alertEl) => {
+        setTimeout(() => {
+            alertEl.classList.remove('show');
+            alertEl.classList.add('hide');
+            alertEl.style.opacity = '0';
+            alertEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            alertEl.style.transform = 'translateY(-10px)';
+
+            setTimeout(() => {
+                alertEl.remove();
+            }, 500);
+        }, 3000);
     });
 });
 </script>

@@ -25,6 +25,7 @@ def register_view(request):
             return redirect('home') 
         else:
             # Nếu form lỗi (vd: mật khẩu không khớp), in lỗi ra
+            print(form.errors)
             messages.error(request, "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.")
     else:
         # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm tạo form rỗng

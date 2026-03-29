@@ -16,27 +16,7 @@
         </div>
     </div>
 </section>
-<section class="daily-suggestion-section">
-    <div class="container pb-5">
-        <div class="text-center mb-4">
-            <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Gợi ý hằng ngày</h4>
-        </div>
 
-        <div class="row g-4">
-            {% for p in daily_suggestions %}
-            <div class="col-12 col-sm-6 col-md-3">
-                {% include "includes/product_card.html" %}
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-light border mb-0 text-center">
-                    Chưa có sản phẩm gợi ý.
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
 <div class="container py-5">
     <h4 class="text-center fw-bold mb-4" style="color: var(--tet-text);">Danh mục nổi bật</h4>
 
