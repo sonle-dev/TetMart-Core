@@ -1,254 +1,177 @@
-🧨 TetMart – Hệ thống Quản lý Bán hàng & Kho vận
+# TetMart Core
 
-Tech Lead: Lê Hồng Sơn
-Thành viên: Nguyễn Danh Thế, Ngô Thị Sinh
-Nhánh phát triển chính: main
+TetMart Core là hệ thống web thương mại điện tử mini chuyên cung cấp các sản phẩm trang trí Tết. Dự án được xây dựng bằng Django với kiến trúc module hóa, phục vụ mục đích học tập và phát triển thực tế theo mô hình backend – frontend.
 
-Dự án xây dựng hệ thống quản lý bán hàng Tết, tập trung vào việc xử lý số liệu backend, thống kê báo cáo và quản lý trạng thái đơn hàng theo thời gian thực.
 
-🚀 1. Các tính năng đã hoàn thiện (Done)
+## 1. Giới thiệu
 
-Dựa trên yêu cầu của Bài kiểm tra kỹ năng 3, nhóm đã hoàn thiện các chức năng chính sau:
+Hệ thống bao gồm hai nhóm người dùng chính:
 
-1.1 CRUD cho các bảng dữ liệu chính
+- Người dùng: xem sản phẩm, đăng ký, đăng nhập, thêm giỏ hàng và đặt hàng  
+- Quản trị viên: quản lý sản phẩm, đơn hàng và theo dõi báo cáo thống kê  
 
-Hệ thống đã triển khai đầy đủ chức năng:
+Dự án được thiết kế theo hướng dễ mở rộng, rõ ràng về cấu trúc và phù hợp với workflow làm việc nhóm.
 
-Thêm – Xem – Sửa – Xóa (CRUD) cho các bảng dữ liệu chính trong hệ thống:
 
-Product – Quản lý thông tin sản phẩm
+## 2. Tính năng
 
-Order – Quản lý đơn hàng
+### Người dùng
+- Đăng ký, đăng nhập, đăng xuất  
+- Xem danh sách sản phẩm  
+- Xem chi tiết sản phẩm  
+- Thêm sản phẩm vào giỏ hàng  
+- Đặt hàng  
 
-OrderDetail – Chi tiết đơn hàng
+### Quản trị
+- Dashboard tổng quan  
+- Quản lý sản phẩm  
+- Quản lý đơn hàng  
+- Cập nhật trạng thái đơn hàng  
+- Thống kê và báo cáo doanh thu  
 
-Customer/User – Quản lý người dùng
 
-Các thao tác CRUD được xây dựng thông qua Django Views kết hợp với Template, đảm bảo việc quản lý dữ liệu diễn ra thuận tiện và chính xác.
+## 3. Công nghệ sử dụng
 
-1.2 Chức năng tìm kiếm, lọc và sắp xếp dữ liệu
+### Backend
+- Python  
+- Django  
 
-Hệ thống hỗ trợ các chức năng giúp người dùng dễ dàng tìm kiếm và quản lý dữ liệu:
+### Frontend
+- HTML, CSS  
+- Bootstrap  
+- JavaScript  
 
-Tìm kiếm sản phẩm theo tên sản phẩm
+### Database
+- MySQL  
 
-Lọc sản phẩm theo danh mục
+### Thư viện
+- Django  
+- PyMySQL  
+- Pillow  
+- python-dotenv  
 
-Sắp xếp dữ liệu theo:
 
-giá
+## 4. Kiến trúc dự án
 
-tên
 
-thời gian
+TetMart-Core/
+├── products/
+├── orders/
+├── users/
+├── templates/
+├── static/
+├── tetmart/
 
-Các chức năng này giúp cải thiện trải nghiệm người dùng khi làm việc với hệ thống quản lý sản phẩm và đơn hàng.
 
-1.3 Phân quyền người dùng (Guest / User / Admin)
+Luồng hoạt động:
 
-Hệ thống triển khai cơ chế phân quyền dựa trên hệ thống Authentication của Django.
 
-Vai trò	Quyền
-Guest	Xem thông tin sản phẩm
-User	Đặt hàng, quản lý giỏ hàng
-Admin	Quản lý sản phẩm, đơn hàng và người dùng
+User → View → Model → Database
 
-Cơ chế phân quyền giúp đảm bảo mỗi người dùng chỉ truy cập được các chức năng phù hợp với quyền hạn của mình.
 
-1.4 Xử lý luồng nghiệp vụ đặt hàng
+## 5. Cài đặt
 
-Hệ thống xây dựng luồng nghiệp vụ đặt hàng gồm các bước:
+### 5.1 Clone repository
 
-Người dùng đăng nhập vào hệ thống
-
-Chọn sản phẩm cần mua
-
-Thêm sản phẩm vào giỏ hàng
-
-Tiến hành đặt hàng
-
-Quản trị viên xử lý đơn hàng
-
-Luồng nghiệp vụ này mô phỏng quá trình hoạt động của một hệ thống thương mại điện tử thực tế.
-
-1.5 Trạng thái dữ liệu
-
-Hệ thống sử dụng các trạng thái dữ liệu để quản lý tiến trình xử lý đơn hàng:
-
-pending – chờ xử lý
-
-approved – đã duyệt
-
-rejected – từ chối
-
-active / inactive – trạng thái hoạt động của dữ liệu
-
-Nhờ đó quản trị viên có thể dễ dàng theo dõi tình trạng xử lý của từng đơn hàng.
-
-1.6 Upload hình ảnh / tệp
-
-Hệ thống cho phép tải lên hình ảnh sản phẩm khi thêm hoặc chỉnh sửa dữ liệu.
-
-Các tệp tải lên được kiểm tra:
-
-Định dạng file
-
-Kích thước file
-
-nhằm đảm bảo tính an toàn và ổn định cho hệ thống.
-
-1.7 Hiển thị thông báo hệ thống
-
-Hệ thống sử dụng alert / toast notification để hiển thị thông báo khi người dùng thực hiện các thao tác:
-
-Thêm dữ liệu thành công
-
-Cập nhật dữ liệu
-
-Xóa dữ liệu
-
-Thông báo lỗi khi thao tác thất bại
-
-Nhờ đó người dùng có thể dễ dàng nhận biết kết quả của các thao tác trên hệ thống.
-
-1.8 Kiến trúc hệ thống
-
-Dự án được xây dựng theo kiến trúc MVT (Model – View – Template) của Django.
-
-Cấu trúc code được tổ chức thành nhiều apps riêng biệt:
-
-products
-
-orders
-
-users
-
-dashboard
-
-Mỗi module đều được tổ chức theo cấu trúc chuẩn của Django:
-
-models.py
-views.py
-urls.py
-admin.py
-1.9 Kiểm thử hệ thống
-
-Các chức năng chính đã được kiểm thử thủ công để đảm bảo hệ thống hoạt động ổn định:
-
-CRUD sản phẩm
-
-Tìm kiếm sản phẩm
-
-Đặt hàng
-
-Phân quyền người dùng
-
-Kết quả kiểm thử cho thấy hệ thống hoạt động đúng theo yêu cầu đề bài.
-
-1.10 Quản lý mã nguồn bằng GitHub
-
-Toàn bộ mã nguồn được quản lý thông qua Git và GitHub.
-
-Nhóm sử dụng mô hình làm việc theo branch:
-
-Mỗi thành viên phát triển trên một nhánh riêng
-
-Sau đó merge vào nhánh main
-
-Repository dự án:
-
-https://github.com/sonle-dev/TetMart-Core
-
-Trong quá trình phát triển, nhóm đã thực hiện hơn 10 commit để ghi nhận tiến độ phát triển của hệ thống.
-
-🛠 2. Yêu cầu cài đặt (Dành cho Giảng viên / Tester)
-
-⚠ Vì dự án sử dụng MySQL và code mới nhất nằm ở nhánh main, vui lòng làm đúng các bước sau.
-
-Bước 1: Lấy code về máy
-# Clone dự án
+```bash
 git clone https://github.com/sonle-dev/TetMart-Core.git
-
-# Di chuyển vào thư mục
 cd TetMart-Core
+5.2 Tạo môi trường ảo
 
-# Chuyển sang nhánh main
-git checkout main
-Bước 2: Thiết lập môi trường Python
-# Tạo môi trường ảo
-py -m venv venv
+Windows:
 
-# Kích hoạt môi trường ảo
-venv\Scripts\Activate.ps1
+python -m venv .venv
+.venv\Scripts\activate
 
-# Cài đặt thư viện
+Linux / macOS:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+5.3 Cài đặt dependencies
 pip install -r requirements.txt
-Bước 3: Khôi phục dữ liệu MySQL
 
-Dự án đã có dữ liệu demo trong file backup.
+6. Cấu hình database
 
-1. Tạo Database
-
-Mở MySQL Workbench hoặc phpMyAdmin
 Tạo database:
 
-tet_mart_db
-2. Import dữ liệu
+CREATE DATABASE tet_mart_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-Tìm file:
+Cập nhật trong tetmart/settings.py:
 
-database_backup.sql
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tet_mart_db',
+        'USER': 'your_mysql_user',
+        'PASSWORD': 'your_mysql_password',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
 
-Import file này vào database vừa tạo.
+7. Khởi tạo dữ liệu
+python manage.py makemigrations
+python manage.py migrate
 
-3. Cấu hình kết nối database
+Hoặc import:
 
-Mở file:
+mysql -u your_user -p tet_mart_db < database_backup.sql
 
-tetmart/settings.py
-
-Tìm phần:
-
-DATABASES
-
-và chỉnh lại PASSWORD cho đúng với máy của bạn.
-
-Bước 4: Chạy Server
+8. Chạy dự án
 python manage.py runserver
 
 Truy cập:
 
 http://127.0.0.1:8000/
-🔐 3. Tài khoản Demo
 
-Sau khi import SQL thành công:
+9. Tài khoản
+Quản trị
+python manage.py createsuperuser
 
-Tài khoản Admin
+Truy cập:
 
-Username: admin
+http://127.0.0.1:8000/admin/
+Người dùng
+Đăng ký: /auth/register/
+Đăng nhập: /auth/login/
 
-Password: 123
+10. Git Workflow
 
-Tài khoản User
+Các nhánh sử dụng:
 
-Username: user1
+main
+develop
+feature/backend
+feature/frontend
+feature/tester
 
-Password: 123456a@
+Quy trình:
 
-📂 4. Cấu trúc dự án
+feature → develop → main
 
-products/        # Xử lý logic sản phẩm
+Ví dụ commit:
 
-orders/          # Xử lý đơn hàng và giỏ hàng
+git commit -m "fix(auth): sửa lỗi login/register không nhận dữ liệu"
 
-tetmart/         # Cấu hình chính (Settings, URLs)
+11. Đóng góp
+git checkout -b feature/your-feature
+git commit -m "feat: thêm chức năng ..."
+git push origin feature/your-feature
 
-templates/       # Giao diện HTML
+Sau đó tạo Pull Request.
 
-static/          # CSS, JS, Images
+12. Lưu ý
+Không commit file .env
+Không push dữ liệu database thật
+Kiểm tra migration trước khi push
 
-database_backup.sql
+13. Tác giả
 
-🎥 5. Video Demo Hệ Thống
+Lê Hồng Sơn
+Nguyễn Danh Thế
+Ngô Thị Sinh
 
-https://github.com/user-attachments/assets/d966ce9f-83a9-4e93-8bb5-229d570e2
+14. Giấy phép
+
+Dự án phục vụ mục đích học tập và phát triển nội bộ.

@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+def orders_list(request):
+    return HttpResponse("Orders list OK")
+
+def order_detail(request, pk):
+    return HttpResponse(f"Order detail OK: {pk}")

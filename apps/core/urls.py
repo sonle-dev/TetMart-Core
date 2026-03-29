@@ -28,7 +28,7 @@ app_name = 'core'
 urlpatterns = [
     # === PUBLIC URLS (Khách hàng) ===
     path('', index, name='home'),
-    path('product-detail/<int:product_id>/', product_detail, name='product_detail'),
+    path('product-detail/<int:product_slug>/', product_detail, name='product_detail'),
     path('login/', login_view, name='login'),
     path('register/', register_view, name='register'),
     path('logout/', logout_view, name='logout'),
@@ -44,5 +44,5 @@ urlpatterns = [
     path('dashboard/orders/', order_list_view, name='orders'),
     
     # Chi tiết đơn hàng (Xem & Sửa)
-    path('dashboard/orders/<str:order_id>/', order_detail_view, name='order_detail'),
+    path('dashboard/orders/<str:order_slug>/', order_detail_view, name='order_detail'),
 ]

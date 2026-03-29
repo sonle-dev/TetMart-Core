@@ -25,13 +25,14 @@ def register_view(request):
             return redirect('home') 
         else:
             # Nếu form lỗi (vd: mật khẩu không khớp), in lỗi ra
+            print(form.errors)
             messages.error(request, "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.")
     else:
         # 👇 ĐÃ SỬA: Dùng CustomUserCreationForm tạo form rỗng
         form = CustomUserCreationForm()
     
     # 👇 QUAN TRỌNG: Dòng này nằm ngoài cùng, thẳng hàng với if/else
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'user/register.html', {'form': form})
 
 # --- 2. LOGIC ĐĂNG NHẬP ---
 def login_view(request):
@@ -51,7 +52,7 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     
-    return render(request, 'users/login.html', {'form': form})
+    return render(request, 'user/login.html', {'form': form})
 
 # --- 3. LOGIC ĐĂNG XUẤT ---
 def logout_view(request):

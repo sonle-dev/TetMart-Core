@@ -1,9 +1,9 @@
-/* 1. KHAI BÁO BIẾN MÀU (Lấy từ thiết kế Figma của bạn) */
+/* 1. KHAI BÁO BIẾN MÀU */
 :root {
     --tet-primary: #DC2626;       /* Đỏ chủ đạo */
     --tet-secondary: #FBBF24;     /* Vàng điểm nhấn */
     --tet-bg: #FFF8F0;           /* Nền kem ấm */
-    --tet-text: #1F2937;          /* Chữ đen xám */
+    --tet-text: #1F2937;         /* Chữ đen xám */
     --tet-white: #FFFFFF;
 }
 
@@ -13,8 +13,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-
-/* 2. HEADER TRẮNG (Khác bản cũ là Header đỏ) */
+/* 2. HEADER TRẮNG  */
 .navbar-tet {
     background-color: var(--tet-white);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -31,43 +30,39 @@ body {
     outline: none;
 }
 
-/* 3. HERO SECTION (Banner chữ ở giữa) */
+/* 3. HERO SECTION */
 .hero-section {
     background: linear-gradient(180deg, #FFE4E6 0%, var(--tet-bg) 100%);
     padding: 60px 0;
     text-align: center;
 }
 
-/* 4. CARD DANH MỤC (Trắng, bo góc) */
-/* --- CARD DANH MỤC (Giống thiết kế Figma) --- */
+/* 4. CARD DANH MỤC */
 .cat-card {
-    background: #FFFFFF;         /* Nền trắng */
-    border: 1px solid #FFE4E6;   /* Viền hồng phấn rất nhạt */
-    border-radius: 16px;         /* Bo góc mềm */
-    padding: 30px 15px;          /* Khoảng cách bên trong thoáng */
+    background: #FFFFFF;
+    border: 1px solid #FFE4E6;
+    border-radius: 16px;
+    padding: 30px 15px;
     text-align: center;
-    transition: all 0.3s ease;   /* Hiệu ứng mượt */
+    transition: all 0.3s ease;
     cursor: pointer;
-    height: 100%;                /* Cao bằng nhau */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Bóng mờ rất nhẹ */
-    
-    /* Căn giữa nội dung */
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-/* Hiệu ứng khi di chuột vào */
 .cat-card:hover {
-    border-color: var(--tet-primary);       /* Viền chuyển đỏ */
-    transform: translateY(-5px);            /* Nổi lên */
-    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15); /* Bóng đỏ nhẹ */
+    border-color: var(--tet-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15);
 }
 
-/* Định dạng Icon (Emoji) */
 .cat-icon {
-    font-size: 3rem;  /* Kích thước icon to */
+    font-size: 3rem;
     margin-bottom: 15px;
     line-height: 1;
 }
@@ -77,8 +72,8 @@ body {
     color: #333;
     font-size: 1.1rem;
 }
-/* 5. CARD SẢN PHẨM (Giống ảnh 2 bạn gửi) */
 
+/* 5. CARD SẢN PHẨM */
 .product-card {
     background: var(--tet-white);
     border-radius: 16px;
@@ -89,18 +84,12 @@ body {
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.product-img-container {
-    height: 250px; /* Ảnh vuông hoặc chữ nhật đứng */
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
                 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .product-img-container {
     height: 250px;
-
     overflow: hidden;
     background: #f9f9f9;
     display: flex;
@@ -114,8 +103,6 @@ body {
     object-fit: cover;
 }
 
-
-/* Badge trạng thái (Còn hàng) */
 .badge-stock {
     background-color: var(--tet-primary);
     color: white;
@@ -125,7 +112,7 @@ body {
     font-weight: 600;
 }
 
-/* Nút bấm Đỏ */
+/* Buttons */
 .btn-primary-tet {
     background-color: var(--tet-primary);
     color: white;
@@ -137,12 +124,9 @@ body {
 }
 
 .btn-primary-tet:hover {
-
-    background-color: #B91C1C; /* Đỏ đậm hơn */
+    background-color: #B91C1C;
     color: white;
 }
-
-/* Nút Trắng (Xem danh mục) */
 
 .btn-outline-tet {
     background-color: white;
@@ -157,18 +141,6 @@ body {
     background-color: #F9FAFB;
     border-color: #D1D5DB;
 }
-
-/* Class chỉnh icon nhỏ trong card sản phẩm */
-.icon-mini {
-    width: 24px !important;  /* Ép chiều rộng 24px */
-    height: px !important; /* Ép chiều cao 24px */
-    object-fit: contain;     /* Giữ nguyên tỉ lệ ảnh không bị méo */
-    margin-right: 5px;       /* Cách chữ ra một chút */
-}
-/* --- TRANG CHI TIẾT SẢN PHẨM --- */
-.product-detail-img-container {
-    background-color: #ffffff; /* Nền trắng */
-    min-height: 400px;         /* Chiều cao tối thiểu */
 
 .icon-mini {
     width: 24px !important;
@@ -185,25 +157,20 @@ body {
     padding: 20px;
 }
 
-/* Nút quay lại */
 .text-decoration-none:hover {
     color: var(--tet-primary) !important;
     text-decoration: underline !important;
 }
 
-
-/* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (Rõ nét & Đẹp hơn) --- */
-
-/* 1. Hộp chứa chung */
+/* --- BỘ NÚT TĂNG GIẢM SỐ LƯỢNG --- */
 .quantity-group {
-    width: 130px; /* Rộng hơn một chút */
-    border-radius: 8px; /* Bo góc cả cụm */
-    overflow: hidden; /* Để nút con không bị lòi ra khỏi góc bo */
-    border: 1px solid #d9d9d9; /* Viền mỏng màu xám bao quanh */
-    background-color: #fff; /* Nền trắng sạch */
+    width: 130px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
 }
 
-/* 2. Nút cộng/trừ (+/-) */
 .quantity-btn {
     width: 40px;
     height: 40px;
@@ -211,32 +178,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none; /* Bỏ viền riêng của nút */
-    background-color: #f8f9fa; /* Màu nền xám rất nhạt */
-    color: #333; /* Màu chữ đậm */
-    font-weight: 700; /* In đậm dấu +/- */
-    font-size: 1.2rem; /* To hơn một chút */
-    transition: all 0.2s; /* Hiệu ứng mượt mà */
-}
-
-/* Hiệu ứng khi di chuột vào nút */
-.quantity-btn:hover {
-    background-color: #e9ecef; /* Màu nền tối hơn chút khi hover */
-    color: var(--tet-primary); /* Đổi màu chữ sang đỏ Tết */
-}
-
-/* 3. Ô input ở giữa */
-.quantity-input {
-    border: none; /* Bỏ viền */
-    text-align: center;
-    font-weight: 700; /* Số in đậm */
-    font-size: 1.1rem;
-    color: #333;
-    background-color: transparent; /* Nền trong suốt để ăn theo nền hộp chứa */
-    width: 50px; /* Chiều rộng cố định */
-}
-
-/* Bỏ hiệu ứng focus (viền xanh) mặc định của bootstrap */
     border: none;
     background-color: #f8f9fa;
     color: #333;
@@ -264,7 +205,6 @@ body {
     box-shadow: none;
     outline: none;
 }
-
 
 /* =========================================================
    ✅ BỘ LỌC (FILTER) - CHUẨN, KHÔNG TRÙNG LẶP
@@ -351,3 +291,210 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* --- DANH GIA SAN PHAM --- */
+.review-section-title {
+    color: var(--tet-text);
+}
+
+.review-summary-card,
+.review-form-card,
+.review-list-card {
+    background: #ffffff;
+    border-radius: 24px;
+}
+
+.review-score {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--tet-primary);
+}
+
+.review-stars {
+    color: #F59E0B;
+    font-size: 1rem;
+}
+
+.review-stars .empty {
+    color: #D1D5DB;
+}
+
+.review-progress {
+    height: 10px;
+    background: #F3F4F6;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.review-progress .progress-bar {
+    background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+}
+
+.review-progress-label {
+    width: 52px;
+    font-weight: 600;
+    color: var(--tet-text);
+    font-size: 14px;
+}
+
+.review-progress-count {
+    min-width: 28px;
+    text-align: right;
+    color: #6B7280;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.review-input {
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    padding: 12px 14px;
+}
+
+.review-input:focus {
+    border-color: rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.10);
+}
+
+.rating-select {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.star-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 52px;
+    height: 52px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s ease;
+}
+
+.star-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
+.star-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.star-icon {
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+
+.star-shape {
+    fill: #ffffff;
+    stroke: #e0a91f;
+    stroke-width: 1.4;
+    transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.star-btn.active .star-shape,
+.star-btn.hovered .star-shape {
+    fill: #f7c948;
+    stroke: #d9a11a;
+}
+
+@media (max-width: 767.98px) {
+    .rating-select {
+        gap: 10px;
+    }
+
+    .star-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .star-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .rating-select {
+        gap: 10px;
+    }
+
+    .star-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .star-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .star-btn {
+        font-size: 2rem;
+    }
+}
+
+.review-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #FDE68A 0%, #FCA5A5 100%);
+    color: #991B1B;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.review-item {
+    padding: 1.25rem 0;
+}
+
+.review-item:first-child {
+    padding-top: 0;
+}
+
+.review-bought-badge,
+.review-verified-badge {
+    background: rgba(220, 38, 38, 0.08);
+    color: var(--tet-primary);
+    border: 1px solid rgba(220, 38, 38, 0.15);
+    font-weight: 600;
+}
+
+@media (max-width: 767.98px) {
+    .review-score {
+        font-size: 2.6rem;
+    }
+
+    .rating-select label {
+        font-size: 1.7rem;
+    }
+}
+/* ===== GOI Y HANG NGAY ===== */
+.daily-suggestion-section {
+    background: transparent;
+}
+.card.rounded-4 {
+    border-radius: 20px !important;
+}
+
+
+
+
+
+
+
+
+
+
