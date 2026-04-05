@@ -8,6 +8,7 @@ from products.views import home, product_detail
 # report_view, buy_now_view import tạm thời, nếu chưa có thì cẩn thận lỗi
 # from users.views import report_view 
 from orders.views import buy_now_view 
+from apps.dashboard import views as dashboard_views
 
 urlpatterns = [
     # --- Trang Django Admin ---
@@ -22,13 +23,9 @@ urlpatterns = [
 
     # --- Dashboard Tổng quan ---
     path('dashboard/', product_views.dashboard_view, name='dashboard'),
-    
-    # --- Dashboard Đơn hàng ---
     path('dashboard/order/<int:pk>/', product_views.order_detail_view, name='order_detail'),
     path('dashboard/orders/', product_views.dashboard_orders_view, name='dashboard_orders'),
-    path('dashboard/customers/', product_views.dashboard_customers, name='dashboard_customers'),
-    
-    # --- Dashboard Báo cáo ---
+    path('dashboard/customers/', dashboard_views.dashboard_customers, name='dashboard_customers'),
     path('dashboard/report/', product_views.report_view, name='report'),
 
     

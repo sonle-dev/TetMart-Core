@@ -4,7 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum, Count
 from products.models import Product
 from orders.models import Order
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 @login_required(login_url='login')
 def dashboard_view(request):
@@ -45,10 +48,105 @@ def dashboard_view(request):
 
     return render(request, 'dashboard/dashboard.html', context)
 
+@login_required(login_url='login')
 def dashboard_customers(request):
-    return render(request, 'dashboard/customers.html', {
-        'active_page': 'customers'
-    })
+    q = request.GET.get('q', '').strip()
+    status = request.GET.get('status', 'tat_ca')
+    sort = request.GET.get('sort', 'moi_nhat')
+
+    users = User.objects.all().order_by('-date_joined')
+
+    danh_sach_khach_hang = []
+
+    for user in users:
+        
+
+        don_hang_qs = Order.objects.filter(user=user)
+
+        so_don_hang = don_hang_qs.count()
+        tong_chi_tieu = don_hang_qs.aggregate(
+            total=Sum('total_price')
+        )['total'] or 0
+
+        if not user.is_active:
+            trang_thai = 'ngung_hoat_dong'
+        elif tong_chi_tieu >= 1000000:
+            trang_thai = 'vip'
+        elif so_don_hang >= 2:
+            trang_thai = 'than_thiet'
+        else:
+            trang_thai = 'khach_moi'
+
+        tinh_thanh = user.address if user.address else 'Chưa cập nhật'
+        ho_ten = user.get_full_name().strip() if user.get_full_name().strip() else user.username
+        email = user.email if user.email else 'Chưa cập nhật'
+        so_dien_thoai = user.phone if user.phone else 'Chưa cập nhật'
+
+        khach_hang = {
+            'id': user.id,
+            'ho_ten': ho_ten,
+            'ky_tu_dai_dien': ho_ten[:1].upper() if ho_ten else 'K',
+            'ma_khach_hang': f'KH{user.id:03d}',
+            'email': email,
+            'so_dien_thoai': so_dien_thoai,
+            'tinh_thanh': tinh_thanh,
+            'so_don_hang': so_don_hang,
+            'tong_chi_tieu': tong_chi_tieu,
+            'tong_chi_tieu_hien_thi': f"{int(tong_chi_tieu):,}".replace(",", ".") + "đ",
+            'trang_thai': trang_thai,
+            'ngay_tham_gia': user.date_joined,
+            'ngay_tham_gia_hien_thi': user.date_joined.strftime('%d/%m/%Y'),
+        }
+
+        danh_sach_khach_hang.append(khach_hang)
+
+    if q:
+        q_lower = q.lower()
+        danh_sach_khach_hang = [
+            kh for kh in danh_sach_khach_hang
+            if q_lower in kh['ho_ten'].lower()
+            or q_lower in kh['ma_khach_hang'].lower()
+            or q_lower in kh['email'].lower()
+            or q_lower in kh['so_dien_thoai'].lower()
+        ]
+
+    if status != 'tat_ca':
+        danh_sach_khach_hang = [
+            kh for kh in danh_sach_khach_hang
+            if kh['trang_thai'] == status
+        ]
+
+    if sort == 'cu_nhat':
+        danh_sach_khach_hang.sort(key=lambda x: x['ngay_tham_gia'])
+    elif sort == 'ten_a_z':
+        danh_sach_khach_hang.sort(key=lambda x: x['ho_ten'].lower())
+    elif sort == 'nhieu_don_nhat':
+        danh_sach_khach_hang.sort(key=lambda x: x['so_don_hang'], reverse=True)
+    elif sort == 'chi_tieu_cao_nhat':
+        danh_sach_khach_hang.sort(key=lambda x: x['tong_chi_tieu'], reverse=True)
+    else:
+        danh_sach_khach_hang.sort(key=lambda x: x['ngay_tham_gia'], reverse=True)
+
+    tong_khach_hang = len(danh_sach_khach_hang)
+    khach_moi = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'khach_moi'])
+    khach_hang_than_thiet = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'than_thiet'])
+    khach_vip = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'vip'])
+
+    context = {
+        'active_page': 'customers',
+        'tong_khach_hang': tong_khach_hang,
+        'khach_moi': khach_moi,
+        'khach_hang_than_thiet': khach_hang_than_thiet,
+        'khach_vip': khach_vip,
+        'danh_sach_khach_hang': danh_sach_khach_hang,
+        'bo_loc': {
+            'q': q,
+            'status': status,
+            'sort': sort,
+        }
+    }
+
+    return render(request, 'dashboard/customers.html', context)
 
 @login_required(login_url='login')
 def report_view(request):

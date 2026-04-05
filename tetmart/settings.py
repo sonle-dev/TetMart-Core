@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# tiếng việt
+
 LANGUAGE_CODE = 'vi' 
 
 TIME_ZONE = 'Asia/Ho_Chi_Minh'
