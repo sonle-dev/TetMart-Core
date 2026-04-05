@@ -3,7 +3,7 @@
 <div class="product-card h-100 d-flex flex-column">
     <div class="product-img-container">
         <a href="{% url 'product_detail' p.slug %}">
-            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+            <img src="{{ p.image }}" alt="{{ p.name }}">
         </a>
     </div>
 
@@ -29,11 +29,12 @@
                 </a>
 
                 <form method="POST" action="{% url 'cart:add' p.id %}" class="js-ajax-add-to-cart">
-                    {% csrf_token %}
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-outline-danger w-100">
-                        Thêm vào giỏ
-                    </button>
+                  {% csrf_token %}
+                 <input type="hidden" name="quantity" value="1">
+                 <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <button type="submit" class="btn btn-outline-danger w-100">
+                   Thêm vào giỏ
+                  </button>
                 </form>
             </div>
         </div>

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Thêm khách hàng - Tet Mart{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background: #f8fafc; min-height: calc(100vh - 90px);">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='customers' %}
+        </div>
+
+        <div class="col-lg-9 col-xl-10">
+            <div class="mb-4">
+                <a href="{% url 'customers' %}" class="text-decoration-none text-muted fw-semibold">
+                    ← Quay lại danh sách khách hàng
+                </a>
+                <h3 class="fw-bold mt-2 mb-1" style="color: var(--tet-text);">Thêm khách hàng</h3>
+                <p class="text-muted mb-0">Tạo mới hồ sơ khách hàng trong hệ thống.</p>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-3" placeholder="Nguyễn Văn A">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-3" placeholder="09xx xxx xxx">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control rounded-3" placeholder="ten@email.com">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tỉnh / thành</label>
+                                <select class="form-select rounded-3">
+                                    <option>Chọn tỉnh / thành</option>
+                                    <option>Hà Nội</option>
+                                    <option>Đà Nẵng</option>
+                                    <option>Hải Phòng</option>
+                                    <option>TP. Hồ Chí Minh</option>
+                                    <option>Thái Nguyên</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Địa chỉ</label>
+                                <input type="text" class="form-control rounded-3" placeholder="Số nhà, đường, phường/xã, quận/huyện">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Trạng thái khách hàng</label>
+                                <select class="form-select rounded-3">
+                                    <option>Khách mới</option>
+                                    <option>Khách hàng thân thiết</option>
+                                    <option>Khách VIP</option>
+                                    <option>Ngưng hoạt động</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Ngày tham gia</label>
+                                <input type="text" class="form-control rounded-3" value="28/03/2026">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Ghi chú</label>
+                                <textarea class="form-control rounded-3" rows="4" placeholder="Thông tin thêm về khách hàng..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            <button type="submit" class="btn btn-danger fw-bold px-4 rounded-3" style="background-color:#d72323; border:none;">
+                                <i class="fas fa-save me-2"></i>Lưu khách hàng
+                            </button>
+                            <a href="{% url 'customers' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
+                                Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

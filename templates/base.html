@@ -10,7 +10,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -28,7 +28,7 @@
     
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 
-               
+                <!-- ✅ ĐÃ SỬA: Search form submit sang trang /products/ và gửi q -->
                 <form class="d-flex w-100 justify-content-center my-2 my-lg-0"
                       method="get"
                       action="{% url 'product_list' %}">
@@ -94,7 +94,7 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a href="{% url 'login' %}" class="btn btn-danger btn-sm px-4 fw-bold rounded-3" style="background-color: #d72323; border: none;">
+                            <a href="{% url 'core:login' %}" class="btn btn-danger btn-sm px-4 fw-bold rounded-3" style="background-color: #d72323; border: none;">
                                 Đăng nhập
                             </a>
                         </li>
@@ -109,34 +109,30 @@
     <main class="flex-grow-1">
         
         {% if messages %}
-        <div
-            id="toast-container"
-            class="position-fixed top-0 start-50 translate-middle-x p-3"
-            style="z-index: 1080; margin-top: 90px; width: min(92vw, 720px); pointer-events: none;"
-        >
-            {% for message in messages %}
-                <div
-                    class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center mb-2 app-alert"
-                    role="alert"
-                    style="pointer-events: auto;"
-                >
-                    {% if message.tags == 'error' %}
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                    {% else %}
-                        <i class="fas fa-check-circle me-2"></i>
-                    {% endif %}
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="container mt-3">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center" role="alert">
+                                {% if message.tags == 'error' %}
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% else %}
+                                    <i class="fas fa-check-circle me-2"></i>
+                                {% endif %}
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
         {% endif %}
 
         {% block content %}
         {% endblock %}
     </main>
 
-    <`footer class="bg-white pt-5 pb-3 mt-5" style="border-top: 2px solid #ffe4e6;"></>
+    <footer class="bg-white pt-5 pb-3 border-top mt-5" style="border-color: #ffe4e6 !important;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
@@ -197,7 +193,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const toastContainer = document.getElementById('ajax-toast-container');
-    const cartBadge = document.getElementById('cart-count-badge');8
+    const cartBadge = document.getElementById('cart-count-badge');
 
     function showAjaxToast(message, type) {
         if (!toastContainer) return;
@@ -239,12 +235,13 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            const submitButton = form.querySelector('button[type="submit"]');
+            const submitButton = event.submitter || form.querySelector('button[type="submit"]');
             const originalButtonHtml = submitButton ? submitButton.innerHTML : '';
+            const redirectUrl = submitButton ? submitButton.dataset.redirect : '';
 
             if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.innerHTML = 'Đang thêm...';
+                submitButton.innerHTML = redirectUrl ? 'Đang chuyển...' : 'Đang thêm...';
             }
 
             try {
@@ -267,6 +264,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     cartBadge.textContent = data.cart_total_quantity;
                 }
 
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
                 showAjaxToast(data.message, 'success');
             } catch (error) {
                 showAjaxToast(error.message || 'Có lỗi xảy ra.', 'error');
@@ -277,25 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
-    });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const alerts = document.querySelectorAll('#toast-container .app-alert');
-
-    alerts.forEach((alertEl) => {
-        setTimeout(() => {
-            alertEl.classList.remove('show');
-            alertEl.classList.add('hide');
-            alertEl.style.opacity = '0';
-            alertEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            alertEl.style.transform = 'translateY(-10px)';
-
-            setTimeout(() => {
-                alertEl.remove();
-            }, 500);
-        }, 3000);
     });
 });
 </script>

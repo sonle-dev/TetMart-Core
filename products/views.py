@@ -97,6 +97,23 @@ def dashboard_view(request):
         'recent_orders': recent_orders,
     }
     return render(request, 'dashboard/dashboard.html', context)
+@login_required(login_url='login')
+@user_passes_test(is_staff)
+def dashboard_customers(request):
+    context = {
+        'active_page': 'customers',
+        'tong_khach_hang': 0,
+        'khach_moi': 0,
+        'khach_hang_than_thiet': 0,
+        'khach_vip': 0,
+        'bo_loc': {
+            'q': request.GET.get('q', ''),
+            'status': request.GET.get('status', 'tat_ca'),
+            'sort': request.GET.get('sort', 'moi_nhat'),
+        },
+        'danh_sach_khach_hang': [],
+    }
+    return render(request, 'dashboard/customers.html', context)
 # VIEW BÁO CÁO DOANH THU
 @login_required(login_url='login')
 def report_view(request):
@@ -226,7 +243,7 @@ def report_view(request):
     }
 
     return render(request, 'dashboard/report.html', context)
-#  VIEW CHI TIẾT ĐƠN HÀNG 
+# VIEW CHI TIẾT ĐƠN HÀNG
 @login_required(login_url='login')
 @user_passes_test(is_staff)
 def order_detail_view(request, pk):
@@ -234,7 +251,9 @@ def order_detail_view(request, pk):
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        if new_status:
+        allowed_status = ['new', 'pending', 'shipping', 'completed', 'cancelled']
+
+        if new_status in allowed_status:
             order.status = new_status
             order.save()
             return redirect('order_detail', pk=pk)
@@ -248,13 +267,6 @@ def order_detail_view(request, pk):
     context = {
         'order': order,
         'order_items': order_items,
-        'active_page': 'orders'
-    }
-
-    
-
-    context = {
-        'order': order,
         'active_page': 'orders'
     }
 

@@ -1,0 +1,1231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Phân quyền hệ thống - Tet Mart{% endblock %}
+
+{% block content %}
+<style>
+  .perm-page {
+    background: #f8fafc;
+    min-height: calc(100vh - 90px);
+  }
+
+  .perm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .perm-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #14213d;
+    margin-bottom: 6px;
+  }
+
+  .perm-subtitle {
+    color: #6b7280;
+    margin: 0;
+    max-width: 760px;
+    line-height: 1.6;
+  }
+
+  .perm-main {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .perm-card {
+    background: #ffffff;
+    border: 1px solid #ebecef;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+  }
+
+  .perm-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .perm-search {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .perm-search i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+
+  .perm-search input {
+    min-height: 46px;
+    border-radius: 14px;
+    padding-left: 40px;
+  }
+
+  .perm-role-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .perm-role-item {
+    width: 100%;
+    border: 1px solid #ebecef;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 15px 16px;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+
+  .perm-role-item:hover {
+    transform: translateY(-1px);
+    border-color: rgba(220, 38, 38, 0.2);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  }
+
+  .perm-role-item.active {
+    border-color: rgba(220, 38, 38, 0.28);
+    background: linear-gradient(180deg, #fff7f7 0%, #ffffff 100%);
+    box-shadow: 0 12px 24px rgba(220, 38, 38, 0.08);
+  }
+
+  .perm-role-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .perm-role-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #14213d;
+  }
+
+  .perm-role-meta {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .perm-role-desc {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.55;
+  }
+
+  .perm-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .perm-chip.danger {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .perm-chip.warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .perm-chip.primary {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .perm-chip.success {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .perm-chip.secondary {
+    background: #f3f4f6;
+    color: #4b5563;
+  }
+
+  .perm-overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .perm-overview-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #14213d;
+    margin-bottom: 6px;
+  }
+
+  .perm-overview-subtitle {
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .perm-overview-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .perm-mini-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #ebecef;
+    background: #f8fafc;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .perm-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .perm-tab-btn {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #475569;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .perm-tab-btn:hover {
+    border-color: rgba(220, 38, 38, 0.22);
+    color: #dc2626;
+  }
+
+  .perm-tab-btn.active {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.18);
+  }
+
+  .perm-tab-count {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 800;
+    background: rgba(15, 23, 42, 0.08);
+    color: inherit;
+  }
+
+  .perm-tab-btn.active .perm-tab-count {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+  }
+
+  .perm-module-box {
+    border: 1px solid #ebecef;
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .perm-module-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .perm-module-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #14213d;
+    margin-bottom: 4px;
+  }
+
+  .perm-module-desc {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .perm-module-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: #fff5f5;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .perm-toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .perm-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid #f1f3f5;
+    background: #fafafa;
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+
+  .perm-toggle-row span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .perm-member-card {
+    border-top: 1px solid #eef2f7;
+    padding-top: 18px;
+  }
+
+  .perm-member-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .perm-member-head-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .perm-member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .perm-member-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #eef0f3;
+    border-radius: 16px;
+    background: #ffffff;
+  }
+
+  .perm-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .perm-member-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #14213d;
+  }
+
+  .perm-member-email {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .perm-member-actions {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .perm-member-actions .btn {
+    min-width: 72px;
+  }
+
+  .perm-member-actions .btn-outline-danger:hover {
+    color: #fff;
+  }
+
+  .perm-remove-preview,
+  .perm-assign-preview {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #eef0f3;
+    border-radius: 18px;
+    background: #fafafa;
+  }
+
+  .perm-remove-avatar,
+  .perm-assign-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .perm-remove-name,
+  .perm-assign-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #14213d;
+  }
+
+  .perm-remove-email,
+  .perm-assign-email {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .perm-remove-note,
+  .perm-assign-note {
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .perm-remove-note {
+    border: 1px solid #fee2e2;
+    background: #fff5f5;
+    color: #7f1d1d;
+  }
+
+  .perm-assign-note {
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    color: #334155;
+  }
+
+  .perm-empty {
+    text-align: center;
+    padding: 28px 16px;
+    border: 1px dashed #dbe1ea;
+    border-radius: 18px;
+    color: #6b7280;
+    background: #fafcff;
+  }
+
+  .perm-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    min-width: 300px;
+    max-width: 360px;
+    background: #111827;
+    color: #ffffff;
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+    z-index: 1080;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.25s ease;
+  }
+
+  .perm-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .perm-toast-title {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .perm-toast-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+  }
+
+  @media (max-width: 1199.98px) {
+    .perm-main {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .perm-title {
+      font-size: 25px;
+    }
+
+    .perm-card,
+    .perm-module-box {
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .perm-toggle-row,
+    .perm-member-item {
+      flex-wrap: wrap;
+    }
+
+    .perm-member-actions {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .perm-toast {
+      right: 12px;
+      left: 12px;
+      min-width: unset;
+      max-width: unset;
+    }
+  }
+</style>
+
+<div class="container-fluid py-4 perm-page">
+  <div class="row g-4">
+    <div class="col-lg-3 col-xl-2">
+      {% include 'includes/sidebar.html' with active_page='permissions' %}
+    </div>
+
+    <div class="col-lg-9 col-xl-10">
+      <div class="perm-header">
+        <div>
+          <h2 class="perm-title">Phân quyền hệ thống</h2>
+          <p class="perm-subtitle">Quản lý vai trò và thành viên theo giao diện frontend demo.</p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-secondary rounded-3 px-4 fw-semibold">Nhân bản vai trò</button>
+          <button id="savePermissionBtn" class="btn btn-danger rounded-3 px-4 fw-semibold" style="background:#d72323;border:none;">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+
+      <div class="perm-main">
+        <div class="perm-card">
+          <div class="perm-card-head">
+            <h5 class="fw-bold mb-0">Danh sách vai trò</h5>
+            <span class="badge text-bg-light border">5 vai trò</span>
+          </div>
+
+          <div class="perm-search">
+            <i class="bi bi-search"></i>
+            <input type="text" id="roleSearch" class="form-control" placeholder="Tìm vai trò...">
+          </div>
+
+          <div id="roleList" class="perm-role-list"></div>
+        </div>
+
+        <div class="perm-card">
+          <div class="perm-overview">
+            <div>
+              <div class="perm-overview-title" id="roleTitle">Admin tổng</div>
+              <p class="perm-overview-subtitle" id="roleSubtitle">Toàn quyền trên hệ thống quản trị.</p>
+
+              <div class="perm-overview-meta">
+                <span class="perm-chip danger" id="roleLevel">Cao</span>
+                <span class="perm-mini-badge">
+                  <i class="bi bi-people"></i>
+                  <span id="memberCount">2 thành viên</span>
+                </span>
+                <span class="perm-mini-badge">
+                  <i class="bi bi-shield-check"></i>
+                  <span id="permissionCount">0 quyền</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div id="moduleTabs" class="perm-tabs"></div>
+
+          <div id="moduleBox" class="perm-module-box"></div>
+
+          <div class="perm-member-card">
+            <div class="perm-member-head">
+              <div class="perm-member-head-left">
+                <h5 class="fw-bold mb-0">Thành viên thuộc vai trò</h5>
+                <span class="badge text-bg-light border" id="memberCountBadge">2 người</span>
+              </div>
+
+              <button id="openAssignMemberBtn" class="btn btn-sm btn-danger rounded-3 fw-semibold" style="background:#d72323;border:none;">
+                Thêm thành viên
+              </button>
+            </div>
+
+            <div id="memberList" class="perm-member-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="assignMemberModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 overflow-hidden">
+      <div class="modal-header border-0" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <div>
+          <h5 class="modal-title text-white fw-bold mb-1">Thêm thành viên</h5>
+          <p class="mb-0 text-white-50 small">Chọn thành viên để gán vào vai trò hiện tại.</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="perm-assign-preview mb-3">
+          <div class="perm-assign-avatar" id="assignMemberAvatar">A</div>
+
+          <div>
+            <div class="perm-assign-name" id="assignMemberName">Chưa chọn thành viên</div>
+            <div class="perm-assign-email" id="assignMemberEmail">Vui lòng chọn ở danh sách bên dưới</div>
+          </div>
+        </div>
+
+        <div class="perm-assign-note mb-3">
+          Thành viên được chọn sẽ được thêm vào vai trò
+          <strong id="assignRoleName">Admin tổng</strong>.
+        </div>
+
+        <div class="mb-0">
+          <label class="form-label fw-semibold">Danh sách thành viên khả dụng</label>
+          <select id="assignMemberSelect" class="form-select rounded-3"></select>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0 px-4 pb-4">
+        <button type="button" class="btn btn-light border rounded-3 px-4" data-bs-dismiss="modal">
+          Hủy
+        </button>
+        <button type="button" id="confirmAssignMemberBtn" class="btn btn-danger rounded-3 px-4" style="background:#d72323;border:none;">
+          Thêm thành viên
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="removeMemberModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 overflow-hidden">
+      <div class="modal-header border-0" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <div>
+          <h5 class="modal-title text-white fw-bold mb-1">Xóa thành viên khỏi vai trò</h5>
+          <p class="mb-0 text-white-50 small">Thao tác này chỉ áp dụng trên giao diện demo.</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="perm-remove-preview">
+          <div class="perm-remove-avatar" id="removeMemberAvatar">A</div>
+
+          <div>
+            <div class="perm-remove-name" id="removeMemberName">admin.tetmart</div>
+            <div class="perm-remove-email" id="removeMemberEmail">admin@tetmart.vn</div>
+          </div>
+        </div>
+
+        <div class="perm-remove-note mt-3">
+          Bạn có chắc chắn muốn xóa thành viên này khỏi vai trò
+          <strong id="removeMemberRoleName">Admin tổng</strong> không?
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0 px-4 pb-4">
+        <button type="button" class="btn btn-light border rounded-3 px-4" data-bs-dismiss="modal">
+          Hủy
+        </button>
+        <button type="button" id="confirmRemoveMemberBtn" class="btn btn-danger rounded-3 px-4" style="background:#d72323;border:none;">
+          Xóa thành viên
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="saveToast" class="perm-toast">
+  <div id="saveToastTitle" class="perm-toast-title">Đã lưu thay đổi</div>
+  <p id="saveToastText" class="perm-toast-text">Cấu hình quyền đã được cập nhật trên giao diện demo.</p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const userPool = [
+    { name: 'admin.tetmart', email: 'admin@tetmart.vn' },
+    { name: 'lauren.pm', email: 'lauren@tetmart.vn' },
+    { name: 'hanh.ops', email: 'hanh@tetmart.vn' },
+    { name: 'nam.ops', email: 'nam@tetmart.vn' },
+    { name: 'quynh.ops', email: 'quynh@tetmart.vn' },
+    { name: 'tung.ops', email: 'tung@tetmart.vn' },
+    { name: 'phuong.catalog', email: 'phuong@tetmart.vn' },
+    { name: 'duy.catalog', email: 'duy@tetmart.vn' },
+    { name: 'mai.catalog', email: 'mai@tetmart.vn' },
+    { name: 'thao.cskh', email: 'thao@tetmart.vn' },
+    { name: 'vy.cskh', email: 'vy@tetmart.vn' },
+    { name: 'linh.cskh', email: 'linh@tetmart.vn' },
+    { name: 'yen.cskh', email: 'yen@tetmart.vn' },
+    { name: 'khanh.cskh', email: 'khanh@tetmart.vn' },
+    { name: 'anh.bi', email: 'anh@tetmart.vn' },
+    { name: 'bao.bi', email: 'bao@tetmart.vn' },
+    { name: 'minh.content', email: 'minh@tetmart.vn' },
+    { name: 'trang.content', email: 'trang@tetmart.vn' }
+  ];
+
+  const roleData = [
+    {
+      id: 'admin',
+      name: 'Admin tổng',
+      level: 'Cao',
+      levelClass: 'danger',
+      description: 'Toàn quyền trên hệ thống quản trị.',
+      members: [
+        { name: 'admin.tetmart', email: 'admin@tetmart.vn' },
+        { name: 'lauren.pm', email: 'lauren@tetmart.vn' }
+      ],
+      modules: [
+        {
+          title: 'Dashboard',
+          description: 'Truy cập trang tổng quan và số liệu chính.',
+          permissions: [
+            { label: 'Xem dashboard', enabled: true },
+            { label: 'Xem số liệu doanh thu', enabled: true }
+          ]
+        },
+        {
+          title: 'Đơn hàng',
+          description: 'Quản lý toàn bộ quy trình đơn hàng.',
+          permissions: [
+            { label: 'Xem danh sách đơn', enabled: true },
+            { label: 'Xem chi tiết đơn', enabled: true },
+            { label: 'Cập nhật trạng thái đơn', enabled: true },
+            { label: 'Xuất danh sách đơn', enabled: true }
+          ]
+        },
+        {
+          title: 'Sản phẩm',
+          description: 'Thao tác đầy đủ với sản phẩm.',
+          permissions: [
+            { label: 'Xem sản phẩm', enabled: true },
+            { label: 'Thêm sản phẩm', enabled: true },
+            { label: 'Sửa sản phẩm', enabled: true },
+            { label: 'Xóa sản phẩm', enabled: true }
+          ]
+        },
+        {
+          title: 'Phân quyền',
+          description: 'Thiết lập vai trò và gán quyền cho thành viên.',
+          permissions: [
+            { label: 'Xem trang phân quyền', enabled: true },
+            { label: 'Tạo vai trò mới', enabled: true },
+            { label: 'Gán vai trò cho thành viên', enabled: true }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'orders',
+      name: 'Quản lý đơn hàng',
+      level: 'Vận hành',
+      levelClass: 'warning',
+      description: 'Xử lý đơn, cập nhật trạng thái và theo dõi giao hàng.',
+      members: [
+        { name: 'hanh.ops', email: 'hanh@tetmart.vn' },
+        { name: 'nam.ops', email: 'nam@tetmart.vn' },
+        { name: 'quynh.ops', email: 'quynh@tetmart.vn' },
+        { name: 'tung.ops', email: 'tung@tetmart.vn' }
+      ],
+      modules: [
+        {
+          title: 'Đơn hàng',
+          description: 'Quyền chuyên xử lý nghiệp vụ đơn hàng.',
+          permissions: [
+            { label: 'Xem danh sách đơn', enabled: true },
+            { label: 'Xem chi tiết đơn', enabled: true },
+            { label: 'Cập nhật trạng thái', enabled: true },
+            { label: 'Hủy đơn', enabled: false },
+            { label: 'Xuất file', enabled: true }
+          ]
+        },
+        {
+          title: 'Khách hàng',
+          description: 'Chỉ xem thông tin cần thiết để hỗ trợ đơn.',
+          permissions: [
+            { label: 'Xem khách hàng', enabled: true },
+            { label: 'Khóa khách hàng', enabled: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'products',
+      name: 'Quản lý sản phẩm',
+      level: 'Danh mục',
+      levelClass: 'primary',
+      description: 'Tạo mới, chỉnh sửa và quản lý trạng thái sản phẩm.',
+      members: [
+        { name: 'phuong.catalog', email: 'phuong@tetmart.vn' },
+        { name: 'duy.catalog', email: 'duy@tetmart.vn' },
+        { name: 'mai.catalog', email: 'mai@tetmart.vn' }
+      ],
+      modules: [
+        {
+          title: 'Sản phẩm',
+          description: 'Quản trị danh mục và hiển thị sản phẩm.',
+          permissions: [
+            { label: 'Xem sản phẩm', enabled: true },
+            { label: 'Thêm mới', enabled: true },
+            { label: 'Chỉnh sửa', enabled: true },
+            { label: 'Xóa', enabled: false },
+            { label: 'Ẩn / hiện sản phẩm', enabled: true }
+          ]
+        },
+        {
+          title: 'Báo cáo',
+          description: 'Xem hiệu quả danh mục theo sản phẩm.',
+          permissions: [
+            { label: 'Xem báo cáo', enabled: true },
+            { label: 'Xuất báo cáo', enabled: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'customers',
+      name: 'CSKH',
+      level: 'Chăm sóc',
+      levelClass: 'success',
+      description: 'Xem hồ sơ khách hàng và hỗ trợ đơn hàng.',
+      members: [
+        { name: 'thao.cskh', email: 'thao@tetmart.vn' },
+        { name: 'vy.cskh', email: 'vy@tetmart.vn' },
+        { name: 'linh.cskh', email: 'linh@tetmart.vn' },
+        { name: 'yen.cskh', email: 'yen@tetmart.vn' },
+        { name: 'khanh.cskh', email: 'khanh@tetmart.vn' }
+      ],
+      modules: [
+        {
+          title: 'Khách hàng',
+          description: 'Chăm sóc khách hàng và xem lịch sử mua sắm.',
+          permissions: [
+            { label: 'Xem danh sách khách hàng', enabled: true },
+            { label: 'Xem chi tiết khách hàng', enabled: true },
+            { label: 'Thêm khách hàng mới', enabled: false },
+            { label: 'Khóa khách hàng', enabled: false }
+          ]
+        },
+        {
+          title: 'Đơn hàng',
+          description: 'Chỉ hỗ trợ xem đơn để tư vấn cho khách.',
+          permissions: [
+            { label: 'Xem danh sách đơn', enabled: true },
+            { label: 'Cập nhật trạng thái đơn', enabled: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'reports',
+      name: 'Nhân viên báo cáo',
+      level: 'Báo cáo',
+      levelClass: 'secondary',
+      description: 'Truy cập dashboard, biểu đồ và xuất báo cáo.',
+      members: [
+        { name: 'anh.bi', email: 'anh@tetmart.vn' },
+        { name: 'bao.bi', email: 'bao@tetmart.vn' }
+      ],
+      modules: [
+        {
+          title: 'Báo cáo',
+          description: 'Xem dashboard và thống kê kinh doanh.',
+          permissions: [
+            { label: 'Xem dashboard', enabled: true },
+            { label: 'Xem báo cáo doanh thu', enabled: true },
+            { label: 'Xuất báo cáo', enabled: true },
+            { label: 'Truy cập phân quyền', enabled: false }
+          ]
+        }
+      ]
+    }
+  ];
+
+  const roleList = document.getElementById('roleList');
+  const roleSearch = document.getElementById('roleSearch');
+  const roleTitle = document.getElementById('roleTitle');
+  const roleSubtitle = document.getElementById('roleSubtitle');
+  const roleLevel = document.getElementById('roleLevel');
+  const memberCount = document.getElementById('memberCount');
+  const memberCountBadge = document.getElementById('memberCountBadge');
+  const permissionCount = document.getElementById('permissionCount');
+  const moduleTabs = document.getElementById('moduleTabs');
+  const moduleBox = document.getElementById('moduleBox');
+  const memberList = document.getElementById('memberList');
+  const savePermissionBtn = document.getElementById('savePermissionBtn');
+  const saveToast = document.getElementById('saveToast');
+  const saveToastTitle = document.getElementById('saveToastTitle');
+  const saveToastText = document.getElementById('saveToastText');
+
+  const openAssignMemberBtn = document.getElementById('openAssignMemberBtn');
+  const assignMemberModalElement = document.getElementById('assignMemberModal');
+  const assignMemberSelect = document.getElementById('assignMemberSelect');
+  const assignRoleName = document.getElementById('assignRoleName');
+  const assignMemberAvatar = document.getElementById('assignMemberAvatar');
+  const assignMemberName = document.getElementById('assignMemberName');
+  const assignMemberEmail = document.getElementById('assignMemberEmail');
+  const confirmAssignMemberBtn = document.getElementById('confirmAssignMemberBtn');
+
+  const removeMemberModalElement = document.getElementById('removeMemberModal');
+  const removeMemberName = document.getElementById('removeMemberName');
+  const removeMemberEmail = document.getElementById('removeMemberEmail');
+  const removeMemberAvatar = document.getElementById('removeMemberAvatar');
+  const removeMemberRoleName = document.getElementById('removeMemberRoleName');
+  const confirmRemoveMemberBtn = document.getElementById('confirmRemoveMemberBtn');
+
+  let currentRoleId = 'admin';
+  let currentModuleIndex = 0;
+  let searchText = '';
+  let toastTimer = null;
+  let pendingRemoveMemberEmail = '';
+  let pendingRemoveMemberName = '';
+
+  function getCurrentRole() {
+    return roleData.find(role => role.id === currentRoleId) || roleData[0];
+  }
+
+  function getAvailableUsersForCurrentRole() {
+    const role = getCurrentRole();
+    const currentEmails = role.members.map(member => member.email);
+    return userPool.filter(user => !currentEmails.includes(user.email));
+  }
+
+  function updateAssignMemberPreview() {
+    const selectedEmail = assignMemberSelect.value;
+    const availableUsers = getAvailableUsersForCurrentRole();
+    const selectedUser = availableUsers.find(user => user.email === selectedEmail);
+
+    if (!selectedUser) {
+      assignMemberAvatar.textContent = '?';
+      assignMemberName.textContent = 'Chưa chọn thành viên';
+      assignMemberEmail.textContent = 'Vui lòng chọn ở danh sách bên dưới';
+      confirmAssignMemberBtn.disabled = true;
+      return;
+    }
+
+    assignMemberAvatar.textContent = selectedUser.name.charAt(0).toUpperCase();
+    assignMemberName.textContent = selectedUser.name;
+    assignMemberEmail.textContent = selectedUser.email;
+    confirmAssignMemberBtn.disabled = false;
+  }
+
+  function populateAssignMemberSelect() {
+    const role = getCurrentRole();
+    const availableUsers = getAvailableUsersForCurrentRole();
+
+    assignRoleName.textContent = role.name;
+
+    if (!availableUsers.length) {
+      assignMemberSelect.innerHTML = `<option value="">Không còn thành viên khả dụng</option>`;
+      assignMemberAvatar.textContent = '!';
+      assignMemberName.textContent = 'Không còn thành viên khả dụng';
+      assignMemberEmail.textContent = 'Tất cả thành viên trong danh sách đã thuộc vai trò này';
+      confirmAssignMemberBtn.disabled = true;
+      return;
+    }
+
+    assignMemberSelect.innerHTML = `
+      <option value="">Chọn thành viên</option>
+      ${availableUsers.map(user => `
+        <option value="${user.email}">${user.name} - ${user.email}</option>
+      `).join('')}
+    `;
+
+    confirmAssignMemberBtn.disabled = true;
+    updateAssignMemberPreview();
+  }
+
+  function showToast(title, text) {
+    saveToastTitle.textContent = title;
+    saveToastText.textContent = text;
+    saveToast.classList.add('show');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      saveToast.classList.remove('show');
+    }, 2200);
+  }
+
+  function renderRoleList() {
+    const filtered = roleData.filter(role =>
+      role.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    if (!filtered.length) {
+      roleList.innerHTML = `
+        <div class="perm-empty">
+          Không tìm thấy vai trò phù hợp.
+        </div>
+      `;
+      return;
+    }
+
+    roleList.innerHTML = filtered.map(role => `
+      <button class="perm-role-item ${role.id === currentRoleId ? 'active' : ''}" data-role-id="${role.id}">
+        <div class="perm-role-top">
+          <div>
+            <div class="perm-role-name">${role.name}</div>
+            <div class="perm-role-meta">${role.members.length} thành viên</div>
+          </div>
+          <span class="perm-chip ${role.levelClass}">${role.level}</span>
+        </div>
+        <div class="perm-role-desc">${role.description}</div>
+      </button>
+    `).join('');
+
+    document.querySelectorAll('[data-role-id]').forEach(button => {
+      button.addEventListener('click', function () {
+        currentRoleId = this.getAttribute('data-role-id');
+        currentModuleIndex = 0;
+        renderAll();
+      });
+    });
+  }
+
+  function renderOverview() {
+    const role = getCurrentRole();
+    const totalPermissions = role.modules.reduce((sum, module) => sum + module.permissions.length, 0);
+
+    roleTitle.textContent = role.name;
+    roleSubtitle.textContent = role.description;
+    roleLevel.textContent = role.level;
+    roleLevel.className = `perm-chip ${role.levelClass}`;
+    memberCount.textContent = `${role.members.length} thành viên`;
+    memberCountBadge.textContent = `${role.members.length} người`;
+    permissionCount.textContent = `${totalPermissions} quyền`;
+  }
+
+  function renderTabs() {
+    const role = getCurrentRole();
+
+    moduleTabs.innerHTML = role.modules.map((module, index) => `
+      <button class="perm-tab-btn ${index === currentModuleIndex ? 'active' : ''}" data-module-index="${index}">
+        <span>${module.title}</span>
+        <span class="perm-tab-count">${module.permissions.length}</span>
+      </button>
+    `).join('');
+
+    document.querySelectorAll('[data-module-index]').forEach(button => {
+      button.addEventListener('click', function () {
+        currentModuleIndex = Number(this.getAttribute('data-module-index'));
+        renderTabs();
+        renderModule();
+      });
+    });
+  }
+
+  function renderModule() {
+    const role = getCurrentRole();
+    const module = role.modules[currentModuleIndex];
+
+    if (!module) {
+      moduleBox.innerHTML = `<div class="perm-empty">Chưa có nhóm quyền.</div>`;
+      return;
+    }
+
+    const enabledCount = module.permissions.filter(item => item.enabled).length;
+
+    moduleBox.innerHTML = `
+      <div class="perm-module-head">
+        <div>
+          <div class="perm-module-title">${module.title}</div>
+          <p class="perm-module-desc">${module.description}</p>
+        </div>
+
+        <div class="perm-module-summary">
+          ${enabledCount}/${module.permissions.length} quyền đang bật
+        </div>
+      </div>
+
+      <div class="perm-toggle-list">
+        ${module.permissions.map(permission => `
+          <label class="perm-toggle-row">
+            <span>${permission.label}</span>
+            <div class="form-check form-switch m-0">
+              <input class="form-check-input permission-switch" type="checkbox" ${permission.enabled ? 'checked' : ''}>
+            </div>
+          </label>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderMembers() {
+    const role = getCurrentRole();
+
+    memberList.innerHTML = role.members.map(member => `
+      <div class="perm-member-item">
+        <div class="perm-avatar">${member.name.charAt(0).toUpperCase()}</div>
+
+        <div class="flex-grow-1">
+          <div class="perm-member-name">${member.name}</div>
+          <div class="perm-member-email">${member.email}</div>
+        </div>
+
+        <div class="perm-member-actions">
+          <button
+            class="btn btn-sm btn-outline-danger rounded-3 fw-semibold member-remove-btn"
+            data-member-email="${member.email}"
+            data-member-name="${member.name}">
+            Xóa
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderAll() {
+    renderRoleList();
+    renderOverview();
+    renderTabs();
+    renderModule();
+    renderMembers();
+  }
+
+  roleSearch.addEventListener('input', function () {
+    searchText = this.value;
+    renderRoleList();
+  });
+
+  savePermissionBtn.addEventListener('click', function () {
+    showToast(
+      'Đã lưu thay đổi',
+      'Cấu hình quyền đã được cập nhật trên giao diện demo.'
+    );
+  });
+
+  const assignMemberModal = new bootstrap.Modal(assignMemberModalElement);
+  const removeMemberModal = new bootstrap.Modal(removeMemberModalElement);
+
+  openAssignMemberBtn.addEventListener('click', function () {
+    populateAssignMemberSelect();
+    assignMemberModal.show();
+  });
+
+  assignMemberSelect.addEventListener('change', function () {
+    updateAssignMemberPreview();
+  });
+
+  confirmAssignMemberBtn.addEventListener('click', function () {
+    const selectedEmail = assignMemberSelect.value;
+    const availableUsers = getAvailableUsersForCurrentRole();
+    const selectedUser = availableUsers.find(user => user.email === selectedEmail);
+
+    if (!selectedUser) return;
+
+    const role = getCurrentRole();
+    role.members.push({
+      name: selectedUser.name,
+      email: selectedUser.email
+    });
+
+    assignMemberModal.hide();
+    renderAll();
+
+    showToast(
+      'Đã thêm thành viên',
+      `${selectedUser.name} đã được thêm vào vai trò ${role.name}.`
+    );
+  });
+
+  memberList.addEventListener('click', function (event) {
+    const removeBtn = event.target.closest('.member-remove-btn');
+    if (!removeBtn) return;
+
+    const role = getCurrentRole();
+    pendingRemoveMemberEmail = removeBtn.getAttribute('data-member-email');
+    pendingRemoveMemberName = removeBtn.getAttribute('data-member-name');
+
+    removeMemberName.textContent = pendingRemoveMemberName;
+    removeMemberEmail.textContent = pendingRemoveMemberEmail;
+    removeMemberAvatar.textContent = pendingRemoveMemberName.charAt(0).toUpperCase();
+    removeMemberRoleName.textContent = role.name;
+
+    removeMemberModal.show();
+  });
+
+  confirmRemoveMemberBtn.addEventListener('click', function () {
+    const role = getCurrentRole();
+
+    role.members = role.members.filter(member => member.email !== pendingRemoveMemberEmail);
+
+    removeMemberModal.hide();
+    renderAll();
+
+    showToast(
+      'Đã xóa thành viên',
+      `${pendingRemoveMemberName} đã được gỡ khỏi vai trò ${role.name}.`
+    );
+
+    pendingRemoveMemberEmail = '';
+    pendingRemoveMemberName = '';
+  });
+
+  renderAll();
+});
+</script>
+{% endblock %}

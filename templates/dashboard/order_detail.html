@@ -43,9 +43,9 @@
             </div>
 
             <div class="row g-4">
-
+                
                 <div class="col-md-8">
-
+                    
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white py-3">
                             <h6 class="fw-bold m-0">Thông tin khách hàng</h6>
@@ -53,7 +53,7 @@
                         <div class="card-body">
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Họ tên:</div>
-                                <div class="col-md-9 fw-bold">{{ order.full_name|default:order.user.username }}</div>
+                                <div class="col-md-9 fw-bold">{{ order.customer }}</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">SĐT:</div>
@@ -65,23 +65,25 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Ghi chú:</div>
-                                <div class="col-md-9 text-danger">{{ order.note|default:"Không có ghi chú" }}</div>
+                                <div class="col-md-9 text-danger">{{ order.note }}</div>
                             </div>
-                            <div class="mb-2">
-                                <span class="text-muted">Trạng thái:</span>
-                                {% if order.status == 'new' %}
-                                    <span class="badge bg-warning text-dark">Đơn mới</span>
-                                {% elif order.status == 'pending' %}
-                                    <span class="badge bg-danger text-white">Chờ xử lý</span>
-                                {% elif order.status == 'shipping' %}
-                                    <span class="badge bg-info text-white">Đang giao hàng</span>
-                                {% elif order.status == 'completed' %}
-                                    <span class="badge bg-success">Hoàn thành</span>
-                                {% elif order.status == 'cancelled' %}
-                                    <span class="badge bg-secondary">Đã hủy</span>
-                                {% else %}
-                                    <span class="badge bg-dark">{{ order.get_status_display }}</span>
-                                {% endif %}
+                            <div class="row">
+                                <div class="col-md-3 text-muted">Trạng thái:</div>
+                                <div class="col-md-9">
+                                    {% if order.status == 'new' %}
+                                        <span class="badge bg-warning text-dark px-3 rounded-pill border border-warning">Đơn mới</span>
+                                    {% elif order.status == 'pending' %}
+                                        <span class="badge bg-danger text-dark px-3 rounded-pill border border-warning">Chờ xử lý</span>
+                                    {% elif order.status == 'shipping' %}
+                                        <span class="badge bg-info text-dark px-3 rounded-pill border border-info">Đang giao hàng</span>
+                                    {% elif order.status == 'completed' %}
+                                        <span class="badge bg-success px-3 rounded-pill border border-success">Hoàn thành</span>
+                                    {% elif order.status == 'cancelled' %}
+                                        <span class="badge bg-secondary px-3 rounded-pill">Đã hủy</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark px-3 rounded-pill">{{ order.status }}</span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,9 +105,9 @@
                                 <tbody>
                                     {% for item in order.items.all %}
                                     <tr>
-                                        <td class="ps-4 py-3">{{ item.product.name }}</td>
+                                        <td class="ps-4 py-3">{{ item.name }}</td>
                                         <td class="text-center">{{ item.quantity }}</td>
-                                        <td class="text-end">{{ item.price|floatformat:0 }}</td>
+                                        <td class="text-end">{{ item.price }}</td>
                                         <td class="text-end pe-4 fw-bold text-dark">{{ item.total }}</td>
                                     </tr>
                                     {% endfor %}
@@ -113,48 +115,51 @@
                                 <tfoot class="bg-light">
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold py-3">Tổng tiền:</td>
-                                        <td class="text-end pe-4 fw-bold text-danger fs-5">{{ order.total_price }}</td>
+                                        <td class="text-end pe-4 fw-bold text-danger fs-5">{{ order.total_money }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
                     </div>
 
-            </div>
+                </div>
 
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm mb-3">
-            <div class="card-header">Cập nhật trạng thái</div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Trạng thái đơn hàng</label>
-                        <select name="status" class="form-select">
-                            <option value="new" {% if order.status == 'new' %}selected{% endif %}>Đơn mới</option>
-                            <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Chờ xử lý</option>
-                            <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Đang giao hàng</option>
-                            <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Hoàn thành</option>
-                            <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
-                        </select>
+                <div class="col-md-4">
+                    
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="fw-bold m-0">Cập nhật trạng thái</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Trạng thái đơn hàng</label>
+                                    <select name="status" class="form-select">
+                                        <option value="new" {% if order.status == 'new' %}selected{% endif %}>Đơn mới</option>
+                                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Chờ xử lý</option>
+                                        <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Đang giao hàng</option>
+                                        <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Hoàn thành</option>
+                                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold mb-2">
+                                    Lưu trạng thái
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary w-100">Hủy đơn</button>
+                            </form>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-danger w-100">
-                        Lưu trạng thái
-                    </button>
-                </form>
+                    <div class="alert alert-primary bg-primary-subtle border-0 text-primary small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Lưu ý:</strong> Chỉ cho phép cập nhật trạng thái theo thứ tự hợp lý: 
+                        Chờ xử lý → Đang giao → Hoàn thành.
+                    </div>
+
+                </div>
             </div>
-        </div>
 
-        <div class="alert alert-primary bg-primary-subtle border-0 text-primary small">
-            <i class="fas fa-info-circle me-1"></i>
-            <strong>Lưu ý:</strong> Chỉ cho phép cập nhật trạng thái theo thứ tự hợp lý:
-            Chờ xử lý → Đang giao → Hoàn thành.
-        </div>
-    </div>
-
-</div>
         </main>
     </div>
 </div>

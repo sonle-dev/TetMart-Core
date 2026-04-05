@@ -17,12 +17,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard_orders' %}">
+                        <a class="nav-link text-dark hover-effect" href="#">
                             <i class="fas fa-file-invoice me-2"></i> Đơn hàng
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard_products' %}">
+                        <a class="nav-link text-dark hover-effect" href="#">
                             <i class="fas fa-box-open me-2"></i> Sản phẩm
                         </a>
                     </li>
@@ -131,7 +131,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3">
                     <h5 class="fw-bold m-0 text-dark">Top sản phẩm bán chạy</h5>
@@ -172,15 +172,9 @@
 <script>
     const labels = JSON.parse('{{ chart_labels_json|escapejs }}');
     const revenueData = JSON.parse('{{ chart_data_json|escapejs }}');
-    const orderLabels = JSON.parse('{{ order_chart_labels_json|escapejs }}');
     const orderData = JSON.parse('{{ order_chart_data_json|escapejs }}');
     const categoryLabels = JSON.parse('{{ category_labels_json|escapejs }}');
     const categoryData = JSON.parse('{{ category_data_json|escapejs }}');
-
-    console.log("labels =", labels);
-    console.log("revenueData =", revenueData);
-    console.log("orderLabels =", orderLabels);
-    console.log("orderData =", orderData);
 
     function formatMoney(value) {
         return Number(value).toLocaleString('vi-VN') + 'đ';
@@ -242,7 +236,7 @@
         new Chart(orderCtx, {
             type: 'line',
             data: {
-                labels: orderLabels,
+                labels: labels,
                 datasets: [{
                     label: 'Số đơn hàng',
                     data: orderData,
@@ -428,9 +422,4 @@
         flex-shrink: 0;
     }
 </style>
-<script>
-console.log("labels:", {{ chart_labels_json|safe }});
-console.log("revenue:", {{ chart_data_json|safe }});
-console.log("orders:", {{ order_chart_data_json|safe }});
-</script>
 {% endblock %}

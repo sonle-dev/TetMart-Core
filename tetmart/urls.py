@@ -26,6 +26,7 @@ urlpatterns = [
     # --- Dashboard Đơn hàng ---
     path('dashboard/order/<int:pk>/', product_views.order_detail_view, name='order_detail'),
     path('dashboard/orders/', product_views.dashboard_orders_view, name='dashboard_orders'),
+    path('dashboard/customers/', product_views.dashboard_customers, name='dashboard_customers'),
     
     # --- Dashboard Báo cáo ---
     path('dashboard/report/', product_views.report_view, name='report'),
@@ -40,7 +41,7 @@ urlpatterns = [
     path('products/', product_views.product_list_view, name='product_list'),
 
     path('cart/', include('apps.cart.urls')),
-    path('orders/', include('apps.orders.urls')),
+    path('orders/', include('orders.urls')),
 ]
 
 if settings.DEBUG:

@@ -4,19 +4,19 @@
 {% block title %}Quản lý đơn hàng - Tet Mart{% endblock %}
 
 {% block content %}
-<div class="container-fluid bg-light" style="min-height: 100vh;">
-    <div class="row">
-        
-        {% include 'includes/sidebar.html' with active_page='orders' %}
+<div class="container-fluid py-4" style="background: #f8fafc; min-height: calc(100vh - 90px);">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='orders' %}
+        </div>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-
+        <div class="col-lg-9 col-xl-10">
             <div class="mb-4">
-                <h4 class="fw-bold text-dark">Quản lý Đơn hàng</h4>
-                <p class="text-muted small">Xem và cập nhật trạng thái đơn hàng của khách</p>
+                <h4 class="fw-bold text-dark mb-0">Quản lý đơn hàng</h4>
+                <p class="text-muted small mb-0">Xem và cập nhật trạng thái đơn hàng của khách</p>
             </div>
 
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -24,9 +24,14 @@
                                 <span class="input-group-text bg-white border-end-0">
                                     <i class="fas fa-search text-muted"></i>
                                 </span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT...">
+                                <input
+                                    type="text"
+                                    class="form-control border-start-0 ps-0"
+                                    placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT..."
+                                >
                             </div>
                         </div>
+
                         <div class="col-md-3">
                             <select class="form-select text-dark fw-bold">
                                 <option selected>⚡ Trạng thái: Tất cả</option>
@@ -35,6 +40,7 @@
                                 <option value="completed">Hoàn thành</option>
                             </select>
                         </div>
+
                         <div class="col-md-3">
                             <select class="form-select">
                                 <option selected>📅 Mới nhất</option>
@@ -45,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -58,48 +64,63 @@
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
                                     <th>Ngày tạo</th>
-                                    <th class="text-center" style="width: 140px;">Hành động</th>
+                                    <th class="text-end pe-4">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for order in orders %}
                                 <tr>
-                                    <td class="ps-4 fw-bold text-dark">{{ order.id }}</td>
+                                    <td class="ps-4 fw-bold text-dark">#DH{{ order.id }}</td>
+
                                     <td>
-                                        <div class="fw-bold">{{ order.full_name|default:order.user.username }}</div>
+                                        <div class="fw-bold">
+                                            {% if order.user %}
+                                                {{ order.user.username }}
+                                            {% else %}
+                                                Chưa cập nhật
+                                            {% endif %}
+                                        </div>
                                     </td>
 
-                                    <td>{{ order.phone }}</td>
-
-                                    <td class="text-muted small" style="max-width: 200px;">
-                                        <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ order.address }}
+                                    <td>
+                                        {{ order.phone|default:"Chưa cập nhật" }}
                                     </td>
+
+                                    <td class="text-muted small" style="max-width: 220px;">
+                                        <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                        {{ order.address|default:"Chưa cập nhật" }}
+                                    </td>
+
                                     <td class="fw-bold text-danger">
                                         {{ order.formatted_total_price }}đ
                                     </td>
-                                    
+
                                     <td>
                                         {% if order.status == 'new' %}
                                             <span class="badge bg-warning text-dark px-3 py-2 rounded-pill border border-warning">Đơn mới</span>
                                         {% elif order.status == 'pending' %}
-                                            <span class="badge bg-danger text-white px-3 py-2 rounded-pill border border-danger">Chờ xử lý</span>
+                                            <span class="badge bg-danger text-dark px-3 py-2 rounded-pill border border-warning">Chờ xử lý</span>
                                         {% elif order.status == 'shipping' %}
-                                            <span class="badge bg-info text-white px-3 py-2 rounded-pill border border-info">Đang giao</span>
+                                            <span class="badge bg-info text-dark px-3 py-2 rounded-pill border border-info">Đang giao</span>
                                         {% elif order.status == 'completed' %}
                                             <span class="badge bg-success px-3 py-2 rounded-pill border border-success">Hoàn thành</span>
                                         {% elif order.status == 'cancelled' %}
-                                            <span class="badge bg-secondary px-3 py-2 rounded-pill border border-secondary">Đã hủy</span>
+                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
                                         {% else %}
-                                            <span class="badge bg-dark px-3 py-2 rounded-pill">{{ order.get_status_display }}</span>
+                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">{{ order.status }}</span>
                                         {% endif %}
                                     </td>
-                                    <td class="text-muted small">{{ order.created_at|date:"d/m/Y" }}</td>
-                                    <td class="text-center">
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold me-1">
+
+                                    <td class="text-muted small">
+                                        {{ order.created_at|date:"d/m/Y" }}
+                                    </td>
+
+                                    <td class="text-end pe-4">
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold rounded-3">
                                             <i class="fas fa-eye"></i> Xem
                                         </a>
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-danger ms-1">
-                                            <i class="fas fa-trash"></i>
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-danger ms-1 rounded-3">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -108,7 +129,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-between align-items-center">
                     <div class="small text-muted">Hiển thị 4 trên 150 đơn hàng</div>
                     <nav>
@@ -122,21 +143,7 @@
                     </nav>
                 </div>
             </div>
-
-        </main>
+        </div>
     </div>
 </div>
-
-<style>
-    .hover-effect {
-        transition: all 0.2s;
-        border-radius: 5px;
-    }
-    .hover-effect:hover {
-        background-color: #ffe5e5;
-        color: #d72323 !important;
-        font-weight: bold;
-        transform: translateX(5px);
-    }
-</style>
 {% endblock %}

@@ -1,60 +1,77 @@
-<nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
-    <div class="position-sticky pt-3">
-        
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">
-            <span>Quản lý chung</span>
-        </h6>
-        <ul class="nav flex-column gap-2">
-            <li class="nav-item">
-                <a class="nav-link {% if active_page == 'dashboard' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'dashboard' %}">
-                    <i class="fas fa-chart-line me-2"></i> Tổng quan
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link {% if active_page == 'orders' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'dashboard_orders' %}">
-                    <i class="fas fa-file-invoice me-2"></i> Đơn hàng
-                    {% if active_page != 'orders' %}<span class="badge bg-warning text-dark ms-2">5</span>{% endif %}
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link {% if active_page == 'products' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}"
-                    href="{% url 'dashboard_products' %}">
-                    <i class="fas fa-box-open me-2"></i> Sản phẩm
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-dark hover-effect" href="#">
-                    <i class="fas fa-users me-2"></i> Khách hàng
-                </a>
-            </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-            <span>Thống kê</span>
-        </h6>
-        <ul class="nav flex-column gap-2">
-            <li class="nav-item">
-                <a class="nav-link {% if active_page == 'reports' %}active text-white bg-danger rounded fw-bold{% else %}text-dark hover-effect{% endif %}" 
-                   href="{% url 'report' %}">
-                    <i class="fas fa-chart-bar me-2"></i> Báo cáo doanh thu
-                </a>
-            </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-3 text-muted text-uppercase fw-bold">
-            <span>Cấu hình</span>
-        </h6>
-        <ul class="nav flex-column gap-2">
-            <li class="nav-item">
-                <a class="nav-link text-dark hover-effect" href="#">
-                    <i class="fas fa-cog me-2"></i> Cài đặt
-                </a>
-            </li>
-        </ul>
+<div class="card border-0 shadow-sm rounded-4 p-3 h-100" style="background: #fff;">
+    <div class="mb-3">
+        <div class="small fw-bold text-uppercase text-muted">Quản lý chung</div>
     </div>
-</nav>
+
+    <div class="d-grid gap-2">
+        <a
+            href="{% url 'dashboard' %}"
+            class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'dashboard' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <i class="bi bi-bar-chart-line me-2"></i>Tổng quan
+        </a>
+
+        <a
+            href="{% url 'dashboard_orders' %}"
+            class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'orders' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <span><i class="bi bi-receipt me-2"></i>Đơn hàng</span>
+            {% if active_page != 'orders' %}
+                <span class="badge rounded-pill bg-warning text-dark">5</span>
+            {% endif %}
+        </a>
+
+        <a
+            href="{% url 'dashboard_products' %}"
+            class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'products' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <i class="bi bi-box-seam me-2"></i>Sản phẩm
+        </a>
+
+        <a
+            href="{% url 'dashboard_customers' %}"
+            class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'customers' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <i class="bi bi-people me-2"></i>Khách hàng
+        </a>
+    </div>
+
+    <div class="mt-4 mb-3">
+        <div class="small fw-bold text-uppercase text-muted">Thống kê</div>
+    </div>
+
+    <div class="d-grid gap-2">
+          <a
+            href="{% url 'report' %}"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'reports' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <span><i class="bi bi-receipt me-2"></i>Báo cáo doanh thu</span>
+            
+        </a>
+    </div>
+
+    <div class="mt-4 mb-3">
+        <div class="small fw-bold text-uppercase text-muted">Cấu hình</div>
+    </div>
+
+    <div class="d-grid gap-2">
+      
+    </div>
+    <a
+            href="#"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'permissions' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+        >
+            <span><i class="bi bi-receipt me-2"></i>Phân Quyền</span>
+            
+        </a>
+    </div>
+
+   
+    
+    

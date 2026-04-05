@@ -45,6 +45,11 @@ def dashboard_view(request):
 
     return render(request, 'dashboard/dashboard.html', context)
 
+def dashboard_customers(request):
+    return render(request, 'dashboard/customers.html', {
+        'active_page': 'customers'
+    })
+
 @login_required(login_url='login')
 def report_view(request):
     orders = Order.objects.all()
@@ -133,3 +138,20 @@ def product_delete_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect("product_list")
+
+
+def dashboard_home(request):
+    return render(request, 'dashboard/dashboard.html')
+
+def dashboard_products(request):
+    return render(request, 'dashboard/products.html')
+
+def dashboard_orders(request):
+    return render(request, 'dashboard/orders.html')
+
+
+def dashboard_reports(request):
+    return render(request, 'dashboard/report.html')
+
+def dashboard_permissions(request):
+    return render(request, 'dashboard/permissions.html')

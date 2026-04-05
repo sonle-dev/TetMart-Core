@@ -33,7 +33,7 @@
                             </div>
 
                             <div class="col-md-4 col-8">
-                                <a href="{% url 'product_detail' item.slug %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'product_detail' item.id %}" class="text-decoration-none text-dark">
                                     <h6 class="fw-bold mb-1">{{ item.name }}</h6>
                                 </a>
                                 <div class="text-muted small">{{ item.category }}</div>
@@ -41,7 +41,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <form method="POST" action="{% url 'cart:update' item.slug %}" class="d-flex gap-2">
+                                <form method="POST" action="{% url 'cart:update' item.id %}" class="d-flex gap-2">
                                     {% csrf_token %}
                                     <input
                                         type="number"
@@ -90,9 +90,10 @@
                         <strong class="text-danger">{{ total_price_display }}đ</strong>
                     </div>
 
-                    <button type="button" class="btn btn-danger w-100 mb-2" disabled>
+                    <a href="{% url 'orders:checkout' %}" class="btn btn-primary-tet w-100">
                         Thanh toán
-                    </button>
+                    </a>    
+                    
 
                     <form method="POST" action="{% url 'cart:clear' %}">
                         {% csrf_token %}
