@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
-
+from apps.cart.utils import get_cart, save_cart
 from .mock_data import product_reviews_data, products_data
 
 
@@ -68,6 +69,248 @@ def _get_product_or_404(product_id):
     if not product:
         raise Http404("Sản phẩm không tồn tại")
     return product
+
+
+def _build_account_profile(user):
+    full_name = user.get_full_name().strip() if user.get_full_name() else user.username
+    initial = (user.username[:1] if user.username else "U").upper()
+
+    return {
+        "full_name": full_name,
+        "username": user.username,
+        "email": user.email,
+        "phone": "0987 654 321",
+        "address": "ĐH CNTT & TT Thái Nguyên",
+        "avatar_url": "",
+        "avatar_initial": initial,
+        "joined_at": user.date_joined,
+        "is_staff": user.is_staff,
+    }
+
+
+def _build_my_orders():
+    return [
+        {
+            "id": "DH001",
+            "status": "pending",
+            "status_label": "Chờ xác nhận",
+            "status_class": "warning",
+            "created_at": "20/04/2026",
+            "total_display": "330.000",
+            "items_count": 2,
+            "payment_method": "Thanh toán khi nhận hàng",
+            "shipping_address": "ĐH CNTT & TT Thái Nguyên",
+            "can_reorder": False,
+            "can_cancel": True,
+            "items": [
+                {
+                    "product_id": 1,
+                    "name": "Đèn lồng đỏ truyền thống",
+                    "quantity": 1,
+                    "price_display": "150.000",
+                    "icon": "🏮",
+                },
+                {
+                    "product_id": 2,
+                    "name": "Cành hoa mai vàng",
+                    "quantity": 1,
+                    "price_display": "180.000",
+                    "icon": "🌸",
+                },
+            ],
+        },
+        {
+            "id": "DH002",
+            "status": "processing",
+            "status_label": "Đang xử lý",
+            "status_class": "info",
+            "created_at": "19/04/2026",
+            "total_display": "250.000",
+            "items_count": 1,
+            "payment_method": "Chuyển khoản",
+            "shipping_address": "88 Lê Lợi, Q.1, TP.HCM",
+            "can_reorder": False,
+            "can_cancel": True,
+            "items": [
+                {
+                    "product_id": 3,
+                    "name": "Bao lì xì hoa mai vàng",
+                    "quantity": 10,
+                    "price_display": "25.000",
+                    "icon": "🧧",
+                },
+            ],
+        },
+        {
+            "id": "DH003",
+            "status": "shipping",
+            "status_label": "Đang giao",
+            "status_class": "primary",
+            "created_at": "18/04/2026",
+            "total_display": "195.000",
+            "items_count": 2,
+            "payment_method": "Thanh toán khi nhận hàng",
+            "shipping_address": "25 Hai Bà Trưng, Đà Nẵng",
+            "can_reorder": False,
+            "can_cancel": False,
+            "items": [
+                {
+                    "product_id": 4,
+                    "name": "Dây treo trang trí Tết",
+                    "quantity": 1,
+                    "price_display": "45.000",
+                    "icon": "🎊",
+                },
+                {
+                    "product_id": 1,
+                    "name": "Đèn lồng đỏ truyền thống",
+                    "quantity": 1,
+                    "price_display": "150.000",
+                    "icon": "🏮",
+                },
+            ],
+        },
+        {
+            "id": "DH004",
+            "status": "completed",
+            "status_label": "Hoàn thành",
+            "status_class": "success",
+            "created_at": "15/04/2026",
+            "total_display": "180.000",
+            "items_count": 1,
+            "payment_method": "Chuyển khoản",
+            "shipping_address": "15 Trần Phú, Huế",
+            "can_reorder": True,
+            "can_cancel": False,
+            "items": [
+                {
+                    "product_id": 2,
+                    "name": "Cành hoa mai vàng",
+                    "quantity": 1,
+                    "price_display": "180.000",
+                    "icon": "🌸",
+                },
+            ],
+        },
+        {
+            "id": "DH005",
+            "status": "cancelled",
+            "status_label": "Đã hủy",
+            "status_class": "danger",
+            "created_at": "12/04/2026",
+            "total_display": "45.000",
+            "items_count": 1,
+            "payment_method": "Thanh toán khi nhận hàng",
+            "shipping_address": "7 Pasteur, TP.HCM",
+            "can_reorder": True,
+            "can_cancel": False,
+            "items": [
+                {
+                    "product_id": 4,
+                    "name": "Dây treo trang trí Tết",
+                    "quantity": 1,
+                    "price_display": "45.000",
+                    "icon": "🎊",
+                },
+            ],
+        },
+    ]
+
+
+def _get_my_order_or_none(order_id, orders):
+    return next((order for order in orders if order["id"] == order_id), None)
+
+
+@login_required(login_url="core:login")
+def my_orders_view(request):
+    orders = _build_my_orders()
+    cancelled_order_ids = request.session.get("cancelled_order_ids", [])
+
+    for order in orders:
+        if order["id"] in cancelled_order_ids:
+            order["status"] = "cancelled"
+            order["status_label"] = "Đã hủy"
+            order["status_class"] = "danger"
+            order["can_cancel"] = False
+            order["can_reorder"] = True
+
+    context = {
+        "my_orders": orders,
+    }
+    return render(request, "user/orders.html", context)
+
+
+@login_required(login_url="core:login")
+def reorder_order_view(request, order_id):
+    if request.method != "POST":
+        return redirect("core:my_orders")
+
+    orders = _build_my_orders()
+    cancelled_order_ids = request.session.get("cancelled_order_ids", [])
+
+    for order in orders:
+        if order["id"] in cancelled_order_ids:
+            order["status"] = "cancelled"
+            order["status_label"] = "Đã hủy"
+            order["status_class"] = "danger"
+            order["can_cancel"] = False
+            order["can_reorder"] = True
+
+    order = _get_my_order_or_none(order_id, orders)
+    if not order:
+        messages.error(request, "Không tìm thấy đơn hàng để mua lại.")
+        return redirect("core:my_orders")
+
+    if not order.get("can_reorder"):
+        messages.error(request, "Đơn hàng này chưa thể mua lại.")
+        return redirect("core:my_orders")
+
+    cart = get_cart(request)
+
+    for item in order.get("items", []):
+        product_id = item.get("product_id")
+        quantity = int(item.get("quantity", 1))
+        key = str(product_id)
+
+        try:
+            current_quantity = int(cart.get(key, 0))
+        except (TypeError, ValueError):
+            current_quantity = 0
+
+        cart[key] = current_quantity + quantity
+
+    save_cart(request, cart)
+    messages.success(request, f"Đã thêm lại sản phẩm từ đơn {order_id} vào giỏ hàng.")
+    return redirect("cart:detail")
+
+
+@login_required(login_url="core:login")
+def cancel_order_view(request, order_id):
+    if request.method != "POST":
+        return redirect("core:my_orders")
+
+    orders = _build_my_orders()
+    cancelled_order_ids = request.session.get("cancelled_order_ids", [])
+    order = _get_my_order_or_none(order_id, orders)
+
+    if not order:
+        messages.error(request, "Không tìm thấy đơn hàng.")
+        return redirect("core:my_orders")
+
+    if order["id"] in cancelled_order_ids:
+        messages.info(request, f"Đơn {order_id} đã được hủy trước đó.")
+        return redirect("core:my_orders")
+
+    if not order.get("can_cancel"):
+        messages.error(request, "Đơn hàng này không thể hủy.")
+        return redirect("core:my_orders")
+
+    cancelled_order_ids.append(order_id)
+    request.session["cancelled_order_ids"] = cancelled_order_ids
+    request.session.modified = True
+
+    messages.success(request, f"Đã hủy đơn hàng {order_id}.")
+    return redirect("core:my_orders")
 
 
 def index(request):
@@ -161,6 +404,48 @@ def login_view(request):
         messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng!")
 
     return render(request, "user/login.html")
+
+
+@login_required(login_url="core:login")
+def account_view(request):
+    account_profile = _build_account_profile(request.user)
+
+    if request.method == "POST":
+        account_profile = {
+            **account_profile,
+            "full_name": f"{request.POST.get('first_name', '').strip()} {request.POST.get('last_name', '').strip()}".strip()
+            or request.user.username,
+            "username": request.POST.get("username", request.user.username).strip() or request.user.username,
+            "email": request.POST.get("email", request.user.email).strip(),
+            "phone": request.POST.get("phone", "").strip(),
+            "address": request.POST.get("address", "").strip(),
+        }
+        messages.success(request, "Đã lưu giao diện thông tin tài khoản.")
+
+    full_name_parts = account_profile["full_name"].split()
+    first_name = full_name_parts[0] if full_name_parts else ""
+    last_name = " ".join(full_name_parts[1:]) if len(full_name_parts) > 1 else ""
+
+    context = {
+        "account_profile": account_profile,
+        "form_data": {
+            "first_name": first_name,
+            "last_name": last_name,
+            "username": account_profile["username"],
+            "email": account_profile["email"],
+            "phone": account_profile["phone"],
+            "address": account_profile["address"],
+        },
+    }
+    return render(request, "user/account.html", context)
+
+
+@login_required(login_url="core:login")
+def my_orders_view(request):
+    context = {
+        "my_orders": _build_my_orders(),
+    }
+    return render(request, "user/orders.html", context)
 
 
 def logout_view(request):

@@ -299,41 +299,41 @@
       <div class="col-lg-4">
         <aside class="account-sidebar">
           <div class="account-user">
-            {% if user.avatar %}
-              <img src="{{ user.avatar.url }}" alt="Avatar" class="account-avatar">
+            {% if account_profile.avatar_url %}
+              <img src="{{ account_profile.avatar_url }}" alt="Avatar" class="account-avatar">
             {% else %}
               <div class="account-avatar-fallback">
-                {{ user.username|slice:":1" }}
+                {{ account_profile.avatar_initial }}
               </div>
             {% endif %}
 
             <div>
-              <div class="account-user-name">{{ user.get_full_name|default:user.username }}</div>
+              <div class="account-user-name">{{ account_profile.full_name }}</div>
               <div class="account-user-role">
-                {% if user.is_staff %}Quản trị viên{% else %}Tài khoản khách hàng{% endif %}
+                {% if account_profile.is_staff %}Quản trị viên{% else %}Tài khoản khách hàng{% endif %}
               </div>
             </div>
           </div>
 
           <nav class="account-menu">
-            {% if user.is_staff %}
-              <a href="/admin/">
+            {% if account_profile.is_staff %}
+              <a href="{% url 'dashboard:dashboard' %}">
                 <span>🎯</span>
                 <span>Trang quản trị</span>
               </a>
             {% endif %}
 
-            <a href="#">
+            <a href="{% url 'core:my_orders' %}">
               <span>📄</span>
               <span>Đơn mua</span>
             </a>
 
-            <a href="#" class="active">
+            <a href="{% url 'core:account' %}" class="active">
               <span>⚙️</span>
               <span>Tài khoản</span>
             </a>
 
-            <a href="{% url 'users:logout' %}" class="logout-link">
+            <a href="{% url 'core:logout' %}" class="logout-link">
               <span>🚪</span>
               <span>Đăng xuất</span>
             </a>
@@ -342,17 +342,17 @@
           <div class="account-stat-grid">
             <div class="account-stat">
               <div class="account-stat-label">Email</div>
-              <div class="account-stat-value">{{ user.email|default:"Chưa cập nhật" }}</div>
+              <div class="account-stat-value">{{ account_profile.email|default:"Chưa cập nhật" }}</div>
             </div>
 
             <div class="account-stat">
               <div class="account-stat-label">Số điện thoại</div>
-              <div class="account-stat-value">{{ user.phone|default:"Chưa có" }}</div>
+              <div class="account-stat-value">{{ account_profile.phone|default:"Chưa có" }}</div>
             </div>
 
             <div class="account-stat">
               <div class="account-stat-label">Ngày tham gia</div>
-              <div class="account-stat-value">{{ user.date_joined|date:"d/m/Y" }}</div>
+              <div class="account-stat-value">{{ account_profile.joined_at|date:"d/m/Y" }}</div>
             </div>
           </div>
         </aside>
@@ -387,7 +387,7 @@
                     class="form-control tet-input"
                     id="first_name"
                     name="first_name"
-                    value="{{ user.first_name|default:'' }}"
+                    value="{{ form_data.first_name|default:'' }}"
                     placeholder="Nhập họ"
                   >
                 </div>
@@ -399,7 +399,7 @@
                     class="form-control tet-input"
                     id="last_name"
                     name="last_name"
-                    value="{{ user.last_name|default:'' }}"
+                    value="{{ form_data.last_name|default:'' }}"
                     placeholder="Nhập tên"
                   >
                 </div>
@@ -411,7 +411,7 @@
                     class="form-control tet-input"
                     id="username"
                     name="username"
-                    value="{{ user.username|default:'' }}"
+                    value="{{ form_data.username|default:'' }}"
                     placeholder="Nhập tên đăng nhập"
                   >
                 </div>
@@ -423,7 +423,7 @@
                     class="form-control tet-input"
                     id="email"
                     name="email"
-                    value="{{ user.email|default:'' }}"
+                    value="{{ form_data.email|default:'' }}"
                     placeholder="Nhập email"
                   >
                 </div>
@@ -435,7 +435,7 @@
                     class="form-control tet-input"
                     id="phone"
                     name="phone"
-                    value="{{ user.phone|default:'' }}"
+                    value="{{ form_data.phone|default:'' }}"
                     placeholder="Nhập số điện thoại"
                   >
                 </div>
@@ -451,16 +451,16 @@
               </p>
 
               <div class="avatar-upload-box">
-                {% if user.avatar %}
+                {% if account_profile.avatar_url %}
                   <img
                     id="avatarPreview"
-                    src="{{ user.avatar.url }}"
+                    src="{{ account_profile.avatar_url }}"
                     alt="Avatar preview"
                     class="avatar-upload-preview"
                   >
                 {% else %}
                   <div id="avatarFallback" class="avatar-upload-fallback">
-                    {{ user.username|slice:":1" }}
+                    {{ account_profile.avatar_initial }}
                   </div>
                   <img
                     id="avatarPreview"
@@ -502,7 +502,7 @@
                     id="address"
                     name="address"
                     placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"
-                  >{{ user.address|default:'' }}</textarea>
+                  >{{ form_data.address|default:'' }}</textarea>
                 </div>
               </div>
             </div>

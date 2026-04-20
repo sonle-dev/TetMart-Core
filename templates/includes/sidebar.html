@@ -1,77 +1,56 @@
-<div class="card border-0 shadow-sm rounded-4 p-3 h-100" style="background: #fff;">
-    <div class="mb-3">
-        <div class="small fw-bold text-uppercase text-muted">Quản lý chung</div>
-    </div>
+<div class="bg-white rounded-4 shadow-sm p-3 border h-100">
+  <div class="small fw-bold text-uppercase text-muted mb-3">Quản lý chung</div>
 
-    <div class="d-grid gap-2">
-        <a
-            href="{% url 'dashboard:dashboard' %}"
-            class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'dashboard' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <i class="bi bi-bar-chart-line me-2"></i>Tổng quan
-        </a>
-
-        <a
-            href="{% url 'dashboard:orders' %}"
-            class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'orders' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <span><i class="bi bi-receipt me-2"></i>Đơn hàng</span>
-            {% if active_page != 'orders' %}
-                <span class="badge rounded-pill bg-warning text-dark">5</span>
-            {% endif %}
-        </a>
-
-        <a
-            href="{% url 'dashboard:products' %}"
-            class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'products' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <i class="bi bi-box-seam me-2"></i>Sản phẩm
-        </a>
-
-        <a
-            href="{% url 'dashboard:customers' %}"
-            class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'customers' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <i class="bi bi-people me-2"></i>Khách hàng
-        </a>
-    </div>
-
-    <div class="mt-4 mb-3">
-        <div class="small fw-bold text-uppercase text-muted">Thống kê</div>
-    </div>
-
-    <div class="d-grid gap-2">
-          <a
-            href="{% url 'dashboard:reports' %}"
-            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'reports' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <span><i class="bi bi-receipt me-2"></i>Báo cáo doanh thu</span>
-            
-        </a>
-    </div>
-
-    <div class="mt-4 mb-3">
-        <div class="small fw-bold text-uppercase text-muted">Cấu hình</div>
-    </div>
-
-    <div class="d-grid gap-2">
-      
-    </div>
+  <div class="d-grid gap-2 mb-4">
     <a
-            href="{% url 'dashboard:permissions' %}"
-            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'permissions' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
-        >
-            <span><i class="bi bi-receipt me-2"></i>Phân Quyền</span>
-            
-        </a>
-    </div>
+      href="{% url 'dashboard:dashboard' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Tổng quan
+    </a>
 
-   
-    
-    
+    <a
+      href="{% url 'dashboard:orders' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Đơn hàng
+      <span class="badge bg-warning text-dark ms-1">5</span>
+    </a>
+
+    <a
+      href="{% url 'dashboard:products' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Sản phẩm
+    </a>
+
+    <a
+      href="{% url 'dashboard:customers' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Khách hàng
+    </a>
+  </div>
+
+  <div class="small fw-bold text-uppercase text-muted mb-3">Thống kê</div>
+
+  <div class="d-grid gap-2 mb-4">
+    <a
+      href="{% url 'dashboard:reports' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'reports' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Báo cáo doanh thu
+    </a>
+  </div>
+
+  <div class="small fw-bold text-uppercase text-muted mb-3">Cấu hình</div>
+
+  <div class="d-grid gap-2">
+    <a
+      href="{% url 'dashboard:permissions' %}"
+      class="btn text-start rounded-3 fw-semibold {% if active_page == 'permissions' %}btn-danger text-white{% else %}btn-light{% endif %}"
+    >
+      Phân quyền
+    </a>
+  </div>
+</div>

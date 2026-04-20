@@ -5,72 +5,101 @@
 
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
-    <div class="row">
-        
-        {% include 'includes/sidebar.html' with active_page='products' %}
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='products' %}
+        </div>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
+        <main class="col-lg-9 col-xl-10 px-3 px-md-4 py-4">
             <div class="mb-4">
-                <a href="{% url 'core:products' %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                <a href="{% url 'dashboard:products' %}" class="text-decoration-none text-muted mb-2 d-inline-block">
                     <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
                 </a>
-                <h4 class="fw-bold text-dark">Thêm sản phẩm</h4>
-                <p class="text-muted small">Tạo sản phẩm mới</p>
+                <h4 class="fw-bold text-dark mb-1">Thêm sản phẩm</h4>
+                <p class="text-muted small mb-0">Tạo sản phẩm mới</p>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
                     <form id="productCreateForm" method="POST" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
-                        
-                        <!-- TÊN SẢN PHẨM -->
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
-                            <input id="productName" name="name" type="text" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                            <input
+                                id="productName"
+                                name="name"
+                                type="text"
+                                class="form-control"
+                                placeholder="Nhập tên sản phẩm"
+                                value="{{ form_data.name|default:'' }}"
+                                required
+                            >
                             <div class="invalid-feedback">Vui lòng nhập tên sản phẩm.</div>
                         </div>
 
-                        <!-- DANH MỤC -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
                             <select id="productCategory" name="category" class="form-select" required>
-                                <option value="" selected disabled>-- Chọn danh mục --</option>
-                                <option value="Bánh kẹo Tết">Bánh kẹo Tết</option>
-                                <option value="Rượu bia">Rượu bia</option>
-                                <option value="Mứt Tết">Mứt Tết</option>
-                                <option value="Quà biếu">Quà biếu</option>
+                                <option value="" {% if not form_data.category %}selected{% endif %} disabled>-- Chọn danh mục --</option>
+                                {% for category in categories %}
+                                    <option value="{{ category }}" {% if form_data.category == category %}selected{% endif %}>
+                                        {{ category }}
+                                    </option>
+                                {% endfor %}
                             </select>
                             <div class="invalid-feedback">Vui lòng chọn danh mục.</div>
                         </div>
 
-                        <!-- GIÁ + TỒN KHO -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
-                                <input id="productPrice" name="price" type="number" class="form-control" value="0" min="1" required>
+                                <input
+                                    id="productPrice"
+                                    name="price"
+                                    type="number"
+                                    class="form-control"
+                                    value="{{ form_data.price|default:'0' }}"
+                                    min="1"
+                                    required
+                                >
                                 <div class="invalid-feedback">Giá phải lớn hơn 0.</div>
                             </div>
-                            <div class="col-md-6 mb-3">
+
+                            <div class="col-md-6">
                                 <label class="form-label fw-bold">Tồn kho <span class="text-danger">*</span></label>
-                                <input id="productStock" name="stock" type="number" class="form-control" value="0" min="0" required>
+                                <input
+                                    id="productStock"
+                                    name="stock"
+                                    type="number"
+                                    class="form-control"
+                                    value="{{ form_data.stock|default:'0' }}"
+                                    min="0"
+                                    required
+                                >
                                 <div class="invalid-feedback">Tồn kho phải ≥ 0.</div>
                             </div>
                         </div>
 
-                        <!-- MÔ TẢ -->
-                        <div class="mb-3">
+                        <div class="mt-3 mb-3">
                             <label class="form-label fw-bold">Mô tả</label>
-                            <textarea id="productDesc" name="description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm (tùy chọn)"></textarea>
+                            <textarea
+                                id="productDesc"
+                                name="description"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Nhập mô tả sản phẩm (tùy chọn)"
+                            >{{ form_data.description|default:'' }}</textarea>
                         </div>
 
-                        <!-- UPLOAD ẢNH -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Ảnh sản phẩm <span class="text-danger">*</span></label>
 
-                            <div id="uploadDropzone"
-                                 class="border border-dashed p-4 text-center rounded bg-light"
-                                 style="border-style: dashed !important; border-width: 2px; cursor: pointer;">
+                            <div
+                                id="uploadDropzone"
+                                class="border border-dashed p-4 text-center rounded bg-light"
+                                style="border-style: dashed !important; border-width: 2px; cursor: pointer;"
+                            >
                                 <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                 <div class="fw-bold text-muted">Click để upload ảnh</div>
                                 <p class="small text-muted mb-0">PNG, JPG, WEBP (tối đa 5 ảnh • mỗi ảnh ≤ 2MB)</p>
@@ -83,7 +112,7 @@
                                 class="d-none"
                                 accept="image/png,image/jpeg,image/webp"
                                 multiple
-                            />
+                            >
 
                             <div id="uploadError" class="alert alert-danger py-2 px-3 mt-2 d-none"></div>
                             <div id="previewGrid" class="row g-2 mt-2"></div>
@@ -91,12 +120,11 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-danger fw-bold px-4">Lưu</button>
-                            <a href="{% url 'core:products' %}" class="btn btn-outline-secondary px-4">Hủy</a>
+                            <a href="{% url 'dashboard:products' %}" class="btn btn-outline-secondary px-4">Hủy</a>
                         </div>
                     </form>
                 </div>
             </div>
-
         </main>
     </div>
 </div>
@@ -106,12 +134,10 @@
   <script src="{% static 'js/upload_images.js' %}"></script>
 
   <script>
-    // ✅ Toast chắc chắn hiện (fallback tự tạo nếu thiếu)
     function showToast(message, type = "success") {
       let toastEl = document.getElementById("appToast");
       let toastBody = document.getElementById("appToastBody");
 
-      // Nếu base.html chưa có toast container -> tự tạo
       if (!toastEl || !toastBody) {
         const wrap = document.createElement("div");
         wrap.className = "toast-container position-fixed bottom-0 end-0 p-3";
@@ -168,25 +194,23 @@
         if (dropzone) dropzone.classList.remove("border-danger");
       }
 
-      // clear lỗi khi nhập lại
       [nameEl, catEl, priceEl, stockEl].forEach((el) => {
         if (!el) return;
         el.addEventListener("input", () => clearInvalid(el));
         el.addEventListener("change", () => clearInvalid(el));
       });
+
       if (imgInput) imgInput.addEventListener("change", () => clearUploadError());
 
       form.addEventListener("submit", function (e) {
-        e.preventDefault(); // frontend-only demo
+        e.preventDefault();
 
-        // ✅ Xóa trạng thái đỏ cũ trước khi validate lại
         [nameEl, catEl, priceEl, stockEl].forEach(clearInvalid);
         clearUploadError();
 
         let ok = true;
         let firstInvalid = null;
 
-        // Tên
         const nameVal = (nameEl?.value || "").trim();
         if (!nameVal) {
           ok = false;
@@ -194,7 +218,6 @@
           firstInvalid = firstInvalid || nameEl;
         }
 
-        // Danh mục
         const catVal = catEl?.value || "";
         if (!catVal) {
           ok = false;
@@ -202,7 +225,6 @@
           firstInvalid = firstInvalid || catEl;
         }
 
-        // Giá > 0
         const priceVal = Number(priceEl?.value || 0);
         if (!Number.isFinite(priceVal) || priceVal <= 0) {
           ok = false;
@@ -210,7 +232,6 @@
           firstInvalid = firstInvalid || priceEl;
         }
 
-        // Tồn kho >= 0
         const stockVal = Number(stockEl?.value || 0);
         if (!Number.isFinite(stockVal) || stockVal < 0) {
           ok = false;
@@ -218,7 +239,6 @@
           firstInvalid = firstInvalid || stockEl;
         }
 
-        // Ảnh phải có ít nhất 1
         const filesCount = imgInput?.files?.length || 0;
         if (filesCount === 0) {
           ok = false;
@@ -235,7 +255,6 @@
           return;
         }
 
-        // ✅ OK -> hiện toast
         showToast("Lưu sản phẩm thành công!", "success");
       });
     })();

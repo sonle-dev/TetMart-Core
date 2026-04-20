@@ -74,8 +74,8 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="#">📄 Đơn mua</a></li>
-                                <li><a class="dropdown-item" href="#">⚙️ Tài khoản</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:my_orders' %}">📄 Đơn mua</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:account' %}">⚙️ Tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-danger fw-bold" href="{% url 'core:logout' %}">

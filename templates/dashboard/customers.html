@@ -27,7 +27,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body">
                             <div class="text-muted small mb-2">Tổng khách hàng</div>
-                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ tong_khach_hang }}</div>
+                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ customer_stats.all }}</div>
                             <div class="small text-muted">Toàn bộ tài khoản đã tạo</div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body">
                             <div class="text-muted small mb-2">Khách mới</div>
-                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ khach_moi }}</div>
+                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ customer_stats.new }}</div>
                             <div class="small text-muted">Vừa đăng ký hoặc mua lần đầu</div>
                         </div>
                     </div>
@@ -46,9 +46,9 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body">
-                            <div class="text-muted small mb-2">Khách hàng thân thiết</div>
-                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ khach_hang_than_thiet }}</div>
-                            <div class="small text-muted">Mua lặp lại nhiều lần</div>
+                            <div class="text-muted small mb-2">Khách đang hoạt động</div>
+                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ customer_stats.active }}</div>
+                            <div class="small text-muted">Đang tương tác và mua sắm</div>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body">
                             <div class="text-muted small mb-2">Khách VIP</div>
-                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ khach_vip }}</div>
+                            <div class="fw-bold fs-2" style="color: var(--tet-text);">{{ customer_stats.vip }}</div>
                             <div class="small text-muted">Chi tiêu cao, ưu tiên chăm sóc</div>
                         </div>
                     </div>
@@ -73,27 +73,26 @@
                                 name="q"
                                 class="form-control rounded-3"
                                 placeholder="Tìm theo tên / mã khách hàng / email / số điện thoại..."
-                                value="{{ bo_loc.q }}"
+                                value="{{ filters.q }}"
                             >
                         </div>
 
                         <div class="col-md-4 col-lg-3">
                             <select name="status" class="form-select rounded-3">
-                                <option value="tat_ca" {% if bo_loc.status == 'tat_ca' %}selected{% endif %}>Tất cả trạng thái</option>
-                                <option value="khach_moi" {% if bo_loc.status == 'khach_moi' %}selected{% endif %}>Khách mới</option>
-                                <option value="than_thiet" {% if bo_loc.status == 'than_thiet' %}selected{% endif %}>Khách hàng thân thiết</option>
-                                <option value="vip" {% if bo_loc.status == 'vip' %}selected{% endif %}>Khách VIP</option>
-                                <option value="ngung_hoat_dong" {% if bo_loc.status == 'ngung_hoat_dong' %}selected{% endif %}>Ngưng hoạt động</option>
+                                <option value="all" {% if filters.status == 'all' %}selected{% endif %}>Tất cả trạng thái</option>
+                                <option value="new" {% if filters.status == 'new' %}selected{% endif %}>Khách mới</option>
+                                <option value="active" {% if filters.status == 'active' %}selected{% endif %}>Đang hoạt động</option>
+                                <option value="vip" {% if filters.status == 'vip' %}selected{% endif %}>Khách VIP</option>
+                                <option value="inactive" {% if filters.status == 'inactive' %}selected{% endif %}>Ngưng hoạt động</option>
                             </select>
                         </div>
 
                         <div class="col-md-4 col-lg-3">
                             <select name="sort" class="form-select rounded-3">
-                                <option value="moi_nhat" {% if bo_loc.sort == 'moi_nhat' %}selected{% endif %}>Mới nhất</option>
-                                <option value="cu_nhat" {% if bo_loc.sort == 'cu_nhat' %}selected{% endif %}>Cũ nhất</option>
-                                <option value="ten_a_z" {% if bo_loc.sort == 'ten_a_z' %}selected{% endif %}>Tên A-Z</option>
-                                <option value="nhieu_don_nhat" {% if bo_loc.sort == 'nhieu_don_nhat' %}selected{% endif %}>Nhiều đơn nhất</option>
-                                <option value="chi_tieu_cao_nhat" {% if bo_loc.sort == 'chi_tieu_cao_nhat' %}selected{% endif %}>Chi tiêu cao nhất</option>
+                                <option value="newest" {% if filters.sort == 'newest' %}selected{% endif %}>Mới nhất</option>
+                                <option value="name_asc" {% if filters.sort == 'name_asc' %}selected{% endif %}>Tên A-Z</option>
+                                <option value="orders_desc" {% if filters.sort == 'orders_desc' %}selected{% endif %}>Nhiều đơn nhất</option>
+                                <option value="spent_desc" {% if filters.sort == 'spent_desc' %}selected{% endif %}>Chi tiêu cao nhất</option>
                             </select>
                         </div>
 
@@ -121,7 +120,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for khach_hang in danh_sach_khach_hang %}
+                            {% for customer in customers %}
                             <tr>
                                 <td class="px-3 py-3">
                                     <div class="d-flex align-items-center gap-3">
@@ -129,38 +128,38 @@
                                             class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
                                             style="width:42px; height:42px; background:#fee2e2; color:#d72323;"
                                         >
-                                            {{ khach_hang.ky_tu_dai_dien }}
+                                            {{ customer.avatar }}
                                         </div>
                                         <div>
-                                            <div class="fw-bold">{{ khach_hang.ho_ten }}</div>
-                                            <div class="small text-muted">{{ khach_hang.email }}</div>
+                                            <div class="fw-bold">{{ customer.name }}</div>
+                                            <div class="small text-muted">{{ customer.email }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-3 py-3 fw-semibold">{{ khach_hang.ma_khach_hang }}</td>
+                                <td class="px-3 py-3 fw-semibold">{{ customer.code }}</td>
                                 <td class="px-3 py-3">
-                                    <div class="fw-semibold small">{{ khach_hang.so_dien_thoai }}</div>
-                                    <div class="small text-muted">{{ khach_hang.email }}</div>
+                                    <div class="fw-semibold small">{{ customer.phone }}</div>
+                                    <div class="small text-muted">{{ customer.email }}</div>
                                 </td>
-                                <td class="px-3 py-3">{{ khach_hang.tinh_thanh }}</td>
-                                <td class="px-3 py-3">{{ khach_hang.so_don_hang }}</td>
-                                <td class="px-3 py-3 text-danger fw-bold">{{ khach_hang.tong_chi_tieu_hien_thi }}</td>
+                                <td class="px-3 py-3">{{ customer.city }}</td>
+                                <td class="px-3 py-3">{{ customer.order_count }}</td>
+                                <td class="px-3 py-3 text-danger fw-bold">{{ customer.total_spent_display }}</td>
                                 <td class="px-3 py-3">
-                                    {% if khach_hang.trang_thai == 'khach_moi' %}
+                                    {% if customer.status == 'new' %}
                                         <span class="badge rounded-pill text-bg-primary">Khách mới</span>
-                                    {% elif khach_hang.trang_thai == 'than_thiet' %}
-                                        <span class="badge rounded-pill text-bg-success">Khách hàng thân thiết</span>
-                                    {% elif khach_hang.trang_thai == 'vip' %}
+                                    {% elif customer.status == 'active' %}
+                                        <span class="badge rounded-pill text-bg-success">Đang hoạt động</span>
+                                    {% elif customer.status == 'vip' %}
                                         <span class="badge rounded-pill text-bg-warning">Khách VIP</span>
                                     {% else %}
                                         <span class="badge rounded-pill text-bg-secondary">Ngưng hoạt động</span>
                                     {% endif %}
                                 </td>
-                                <td class="px-3 py-3">{{ khach_hang.ngay_tham_gia_hien_thi }}</td>
+                                <td class="px-3 py-3">{{ customer.joined_at }}</td>
                                 <td class="px-3 py-3 text-end">
                                     <div class="d-inline-flex gap-2">
-                                        <a href="{% url 'dashboard:customer_detail' khach_hang.id %}" class="btn btn-sm btn-outline-primary rounded-3">Chi tiết</a>
-                                        <a href="{% url 'dashboard:customer_lock' khach_hang.id %}" class="btn btn-sm btn-outline-danger rounded-3">Tạm khóa</a>
+                                        <a href="{% url 'dashboard:customer_detail' customer.id %}" class="btn btn-sm btn-outline-primary rounded-3">Chi tiết</a>
+                                        <a href="{% url 'dashboard:customer_lock' customer.id %}" class="btn btn-sm btn-outline-danger rounded-3">Tạm khóa</a>
                                     </div>
                                 </td>
                             </tr>
@@ -177,7 +176,7 @@
 
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 border-top">
                     <div class="text-muted small">
-                        Hiển thị {{ danh_sach_khach_hang|length }} khách hàng trong danh sách hiện tại
+                        Hiển thị {{ customers|length }} khách hàng trong danh sách hiện tại
                     </div>
 
                     <nav aria-label="Phân trang khách hàng">

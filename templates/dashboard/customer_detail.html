@@ -12,7 +12,7 @@
 
         <div class="col-lg-9 col-xl-10">
             <div class="mb-4">
-                <a href="{% url 'core:customers' %}" class="text-decoration-none text-muted fw-semibold">
+                <a href="{% url 'dashboard:customers' %}" class="text-decoration-none text-muted fw-semibold">
                     ← Quay lại danh sách khách hàng
                 </a>
                 <h3 class="fw-bold mt-2 mb-1" style="color: var(--tet-text);">Chi tiết khách hàng</h3>
@@ -25,16 +25,16 @@
                         <div class="card-body p-4 text-center">
                             <div class="rounded-circle d-inline-flex align-items-center justify-content-center fw-bold mb-3"
                                  style="width:84px; height:84px; background:#fee2e2; color:#d72323; font-size:28px;">
-                                {{ khach_hang.ky_tu_dai_dien }}
+                                {{ customer.avatar }}
                             </div>
-                            <h4 class="fw-bold mb-1">{{ khach_hang.ho_ten }}</h4>
-                            <div class="text-muted mb-3">{{ khach_hang.ma_khach_hang }}</div>
+                            <h4 class="fw-bold mb-1">{{ customer.name }}</h4>
+                            <div class="text-muted mb-3">{{ customer.code }}</div>
 
-                            {% if khach_hang.trang_thai == 'khach_moi' %}
+                            {% if customer.status == 'new' %}
                                 <span class="badge rounded-pill text-bg-primary px-3 py-2">Khách mới</span>
-                            {% elif khach_hang.trang_thai == 'than_thiet' %}
-                                <span class="badge rounded-pill text-bg-success px-3 py-2">Khách hàng thân thiết</span>
-                            {% elif khach_hang.trang_thai == 'vip' %}
+                            {% elif customer.status == 'active' %}
+                                <span class="badge rounded-pill text-bg-success px-3 py-2">Đang hoạt động</span>
+                            {% elif customer.status == 'vip' %}
                                 <span class="badge rounded-pill text-bg-warning px-3 py-2">Khách VIP</span>
                             {% else %}
                                 <span class="badge rounded-pill text-bg-secondary px-3 py-2">Ngưng hoạt động</span>
@@ -43,10 +43,10 @@
                             <hr class="my-4">
 
                             <div class="text-start small">
-                                <div class="mb-2"><strong>SĐT:</strong> {{ khach_hang.so_dien_thoai }}</div>
-                                <div class="mb-2"><strong>Email:</strong> {{ khach_hang.email }}</div>
-                                <div class="mb-2"><strong>Tỉnh / thành:</strong> {{ khach_hang.tinh_thanh }}</div>
-                                <div class="mb-2"><strong>Ngày tham gia:</strong> {{ khach_hang.ngay_tham_gia_hien_thi }}</div>
+                                <div class="mb-2"><strong>SĐT:</strong> {{ customer.phone }}</div>
+                                <div class="mb-2"><strong>Email:</strong> {{ customer.email }}</div>
+                                <div class="mb-2"><strong>Tỉnh / thành:</strong> {{ customer.city }}</div>
+                                <div class="mb-2"><strong>Ngày tham gia:</strong> {{ customer.joined_at }}</div>
                             </div>
                         </div>
                     </div>
@@ -59,19 +59,19 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="text-muted small">Tổng số đơn hàng</div>
-                                    <div class="fw-bold fs-4">{{ khach_hang.so_don_hang }}</div>
+                                    <div class="fw-bold fs-4">{{ customer.order_count }}</div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="text-muted small">Tổng chi tiêu</div>
-                                    <div class="fw-bold fs-4 text-danger">{{ khach_hang.tong_chi_tieu_hien_thi }}</div>
+                                    <div class="fw-bold fs-4 text-danger">{{ customer.total_spent_display }}</div>
                                 </div>
                                 <div class="col-12">
                                     <div class="text-muted small">Địa chỉ</div>
-                                    <div class="fw-semibold">{{ khach_hang.dia_chi }}</div>
+                                    <div class="fw-semibold">{{ customer.address }}</div>
                                 </div>
                                 <div class="col-12">
                                     <div class="text-muted small">Ghi chú</div>
-                                    <div>{{ khach_hang.ghi_chu }}</div>
+                                    <div>{{ customer.note|default:"Không có ghi chú" }}</div>
                                 </div>
                             </div>
                         </div>
@@ -91,12 +91,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for don in don_hang_gan_day %}
+                                        {% for order in customer_orders %}
                                         <tr>
-                                            <td class="fw-bold">{{ don.ma_don }}</td>
-                                            <td>{{ don.ngay_dat }}</td>
-                                            <td class="text-danger fw-bold">{{ don.tong_tien }}</td>
-                                            <td>{{ don.trang_thai }}</td>
+                                            <td class="fw-bold">{{ order.id }}</td>
+                                            <td>{{ order.created_at }}</td>
+                                            <td class="text-danger fw-bold">{{ order.total_price_display }}</td>
+                                            <td>{{ order.status_label }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-3">
+                                                Khách hàng này chưa có đơn hàng nào.
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -104,10 +110,10 @@
                             </div>
 
                             <div class="d-flex flex-wrap gap-3 mt-4">
-                                <a href="{% url 'core:customer_lock' khach_hang.id %}" class="btn btn-outline-danger rounded-3 fw-bold">
+                                <a href="{% url 'dashboard:customer_lock' customer.id %}" class="btn btn-outline-danger rounded-3 fw-bold">
                                     Tạm khóa khách hàng
                                 </a>
-                                <a href="{% url 'core:customers' %}" class="btn btn-outline-secondary rounded-3 fw-bold">
+                                <a href="{% url 'dashboard:customers' %}" class="btn btn-outline-secondary rounded-3 fw-bold">
                                     Quay lại
                                 </a>
                             </div>
