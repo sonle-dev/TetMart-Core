@@ -19,6 +19,7 @@ def checkout_view(request):
         payment_method = (request.POST.get("payment_method") or "cod").strip()
 
         errors = []
+
         if not full_name:
             errors.append("Vui lòng nhập họ và tên.")
         if not phone:
@@ -27,8 +28,9 @@ def checkout_view(request):
             errors.append("Vui lòng nhập địa chỉ nhận hàng.")
 
         if errors:
-            for err in errors:
-                messages.error(request, err)
+            for error in errors:
+                messages.error(request, error)
+
             context["form_data"] = {
                 "full_name": full_name,
                 "phone": phone,
@@ -38,7 +40,6 @@ def checkout_view(request):
             }
             return render(request, "orders/checkout.html", context)
 
-        # Mock xử lý đặt hàng ở nhánh frontend
         order_preview = {
             "customer_name": full_name,
             "phone": phone,
@@ -51,6 +52,8 @@ def checkout_view(request):
         }
 
         request.session["last_order_preview"] = order_preview
+        request.session.modified = True
+
         save_cart(request, {})
         return redirect("orders:success")
 
@@ -66,12 +69,9 @@ def checkout_view(request):
 
 def order_success_view(request):
     order_preview = request.session.get("last_order_preview")
+
     if not order_preview:
         messages.error(request, "Không tìm thấy thông tin đơn hàng gần nhất.")
         return redirect("core:home")
 
-    return render(
-        request,
-        "orders/order_success.html",
-        {"order": order_preview},
-    )
+    return render(request, "orders/order_success.html", {"order": order_preview})

@@ -1,4 +1,4 @@
-# apps/cart/utils.py
+from apps.core.mock_data import products_data
 
 CART_SESSION_KEY = "cart"
 
@@ -18,9 +18,12 @@ def format_currency(value):
 
 
 def get_product_by_id(product_id):
-    from apps.core.views import products_data
+    try:
+        product_id = int(product_id)
+    except (TypeError, ValueError):
+        return None
 
-    return next((p for p in products_data if p["id"] == int(product_id)), None)
+    return next((p for p in products_data if p["id"] == product_id), None)
 
 
 def get_cart(request):
@@ -74,17 +77,19 @@ def build_cart_context(request):
         price_int = price_to_int(product.get("price"))
         subtotal_int = price_int * quantity_int
 
-        items.append({
-            "id": product_id_int,
-            "name": product.get("name"),
-            "image": product.get("image"),
-            "category": product.get("category"),
-            "price": price_int,
-            "price_display": format_currency(price_int),
-            "quantity": quantity_int,
-            "subtotal": subtotal_int,
-            "subtotal_display": format_currency(subtotal_int),
-        })
+        items.append(
+            {
+                "id": product_id_int,
+                "name": product.get("name"),
+                "image": product.get("image"),
+                "category": product.get("category"),
+                "price": price_int,
+                "price_display": format_currency(price_int),
+                "quantity": quantity_int,
+                "subtotal": subtotal_int,
+                "subtotal_display": format_currency(subtotal_int),
+            }
+        )
 
         cleaned_cart[str(product_id_int)] = quantity_int
         total_quantity += quantity_int

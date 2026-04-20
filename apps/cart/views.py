@@ -1,16 +1,16 @@
-# apps/cart/views.py
-
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.http import JsonResponse
+
 from .utils import (
     build_cart_context,
     get_cart,
+    get_cart_total_quantity,
     get_product_by_id,
     save_cart,
-    get_cart_total_quantity,
 )
+
 
 def cart_detail(request):
     context = build_cart_context(request)
@@ -24,7 +24,7 @@ def add_to_cart(request, product_id):
         if is_ajax:
             return JsonResponse(
                 {"success": False, "message": "Phương thức không hợp lệ."},
-                status=405
+                status=405,
             )
         return redirect("core:product_detail", product_id=product_id)
 
@@ -33,7 +33,7 @@ def add_to_cart(request, product_id):
         if is_ajax:
             return JsonResponse(
                 {"success": False, "message": "Sản phẩm không tồn tại."},
-                status=404
+                status=404,
             )
         messages.error(request, "Sản phẩm không tồn tại.")
         return redirect("core:home")
@@ -60,11 +60,13 @@ def add_to_cart(request, product_id):
     cart_total_quantity = get_cart_total_quantity(request)
 
     if is_ajax:
-        return JsonResponse({
-            "success": True,
-            "message": success_message,
-            "cart_total_quantity": cart_total_quantity,
-        })
+        return JsonResponse(
+            {
+                "success": True,
+                "message": success_message,
+                "cart_total_quantity": cart_total_quantity,
+            }
+        )
 
     messages.success(request, success_message)
 

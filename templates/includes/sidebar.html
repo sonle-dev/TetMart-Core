@@ -5,7 +5,7 @@
 
     <div class="d-grid gap-2">
         <a
-            href="{% url 'core:dashboard' %}"
+            href="{% url 'dashboard:dashboard' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'dashboard' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
@@ -13,7 +13,7 @@
         </a>
 
         <a
-            href="{% url 'core:orders' %}"
+            href="{% url 'dashboard:orders' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'orders' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
@@ -24,7 +24,7 @@
         </a>
 
         <a
-            href="{% url 'core:products' %}"
+            href="{% url 'dashboard:products' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'products' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
@@ -32,7 +32,7 @@
         </a>
 
         <a
-            href="{% url 'core:customers' %}"
+            href="{% url 'dashboard:customers' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'customers' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
@@ -46,7 +46,7 @@
 
     <div class="d-grid gap-2">
           <a
-            href="{% url 'core:reports' %}"
+            href="{% url 'dashboard:reports' %}"
             class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'reports' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
@@ -63,7 +63,7 @@
       
     </div>
     <a
-            href="{% url 'core:permissions' %}"
+            href="{% url 'dashboard:permissions' %}"
             class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'permissions' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >

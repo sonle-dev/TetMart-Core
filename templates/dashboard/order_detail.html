@@ -12,12 +12,12 @@
                 <h6 class="sidebar-heading px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">Quản lý chung</h6>
                 <ul class="nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-effect" href="{% url 'core:dashboard' %}">
+                        <a class="nav-link text-dark hover-effect" href="{% url 'dashboard:dashboard' %}">
                             <i class="fas fa-chart-line me-2"></i> Tổng quan
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'core:orders' %}">
+                        <a class="nav-link active text-white bg-danger rounded fw-bold" href="{% url 'dashboard:orders' %}">
                             <i class="fas fa-file-invoice me-2"></i> Đơn hàng
                         </a>
                     </li>
@@ -33,7 +33,7 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             
             <div class="d-flex align-items-center mb-4">
-                <a href="{% url 'core:orders' %}" class="btn btn-light border me-3">
+                <a href="{% url 'dashboard:orders' %}" class="btn btn-light border me-3">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
