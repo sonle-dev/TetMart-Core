@@ -36,7 +36,7 @@ INSTALLED_APPS = [
    # 'apps.accounts',
    # 'apps.catalog',
     #'apps.orders',
-   # 'apps.dashboard',
+    'apps.dashboard',
     'apps.cart',
     'orders',
     'users',

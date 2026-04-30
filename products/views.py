@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, time
 import json
-
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from products.models import Product, Category
@@ -10,17 +10,96 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 from collections import defaultdict
 from orders.models import Order, OrderItem
+from django.http import HttpResponseForbidden
+from django.db.models import Q
+
+from tetmart.permission_utils import (
+    DASHBOARD_PERMS,
+    ORDER_PERMS,
+    CUSTOMER_PERMS,
+    PRODUCT_PERMS,
+    REPORT_PERMS,
+    has_any_perm,
+    first_allowed_dashboard_name,
+    permission_gate,
+)
 
 
-# Hàm kiểm tra admin
-def is_staff(user):
-    return user.is_staff
+def has_dashboard_permission(user):
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.has_perm('auth.view_dashboard')
+        or user.has_perm('auth.view_revenue_dashboard')
+    )
 
+
+def has_order_permission(user):
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.has_perm('orders.view_order')
+        or user.has_perm('orders.update_order_status')
+        or user.has_perm('orders.export_order')
+        or user.has_perm('orders.cancel_order')
+    )
+
+
+def has_product_permission(user):
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.has_perm('products.view_product')
+        or user.has_perm('products.add_product')
+        or user.has_perm('products.change_product')
+        or user.has_perm('products.delete_product')
+        or user.has_perm('products.hide_product')
+    )
+
+
+def has_customer_permission(user):
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.has_perm('users.view_customer_list')
+        or user.has_perm('users.view_customer_detail')
+        or user.has_perm('users.create_customer')
+        or user.has_perm('users.lock_customer')
+    )
+
+
+def has_report_permission(user):
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.has_perm('auth.view_report')
+        or user.has_perm('auth.export_report')
+        or user.has_perm('auth.view_revenue_report')
+    )
 # VIEW DANH SÁCH ĐƠN HÀNG 
-@login_required(login_url='login')
-@user_passes_test(is_staff)
+@permission_gate(*ORDER_PERMS)
 def dashboard_orders_view(request):
-    orders = Order.objects.all().order_by('-created_at')
+    orders = Order.objects.select_related('user').all()
+
+    q = request.GET.get('q', '').strip()
+    status = request.GET.get('status', 'all')
+    sort = request.GET.get('sort', 'newest')
+
+    if q:
+        order_id = q.replace('#DH', '').replace('DH', '').strip()
+        query = (
+            Q(user__username__icontains=q) |
+            Q(full_name__icontains=q) |
+            Q(phone__icontains=q)
+        )
+
+        if order_id.isdigit():
+            query |= Q(id=int(order_id))
+
+        orders = orders.filter(query)
+
+    if status and status != 'all':
+        orders = orders.filter(status=status)
+
+    if sort == 'oldest':
+        orders = orders.order_by('created_at')
+    else:
+        orders = orders.order_by('-created_at')
 
     for order in orders:
         order.formatted_total_price = f"{int(order.total_price or 0):,}".replace(",", ".")
@@ -28,17 +107,62 @@ def dashboard_orders_view(request):
     context = {
         'orders': orders,
         'active_page': 'orders',
+        'filters': {
+            'q': q,
+            'status': status,
+            'sort': sort,
+        }
     }
 
     return render(request, 'dashboard/orders.html', context)
 
 # VIEW DANH SÁCH SẢN PHẨM
 @login_required(login_url='login')
-@user_passes_test(is_staff)
+@user_passes_test(has_product_permission, login_url='home')
+@permission_gate(*PRODUCT_PERMS)
 def dashboard_products_view(request):
-    products = Product.objects.all().order_by('-id')
-    context = {'products': products, 'active_page': 'products'}
-    return render(request, 'dashboard/product_list.html', context)
+    products = Product.objects.select_related('category').all()
+    categories = Category.objects.all().order_by('name')
+
+    q = request.GET.get('q', '').strip()
+    category = request.GET.get('category', 'all')
+    status = request.GET.get('status', 'all')
+    sort = request.GET.get('sort', 'newest')
+
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) |
+            Q(slug__icontains=q) |
+            Q(id__icontains=q)
+        )
+
+    if category != 'all':
+        products = products.filter(category_id=category)
+
+    if status == 'in_stock':
+        products = products.filter(is_active=True, stock__gt=0)
+    elif status == 'out_stock':
+        products = products.filter(Q(is_active=False) | Q(stock__lte=0))
+
+    if sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    else:
+        products = products.order_by('-id')
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'active_page': 'products',
+        'filters': {
+            'q': q,
+            'category': category,
+            'status': status,
+            'sort': sort,
+        }
+    }
+    return render(request, 'dashboard/products.html', context)
     
 
 #  VIEW TRANG CHỦ 
@@ -61,7 +185,16 @@ def product_detail(request, slug):
 
 # VIEW DASHBOARD TỔNG QUAN 
 @login_required(login_url='login')
+@user_passes_test(has_dashboard_permission, login_url='home')
 def dashboard_view(request):
+    if not has_any_perm(request.user, DASHBOARD_PERMS):
+        target = first_allowed_dashboard_name(request.user)
+        if target and target != 'dashboard':
+            return redirect(target)
+
+        messages.error(request, 'Bạn không có quyền truy cập trang quản trị.')
+        return redirect('home')
+
     orders = Order.objects.all().order_by('-created_at')
     recent_orders = list(orders[:5])
 
@@ -84,7 +217,6 @@ def dashboard_view(request):
     count_completed = orders.filter(status='completed').count()
     count_cancelled = orders.filter(status='cancelled').count()
 
-    
     context = {
         'formatted_revenue': formatted_revenue,
         'total_orders': total_orders,
@@ -95,10 +227,10 @@ def dashboard_view(request):
         'count_completed': count_completed,
         'count_cancelled': count_cancelled,
         'recent_orders': recent_orders,
+        'active_page': 'dashboard',
     }
     return render(request, 'dashboard/dashboard.html', context)
-@login_required(login_url='login')
-@user_passes_test(is_staff)
+@permission_gate(*CUSTOMER_PERMS)
 def dashboard_customers(request):
     context = {
         'active_page': 'customers',
@@ -115,7 +247,7 @@ def dashboard_customers(request):
     }
     return render(request, 'dashboard/customers.html', context)
 # VIEW BÁO CÁO DOANH THU
-@login_required(login_url='login')
+@permission_gate(*REPORT_PERMS)
 def report_view(request):
     days = int(request.GET.get('days', 7))
     start_day = timezone.localdate() - timedelta(days=days - 1)
@@ -244,8 +376,7 @@ def report_view(request):
 
     return render(request, 'dashboard/report.html', context)
 # VIEW CHI TIẾT ĐƠN HÀNG
-@login_required(login_url='login')
-@user_passes_test(is_staff)
+@permission_gate(*ORDER_PERMS)
 def order_detail_view(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
@@ -272,27 +403,44 @@ def order_detail_view(request, pk):
 
     return render(request, 'dashboard/order_detail.html', context)
 
+@login_required(login_url='login')
+@user_passes_test(has_product_permission, login_url='home')
+@permission_gate(*PRODUCT_PERMS)
 def product_create(request):
     return render(request, 'dashboard/product_create.html')
 
 # products/views.py
-
+@login_required(login_url='login')
+@user_passes_test(has_product_permission, login_url='home')
+@permission_gate(*PRODUCT_PERMS)
 def product_edit(request, pk):
-   
-    fake_product = {
-        'name': 'Giỏ Quà Tết Sum Vầy 2026',
-        'category': 'Quà biếu',
-        'price': 500000,
-        'stock': 50,
-        'description': 'Sản phẩm bán chạy nhất dịp Tết, phù hợp biếu tặng.'
-    }
-    
+    product = get_object_or_404(Product, pk=pk)
+    categories = Category.objects.all().order_by('name')
+
+    if request.method == 'POST':
+        product.name = request.POST.get('name', '').strip()
+        product.category_id = request.POST.get('category')
+        product.price = request.POST.get('price') or 0
+        product.stock = request.POST.get('stock') or 0
+        product.description = request.POST.get('description', '').strip()
+
+        if request.FILES.get('image'):
+            product.image = request.FILES.get('image')
+
+        product.save()
+        messages.success(request, 'Cập nhật sản phẩm thành công.')
+        return redirect('dashboard_products')
+
     context = {
         'active_page': 'products',
-        'product': fake_product  
+        'product': product,
+        'categories': categories,
     }
     return render(request, 'dashboard/product_edit.html', context)
 
+@login_required(login_url='login')
+@user_passes_test(has_product_permission, login_url='home')
+@permission_gate(*PRODUCT_PERMS)
 def product_delete(request, pk):
    
     product = get_object_or_404(Product, pk=pk)
@@ -343,11 +491,4 @@ def product_list_view(request):
         }
     }
     return render(request, 'product_list.html', context)
-    
-@login_required
-def dashboard_products_view(request):
-    products = Product.objects.all()
-    return render(request, 'dashboard/products.html', {
-        'products': products,
-        'active_page': 'products'
-    })
+

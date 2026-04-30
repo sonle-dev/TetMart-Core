@@ -4,6 +4,7 @@
     </div>
 
     <div class="d-grid gap-2">
+        {% if request.user.is_superuser or perms.auth.view_dashboard or perms.auth.view_revenue_dashboard %}
         <a
             href="{% url 'dashboard' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}text-white{% else %}btn-light{% endif %}"
@@ -11,7 +12,9 @@
         >
             <i class="bi bi-bar-chart-line me-2"></i>Tổng quan
         </a>
+        {% endif %}
 
+        {% if request.user.is_superuser or perms.orders.view_order or perms.orders.update_order_status or perms.orders.export_order or perms.orders.cancel_order %}
         <a
             href="{% url 'dashboard_orders' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
@@ -22,7 +25,9 @@
                 <span class="badge rounded-pill bg-warning text-dark">5</span>
             {% endif %}
         </a>
+        {% endif %}
 
+        {% if request.user.is_superuser or perms.products.view_product or perms.products.add_product or perms.products.change_product or perms.products.delete_product or perms.products.hide_product %}
         <a
             href="{% url 'dashboard_products' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}text-white{% else %}btn-light{% endif %}"
@@ -30,7 +35,9 @@
         >
             <i class="bi bi-box-seam me-2"></i>Sản phẩm
         </a>
+        {% endif %}
 
+        {% if request.user.is_superuser or perms.users.view_customer_list or perms.users.view_customer_detail or perms.users.create_customer or perms.users.lock_customer %}
         <a
             href="{% url 'dashboard_customers' %}"
             class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}text-white{% else %}btn-light{% endif %}"
@@ -38,40 +45,38 @@
         >
             <i class="bi bi-people me-2"></i>Khách hàng
         </a>
+        {% endif %}
     </div>
 
+    {% if request.user.is_superuser or perms.auth.view_report or perms.auth.export_report or perms.auth.view_revenue_report %}
     <div class="mt-4 mb-3">
         <div class="small fw-bold text-uppercase text-muted">Thống kê</div>
     </div>
 
     <div class="d-grid gap-2">
-          <a
+        <a
             href="{% url 'report' %}"
-            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
-            style="{% if active_page == 'reports' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'report' %}text-white{% else %}btn-light{% endif %}"
+            style="{% if active_page == 'report' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
             <span><i class="bi bi-receipt me-2"></i>Báo cáo doanh thu</span>
-            
         </a>
     </div>
+    {% endif %}
 
+    {% if request.user.is_superuser or perms.auth.view_permission_page or perms.auth.create_role or perms.auth.assign_role_member %}
     <div class="mt-4 mb-3">
         <div class="small fw-bold text-uppercase text-muted">Cấu hình</div>
     </div>
 
     <div class="d-grid gap-2">
-      
-    </div>
-    <a
-            href="#"
-            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'orders' %}text-white{% else %}btn-light{% endif %}"
+        <a
+            href="{% url 'permissions' %}"
+            class="btn text-start rounded-3 fw-semibold d-flex align-items-center justify-content-between {% if active_page == 'permissions' %}text-white{% else %}btn-light{% endif %}"
             style="{% if active_page == 'permissions' %}background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border:none;{% else %}border:1px solid #eee;{% endif %}"
         >
             <span><i class="bi bi-receipt me-2"></i>Phân Quyền</span>
-            
         </a>
     </div>
-
-   
-    
-    
+    {% endif %}
+</div>

@@ -21,7 +21,7 @@
                 </a>
             </div>
 
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <form method="get" class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-5">
@@ -31,6 +31,8 @@
                                 </span>
                                 <input
                                     type="text"
+                                    name="q"
+                                    value="{{ filters.q }}"
                                     class="form-control border-start-0 ps-0"
                                     placeholder="🔍 Tìm theo tên / mã sản phẩm..."
                                 >
@@ -38,30 +40,34 @@
                         </div>
 
                         <div class="col-md-3">
-                            <select class="form-select">
-                                <option selected>📂 Danh mục: Tất cả</option>
-                                <option>Bánh kẹo Tết</option>
-                                <option>Rượu bia</option>
+                            <select name="category" class="form-select" onchange="this.form.submit()">
+                                <option value="all" {% if filters.category == 'all' %}selected{% endif %}>📂 Danh mục: Tất cả</option>
+                                {% for c in categories %}
+                                    <option value="{{ c.id }}" {% if filters.category == c.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ c.name }}
+                                    </option>
+                                {% endfor %}
                             </select>
                         </div>
 
                         <div class="col-md-2">
-                            <select class="form-select">
-                                <option selected>⚡ Trạng thái</option>
-                                <option>Còn hàng</option>
-                                <option>Hết hàng</option>
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="all" {% if filters.status == 'all' %}selected{% endif %}>⚡ Trạng thái</option>
+                                <option value="in_stock" {% if filters.status == 'in_stock' %}selected{% endif %}>Còn hàng</option>
+                                <option value="out_stock" {% if filters.status == 'out_stock' %}selected{% endif %}>Hết hàng</option>
                             </select>
                         </div>
 
                         <div class="col-md-2">
-                            <select class="form-select">
-                                <option selected>Mới nhất</option>
-                                <option>Giá tăng dần</option>
+                            <select name="sort" class="form-select" onchange="this.form.submit()">
+                                <option value="newest" {% if filters.sort == 'newest' %}selected{% endif %}>Mới nhất</option>
+                                <option value="price_asc" {% if filters.sort == 'price_asc' %}selected{% endif %}>Giá tăng dần</option>
+                                <option value="price_desc" {% if filters.sort == 'price_desc' %}selected{% endif %}>Giá giảm dần</option>
                             </select>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
 
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <div class="card-body p-0">
@@ -103,7 +109,7 @@
                                     </td>
 
                                     <td>
-                                        {% if p.status == 'active' %}
+                                        {% if p.is_active and p.stock > 0 %}
                                             <span class="badge bg-success-subtle text-success px-2 py-1 rounded border border-success-subtle">
                                                 <i class="fas fa-check-circle me-1"></i> Còn hàng
                                             </span>

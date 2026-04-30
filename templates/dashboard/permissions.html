@@ -547,7 +547,7 @@
       <div class="perm-header">
         <div>
           <h2 class="perm-title">Phân quyền hệ thống</h2>
-          <p class="perm-subtitle">Quản lý vai trò và thành viên theo giao diện frontend demo.</p>
+          <p class="perm-subtitle">Quản lý vai trò và thành viên.</p>
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
@@ -562,7 +562,7 @@
         <div class="perm-card">
           <div class="perm-card-head">
             <h5 class="fw-bold mb-0">Danh sách vai trò</h5>
-            <span class="badge text-bg-light border">5 vai trò</span>
+            <span class="badge text-bg-light border" id="roleCountBadge">0 vai trò</span>
           </div>
 
           <div class="perm-search">
@@ -667,7 +667,7 @@
       <div class="modal-header border-0" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
         <div>
           <h5 class="modal-title text-white fw-bold mb-1">Xóa thành viên khỏi vai trò</h5>
-          <p class="mb-0 text-white-50 small">Thao tác này chỉ áp dụng trên giao diện demo.</p>
+          <p class="mb-0 text-white-50 small">Thao tác này chỉ áp dụng trên giao diện.</p>
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
@@ -702,210 +702,18 @@
 
 <div id="saveToast" class="perm-toast">
   <div id="saveToastTitle" class="perm-toast-title">Đã lưu thay đổi</div>
-  <p id="saveToastText" class="perm-toast-text">Cấu hình quyền đã được cập nhật trên giao diện demo.</p>
+  <p id="saveToastText" class="perm-toast-text">Cấu hình quyền đã được cập nhật.</p>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const userPool = [
-    { name: 'admin.tetmart', email: 'admin@tetmart.vn' },
-    { name: 'lauren.pm', email: 'lauren@tetmart.vn' },
-    { name: 'hanh.ops', email: 'hanh@tetmart.vn' },
-    { name: 'nam.ops', email: 'nam@tetmart.vn' },
-    { name: 'quynh.ops', email: 'quynh@tetmart.vn' },
-    { name: 'tung.ops', email: 'tung@tetmart.vn' },
-    { name: 'phuong.catalog', email: 'phuong@tetmart.vn' },
-    { name: 'duy.catalog', email: 'duy@tetmart.vn' },
-    { name: 'mai.catalog', email: 'mai@tetmart.vn' },
-    { name: 'thao.cskh', email: 'thao@tetmart.vn' },
-    { name: 'vy.cskh', email: 'vy@tetmart.vn' },
-    { name: 'linh.cskh', email: 'linh@tetmart.vn' },
-    { name: 'yen.cskh', email: 'yen@tetmart.vn' },
-    { name: 'khanh.cskh', email: 'khanh@tetmart.vn' },
-    { name: 'anh.bi', email: 'anh@tetmart.vn' },
-    { name: 'bao.bi', email: 'bao@tetmart.vn' },
-    { name: 'minh.content', email: 'minh@tetmart.vn' },
-    { name: 'trang.content', email: 'trang@tetmart.vn' }
-  ];
-
-  const roleData = [
-    {
-      id: 'admin',
-      name: 'Admin tổng',
-      level: 'Cao',
-      levelClass: 'danger',
-      description: 'Toàn quyền trên hệ thống quản trị.',
-      members: [
-        { name: 'admin.tetmart', email: 'admin@tetmart.vn' },
-        { name: 'lauren.pm', email: 'lauren@tetmart.vn' }
-      ],
-      modules: [
-        {
-          title: 'Dashboard',
-          description: 'Truy cập trang tổng quan và số liệu chính.',
-          permissions: [
-            { label: 'Xem dashboard', enabled: true },
-            { label: 'Xem số liệu doanh thu', enabled: true }
-          ]
-        },
-        {
-          title: 'Đơn hàng',
-          description: 'Quản lý toàn bộ quy trình đơn hàng.',
-          permissions: [
-            { label: 'Xem danh sách đơn', enabled: true },
-            { label: 'Xem chi tiết đơn', enabled: true },
-            { label: 'Cập nhật trạng thái đơn', enabled: true },
-            { label: 'Xuất danh sách đơn', enabled: true }
-          ]
-        },
-        {
-          title: 'Sản phẩm',
-          description: 'Thao tác đầy đủ với sản phẩm.',
-          permissions: [
-            { label: 'Xem sản phẩm', enabled: true },
-            { label: 'Thêm sản phẩm', enabled: true },
-            { label: 'Sửa sản phẩm', enabled: true },
-            { label: 'Xóa sản phẩm', enabled: true }
-          ]
-        },
-        {
-          title: 'Phân quyền',
-          description: 'Thiết lập vai trò và gán quyền cho thành viên.',
-          permissions: [
-            { label: 'Xem trang phân quyền', enabled: true },
-            { label: 'Tạo vai trò mới', enabled: true },
-            { label: 'Gán vai trò cho thành viên', enabled: true }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'orders',
-      name: 'Quản lý đơn hàng',
-      level: 'Vận hành',
-      levelClass: 'warning',
-      description: 'Xử lý đơn, cập nhật trạng thái và theo dõi giao hàng.',
-      members: [
-        { name: 'hanh.ops', email: 'hanh@tetmart.vn' },
-        { name: 'nam.ops', email: 'nam@tetmart.vn' },
-        { name: 'quynh.ops', email: 'quynh@tetmart.vn' },
-        { name: 'tung.ops', email: 'tung@tetmart.vn' }
-      ],
-      modules: [
-        {
-          title: 'Đơn hàng',
-          description: 'Quyền chuyên xử lý nghiệp vụ đơn hàng.',
-          permissions: [
-            { label: 'Xem danh sách đơn', enabled: true },
-            { label: 'Xem chi tiết đơn', enabled: true },
-            { label: 'Cập nhật trạng thái', enabled: true },
-            { label: 'Hủy đơn', enabled: false },
-            { label: 'Xuất file', enabled: true }
-          ]
-        },
-        {
-          title: 'Khách hàng',
-          description: 'Chỉ xem thông tin cần thiết để hỗ trợ đơn.',
-          permissions: [
-            { label: 'Xem khách hàng', enabled: true },
-            { label: 'Khóa khách hàng', enabled: false }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'products',
-      name: 'Quản lý sản phẩm',
-      level: 'Danh mục',
-      levelClass: 'primary',
-      description: 'Tạo mới, chỉnh sửa và quản lý trạng thái sản phẩm.',
-      members: [
-        { name: 'phuong.catalog', email: 'phuong@tetmart.vn' },
-        { name: 'duy.catalog', email: 'duy@tetmart.vn' },
-        { name: 'mai.catalog', email: 'mai@tetmart.vn' }
-      ],
-      modules: [
-        {
-          title: 'Sản phẩm',
-          description: 'Quản trị danh mục và hiển thị sản phẩm.',
-          permissions: [
-            { label: 'Xem sản phẩm', enabled: true },
-            { label: 'Thêm mới', enabled: true },
-            { label: 'Chỉnh sửa', enabled: true },
-            { label: 'Xóa', enabled: false },
-            { label: 'Ẩn / hiện sản phẩm', enabled: true }
-          ]
-        },
-        {
-          title: 'Báo cáo',
-          description: 'Xem hiệu quả danh mục theo sản phẩm.',
-          permissions: [
-            { label: 'Xem báo cáo', enabled: true },
-            { label: 'Xuất báo cáo', enabled: false }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'customers',
-      name: 'CSKH',
-      level: 'Chăm sóc',
-      levelClass: 'success',
-      description: 'Xem hồ sơ khách hàng và hỗ trợ đơn hàng.',
-      members: [
-        { name: 'thao.cskh', email: 'thao@tetmart.vn' },
-        { name: 'vy.cskh', email: 'vy@tetmart.vn' },
-        { name: 'linh.cskh', email: 'linh@tetmart.vn' },
-        { name: 'yen.cskh', email: 'yen@tetmart.vn' },
-        { name: 'khanh.cskh', email: 'khanh@tetmart.vn' }
-      ],
-      modules: [
-        {
-          title: 'Khách hàng',
-          description: 'Chăm sóc khách hàng và xem lịch sử mua sắm.',
-          permissions: [
-            { label: 'Xem danh sách khách hàng', enabled: true },
-            { label: 'Xem chi tiết khách hàng', enabled: true },
-            { label: 'Thêm khách hàng mới', enabled: false },
-            { label: 'Khóa khách hàng', enabled: false }
-          ]
-        },
-        {
-          title: 'Đơn hàng',
-          description: 'Chỉ hỗ trợ xem đơn để tư vấn cho khách.',
-          permissions: [
-            { label: 'Xem danh sách đơn', enabled: true },
-            { label: 'Cập nhật trạng thái đơn', enabled: false }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'reports',
-      name: 'Nhân viên báo cáo',
-      level: 'Báo cáo',
-      levelClass: 'secondary',
-      description: 'Truy cập dashboard, biểu đồ và xuất báo cáo.',
-      members: [
-        { name: 'anh.bi', email: 'anh@tetmart.vn' },
-        { name: 'bao.bi', email: 'bao@tetmart.vn' }
-      ],
-      modules: [
-        {
-          title: 'Báo cáo',
-          description: 'Xem dashboard và thống kê kinh doanh.',
-          permissions: [
-            { label: 'Xem dashboard', enabled: true },
-            { label: 'Xem báo cáo doanh thu', enabled: true },
-            { label: 'Xuất báo cáo', enabled: true },
-            { label: 'Truy cập phân quyền', enabled: false }
-          ]
-        }
-      ]
-    }
-  ];
-
+  const userPool = JSON.parse('{{ user_pool_json|default:"[]"|escapejs }}');
+  const roleData = JSON.parse('{{ role_data_json|default:"[]"|escapejs }}');
+  console.log('userPool =', userPool);
+  console.log('roleData =', roleData);
+  
   const roleList = document.getElementById('roleList');
+  const roleCountBadge = document.getElementById('roleCountBadge');
   const roleSearch = document.getElementById('roleSearch');
   const roleTitle = document.getElementById('roleTitle');
   const roleSubtitle = document.getElementById('roleSubtitle');
@@ -937,27 +745,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const removeMemberRoleName = document.getElementById('removeMemberRoleName');
   const confirmRemoveMemberBtn = document.getElementById('confirmRemoveMemberBtn');
 
-  let currentRoleId = 'admin';
+  let currentRoleId = roleData.length ? roleData[0].id : null;
   let currentModuleIndex = 0;
   let searchText = '';
   let toastTimer = null;
+  let pendingRemoveMemberId = '';
   let pendingRemoveMemberEmail = '';
   let pendingRemoveMemberName = '';
 
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
   function getCurrentRole() {
+    if (!roleData.length) return null;
     return roleData.find(role => role.id === currentRoleId) || roleData[0];
   }
 
   function getAvailableUsersForCurrentRole() {
-    const role = getCurrentRole();
-    const currentEmails = role.members.map(member => member.email);
-    return userPool.filter(user => !currentEmails.includes(user.email));
+    return userPool;
   }
 
   function updateAssignMemberPreview() {
-    const selectedEmail = assignMemberSelect.value;
+   const selectedUserId = Number(assignMemberSelect.value); 
     const availableUsers = getAvailableUsersForCurrentRole();
-    const selectedUser = availableUsers.find(user => user.email === selectedEmail);
+    const selectedUser = userPool.find(user => user.id === selectedUserId);
 
     if (!selectedUser) {
       assignMemberAvatar.textContent = '?';
@@ -977,6 +801,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const role = getCurrentRole();
     const availableUsers = getAvailableUsersForCurrentRole();
 
+    if (!role) {
+      assignRoleName.textContent = 'Chưa có vai trò';
+      assignMemberSelect.innerHTML = `<option value="">Chưa có vai trò</option>`;
+      confirmAssignMemberBtn.disabled = true;
+      return;
+    }
+
     assignRoleName.textContent = role.name;
 
     if (!availableUsers.length) {
@@ -991,7 +822,7 @@ document.addEventListener('DOMContentLoaded', function () {
     assignMemberSelect.innerHTML = `
       <option value="">Chọn thành viên</option>
       ${availableUsers.map(user => `
-        <option value="${user.email}">${user.name} - ${user.email}</option>
+        <option value="${user.id}">${user.name} - ${user.email}</option>
       `).join('')}
     `;
 
@@ -1011,6 +842,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function renderRoleList() {
+    roleCountBadge.textContent = `${roleData.length} vai trò`;
+
     const filtered = roleData.filter(role =>
       role.name.toLowerCase().includes(searchText.toLowerCase())
     );
@@ -1048,6 +881,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderOverview() {
     const role = getCurrentRole();
+
+    if (!role) {
+      roleTitle.textContent = 'Chưa có vai trò';
+      roleSubtitle.textContent = 'Chưa có dữ liệu vai trò.';
+      roleLevel.textContent = '-';
+      roleLevel.className = 'perm-chip secondary';
+      memberCount.textContent = '0 thành viên';
+      memberCountBadge.textContent = '0 người';
+      permissionCount.textContent = '0 quyền';
+      return;
+    }
+
     const totalPermissions = role.modules.reduce((sum, module) => sum + module.permissions.length, 0);
 
     roleTitle.textContent = role.name;
@@ -1061,6 +906,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderTabs() {
     const role = getCurrentRole();
+
+    if (!role) {
+      moduleTabs.innerHTML = '';
+      return;
+    }
 
     moduleTabs.innerHTML = role.modules.map((module, index) => `
       <button class="perm-tab-btn ${index === currentModuleIndex ? 'active' : ''}" data-module-index="${index}">
@@ -1080,6 +930,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderModule() {
     const role = getCurrentRole();
+
+    if (!role) {
+      moduleBox.innerHTML = `<div class="perm-empty">Vai trò này chưa có quyền nào.</div>`;
+      return;
+    }
+
     const module = role.modules[currentModuleIndex];
 
     if (!module) {
@@ -1117,6 +973,15 @@ document.addEventListener('DOMContentLoaded', function () {
   function renderMembers() {
     const role = getCurrentRole();
 
+    if (!role) {
+      memberList.innerHTML = `
+        <div class="perm-empty">
+          Chưa có thành viên nào trong vai trò này.
+        </div>
+      `;
+      return;
+    }
+
     memberList.innerHTML = role.members.map(member => `
       <div class="perm-member-item">
         <div class="perm-avatar">${member.name.charAt(0).toUpperCase()}</div>
@@ -1129,6 +994,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="perm-member-actions">
           <button
             class="btn btn-sm btn-outline-danger rounded-3 fw-semibold member-remove-btn"
+            data-member-id="${member.id}"
             data-member-email="${member.email}"
             data-member-name="${member.name}">
             Xóa
@@ -1136,6 +1002,14 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     `).join('');
+
+    if (!role.members.length) {
+      memberList.innerHTML = `
+        <div class="perm-empty">
+          Chưa có thành viên nào trong vai trò này.
+        </div>
+      `;
+    }
   }
 
   function renderAll() {
@@ -1154,42 +1028,73 @@ document.addEventListener('DOMContentLoaded', function () {
   savePermissionBtn.addEventListener('click', function () {
     showToast(
       'Đã lưu thay đổi',
-      'Cấu hình quyền đã được cập nhật trên giao diện demo.'
+      'Cấu hình quyền đã được cập nhật trên giao diện.'
     );
   });
 
-  const assignMemberModal = new bootstrap.Modal(assignMemberModalElement);
-  const removeMemberModal = new bootstrap.Modal(removeMemberModalElement);
+  const assignMemberModal = (typeof bootstrap !== 'undefined' && assignMemberModalElement)
+    ? new bootstrap.Modal(assignMemberModalElement)
+    : null;
+
+  const removeMemberModal = (typeof bootstrap !== 'undefined' && removeMemberModalElement)
+    ? new bootstrap.Modal(removeMemberModalElement)
+    : null;
 
   openAssignMemberBtn.addEventListener('click', function () {
     populateAssignMemberSelect();
-    assignMemberModal.show();
+    if (assignMemberModal) {
+      assignMemberModal.show();
+    }
   });
 
   assignMemberSelect.addEventListener('change', function () {
     updateAssignMemberPreview();
   });
 
-  confirmAssignMemberBtn.addEventListener('click', function () {
-    const selectedEmail = assignMemberSelect.value;
-    const availableUsers = getAvailableUsersForCurrentRole();
-    const selectedUser = availableUsers.find(user => user.email === selectedEmail);
+  confirmAssignMemberBtn.addEventListener('click', async function () {
+    const selectedUserId = Number(assignMemberSelect.value);
+    const selectedUser = userPool.find(user => user.id === selectedUserId);
 
     if (!selectedUser) return;
 
     const role = getCurrentRole();
-    role.members.push({
-      name: selectedUser.name,
-      email: selectedUser.email
-    });
 
-    assignMemberModal.hide();
-    renderAll();
+    try {
+      const response = await fetch("{% url 'add_role_member' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+      body: JSON.stringify({
+        role_id: role.id,
+        user_id: selectedUserId
+      })
+      });
 
-    showToast(
-      'Đã thêm thành viên',
-      `${selectedUser.name} đã được thêm vào vai trò ${role.name}.`
-    );
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        showToast('Không thể thêm thành viên', result.message || 'Có lỗi xảy ra.');
+        return;
+      }
+
+      role.members.push({
+        id: selectedUser.id,
+        name: selectedUser.name,
+        email: selectedUser.email
+      });
+
+      if (assignMemberModal) {
+        assignMemberModal.hide();
+      }
+
+      renderAll();
+
+      showToast('Đã thêm thành viên', result.message);
+    } catch (error) {
+      showToast('Không thể thêm thành viên', 'Có lỗi xảy ra khi kết nối máy chủ.');
+    }
   });
 
   memberList.addEventListener('click', function (event) {
@@ -1197,6 +1102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!removeBtn) return;
 
     const role = getCurrentRole();
+    pendingRemoveMemberId = removeBtn.getAttribute('data-member-id');
     pendingRemoveMemberEmail = removeBtn.getAttribute('data-member-email');
     pendingRemoveMemberName = removeBtn.getAttribute('data-member-name');
 
@@ -1205,24 +1111,49 @@ document.addEventListener('DOMContentLoaded', function () {
     removeMemberAvatar.textContent = pendingRemoveMemberName.charAt(0).toUpperCase();
     removeMemberRoleName.textContent = role.name;
 
-    removeMemberModal.show();
+    if (removeMemberModal) {
+      removeMemberModal.show();
+    }
   });
 
-  confirmRemoveMemberBtn.addEventListener('click', function () {
+  confirmRemoveMemberBtn.addEventListener('click', async function () {
     const role = getCurrentRole();
 
-    role.members = role.members.filter(member => member.email !== pendingRemoveMemberEmail);
+    try {
+      const response = await fetch("{% url 'remove_role_member' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+          role_id: role.id,
+          user_id: pendingRemoveMemberId
+        })
+      });
 
-    removeMemberModal.hide();
-    renderAll();
+      const result = await response.json();
 
-    showToast(
-      'Đã xóa thành viên',
-      `${pendingRemoveMemberName} đã được gỡ khỏi vai trò ${role.name}.`
-    );
+      if (!response.ok || !result.success) {
+        showToast('Không thể xóa thành viên', result.message || 'Có lỗi xảy ra.');
+        return;
+      }
 
-    pendingRemoveMemberEmail = '';
-    pendingRemoveMemberName = '';
+      role.members = role.members.filter(member => String(member.id) !== String(pendingRemoveMemberId));
+
+      if (removeMemberModal) {
+        removeMemberModal.hide();
+      }
+
+      renderAll();
+
+      showToast('Đã xóa thành viên', result.message);
+
+      pendingRemoveMemberEmail = '';
+      pendingRemoveMemberName = '';
+    } catch (error) {
+      showToast('Không thể xóa thành viên', 'Có lỗi xảy ra khi kết nối máy chủ.');
+    }
   });
 
   renderAll();

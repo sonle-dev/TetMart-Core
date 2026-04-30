@@ -16,9 +16,11 @@
                 <p class="text-muted small mb-0">Xem và cập nhật trạng thái đơn hàng của khách</p>
             </div>
 
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <form method="get" class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body">
                     <div class="row g-3">
+
+                        <!-- SEARCH -->
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0">
@@ -26,30 +28,37 @@
                                 </span>
                                 <input
                                     type="text"
+                                    name="q"
+                                    value="{{ filters.q }}"
                                     class="form-control border-start-0 ps-0"
                                     placeholder="🔍 Tìm theo mã đơn / tên khách / SĐT..."
                                 >
                             </div>
                         </div>
 
+                        <!-- STATUS -->
                         <div class="col-md-3">
-                            <select class="form-select text-dark fw-bold">
-                                <option selected>⚡ Trạng thái: Tất cả</option>
-                                <option value="pending">Chờ xử lý</option>
-                                <option value="shipping">Đang giao</option>
-                                <option value="completed">Hoàn thành</option>
+                            <select name="status" class="form-select text-dark fw-bold" onchange="this.form.submit()">
+                                <option value="all" {% if filters.status == 'all' %}selected{% endif %}>⚡ Trạng thái: Tất cả</option>
+                                <option value="new" {% if filters.status == 'new' %}selected{% endif %}>Đơn mới</option>
+                                <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Chờ xử lý</option>
+                                <option value="shipping" {% if filters.status == 'shipping' %}selected{% endif %}>Đang giao</option>
+                                <option value="completed" {% if filters.status == 'completed' %}selected{% endif %}>Hoàn thành</option>
+                                <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
                             </select>
                         </div>
 
+                        <!-- SORT -->
                         <div class="col-md-3">
-                            <select class="form-select">
-                                <option selected>📅 Mới nhất</option>
-                                <option value="oldest">Cũ nhất</option>
+                            <select name="sort" class="form-select" onchange="this.form.submit()">
+                                <option value="newest" {% if filters.sort == 'newest' %}selected{% endif %}>📅 Mới nhất</option>
+                                <option value="oldest" {% if filters.sort == 'oldest' %}selected{% endif %}>Cũ nhất</option>
                             </select>
                         </div>
+
                     </div>
                 </div>
-            </div>
+            </form>
 
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <div class="card-body p-0">
