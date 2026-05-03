@@ -185,4 +185,83 @@ def place_order_view(request):
     request.session.pop('checkout_mode', None)
 
     messages.success(request, 'Đặt hàng thành công.')
-    return redirect('dashboard_orders')
+    return redirect('orders:orders')
+
+@login_required(login_url='login')
+def order_list(request):
+    orders = Order.objects.filter(user=request.user).prefetch_related(
+        'items__product'
+    ).order_by('-created_at')
+
+    my_orders = []
+
+    for order in orders:
+        order_items = []
+        items_count = 0
+
+        for item in order.items.all():
+            items_count += item.quantity
+            order_items.append({
+                'name': item.product.name,
+                'quantity': item.quantity,
+                'price_display': f'{item.total:,.0f}'.replace(',', '.'),
+                'icon': '🎁',
+            })
+
+        status_map = {
+            'new': ('Đơn mới', 'warning'),
+            'pending': ('Chờ xử lý', 'warning'),
+            'shipping': ('Đang giao', 'info'),
+            'completed': ('Hoàn thành', 'success'),
+            'cancelled': ('Đã hủy', 'danger'),
+        }
+
+        status_label, status_class = status_map.get(order.status, ('Không rõ', 'primary'))
+
+        my_orders.append({
+            'id': order.id,
+            'created_at': order.created_at.strftime('%d/%m/%Y %H:%M'),
+            'status_label': status_label,
+            'status_class': status_class,
+            'items': order_items,
+            'items_count': items_count,
+            'payment_method': 'Thanh toán khi nhận hàng',
+            'total_display': f'{order.total_price:,.0f}'.replace(',', '.'),
+            'shipping_address': order.address,
+            'can_cancel': order.status in ['new', 'pending'],
+            'can_reorder': order.status in ['completed', 'cancelled'],
+        })
+
+    return render(request, 'user/orders.html', {
+        'my_orders': my_orders
+    })
+
+@login_required(login_url='login')
+def reorder_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    cart = request.session.get('cart', {})
+
+    for item in order.items.all():
+        product_id = str(item.product.id)
+        cart[product_id] = cart.get(product_id, 0) + item.quantity
+
+    request.session['cart'] = cart
+    request.session.modified = True
+
+    messages.success(request, 'Đã thêm sản phẩm vào giỏ hàng.')
+    return redirect('/cart/')
+
+
+@login_required(login_url='login')
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status in ['new', 'pending']:
+        order.status = 'cancelled'
+        order.save()
+        messages.success(request, 'Đã hủy đơn hàng.')
+    else:
+        messages.error(request, 'Đơn hàng này không thể hủy.')
+
+    return redirect('orders:orders')

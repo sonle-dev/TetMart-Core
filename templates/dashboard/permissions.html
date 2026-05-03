@@ -547,7 +547,7 @@
       <div class="perm-header">
         <div>
           <h2 class="perm-title">Phân quyền hệ thống</h2>
-          <p class="perm-subtitle">Quản lý vai trò và thành viên.</p>
+          <p class="perm-subtitle">Quản lý vai trò và thành viên theo giao diện frontend demo.</p>
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
@@ -562,7 +562,7 @@
         <div class="perm-card">
           <div class="perm-card-head">
             <h5 class="fw-bold mb-0">Danh sách vai trò</h5>
-            <span class="badge text-bg-light border" id="roleCountBadge">0 vai trò</span>
+            <span class="badge text-bg-light border">5 vai trò</span>
           </div>
 
           <div class="perm-search">
@@ -667,7 +667,7 @@
       <div class="modal-header border-0" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
         <div>
           <h5 class="modal-title text-white fw-bold mb-1">Xóa thành viên khỏi vai trò</h5>
-          <p class="mb-0 text-white-50 small">Thao tác này chỉ áp dụng trên giao diện.</p>
+          <p class="mb-0 text-white-50 small">Thao tác này chỉ áp dụng trên giao diện demo.</p>
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
@@ -702,18 +702,16 @@
 
 <div id="saveToast" class="perm-toast">
   <div id="saveToastTitle" class="perm-toast-title">Đã lưu thay đổi</div>
-  <p id="saveToastText" class="perm-toast-text">Cấu hình quyền đã được cập nhật.</p>
+  <p id="saveToastText" class="perm-toast-text">Cấu hình quyền đã được cập nhật trên giao diện demo.</p>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const userPool = JSON.parse('{{ user_pool_json|default:"[]"|escapejs }}');
-  const roleData = JSON.parse('{{ role_data_json|default:"[]"|escapejs }}');
-  console.log('userPool =', userPool);
-  console.log('roleData =', roleData);
-  
+  const userPool = JSON.parse('{{ user_pool_json|escapejs }}');
+  const roleData = JSON.parse('{{ role_data_json|escapejs }}');
+  const csrftoken = '{{ csrf_token }}';
+
   const roleList = document.getElementById('roleList');
-  const roleCountBadge = document.getElementById('roleCountBadge');
   const roleSearch = document.getElementById('roleSearch');
   const roleTitle = document.getElementById('roleTitle');
   const roleSubtitle = document.getElementById('roleSubtitle');
@@ -749,39 +747,32 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentModuleIndex = 0;
   let searchText = '';
   let toastTimer = null;
-  let pendingRemoveMemberId = '';
+  let pendingRemoveMemberId = null;
   let pendingRemoveMemberEmail = '';
   let pendingRemoveMemberName = '';
 
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-
-  const csrftoken = getCookie('csrftoken');
   function getCurrentRole() {
-    if (!roleData.length) return null;
-    return roleData.find(role => role.id === currentRoleId) || roleData[0];
+    return roleData.find(role => role.id === currentRoleId) || roleData[0] || {
+      id: null,
+      name: 'Chưa có vai trò',
+      level: 'Khác',
+      levelClass: 'secondary',
+      description: 'Chưa có dữ liệu vai trò.',
+      members: [],
+      modules: []
+    };
   }
 
   function getAvailableUsersForCurrentRole() {
-    return userPool;
+    const role = getCurrentRole();
+    const currentEmails = role.members.map(member => member.email);
+    return userPool.filter(user => !currentEmails.includes(user.email));
   }
 
   function updateAssignMemberPreview() {
-   const selectedUserId = Number(assignMemberSelect.value); 
+    const selectedUserId = Number(assignMemberSelect.value);
     const availableUsers = getAvailableUsersForCurrentRole();
-    const selectedUser = userPool.find(user => user.id === selectedUserId);
+    const selectedUser = availableUsers.find(user => Number(user.id) === selectedUserId);
 
     if (!selectedUser) {
       assignMemberAvatar.textContent = '?';
@@ -800,13 +791,6 @@ document.addEventListener('DOMContentLoaded', function () {
   function populateAssignMemberSelect() {
     const role = getCurrentRole();
     const availableUsers = getAvailableUsersForCurrentRole();
-
-    if (!role) {
-      assignRoleName.textContent = 'Chưa có vai trò';
-      assignMemberSelect.innerHTML = `<option value="">Chưa có vai trò</option>`;
-      confirmAssignMemberBtn.disabled = true;
-      return;
-    }
 
     assignRoleName.textContent = role.name;
 
@@ -842,8 +826,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function renderRoleList() {
-    roleCountBadge.textContent = `${roleData.length} vai trò`;
-
     const filtered = roleData.filter(role =>
       role.name.toLowerCase().includes(searchText.toLowerCase())
     );
@@ -881,18 +863,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderOverview() {
     const role = getCurrentRole();
-
-    if (!role) {
-      roleTitle.textContent = 'Chưa có vai trò';
-      roleSubtitle.textContent = 'Chưa có dữ liệu vai trò.';
-      roleLevel.textContent = '-';
-      roleLevel.className = 'perm-chip secondary';
-      memberCount.textContent = '0 thành viên';
-      memberCountBadge.textContent = '0 người';
-      permissionCount.textContent = '0 quyền';
-      return;
-    }
-
     const totalPermissions = role.modules.reduce((sum, module) => sum + module.permissions.length, 0);
 
     roleTitle.textContent = role.name;
@@ -906,11 +876,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderTabs() {
     const role = getCurrentRole();
-
-    if (!role) {
-      moduleTabs.innerHTML = '';
-      return;
-    }
 
     moduleTabs.innerHTML = role.modules.map((module, index) => `
       <button class="perm-tab-btn ${index === currentModuleIndex ? 'active' : ''}" data-module-index="${index}">
@@ -930,12 +895,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderModule() {
     const role = getCurrentRole();
-
-    if (!role) {
-      moduleBox.innerHTML = `<div class="perm-empty">Vai trò này chưa có quyền nào.</div>`;
-      return;
-    }
-
     const module = role.modules[currentModuleIndex];
 
     if (!module) {
@@ -962,7 +921,11 @@ document.addEventListener('DOMContentLoaded', function () {
           <label class="perm-toggle-row">
             <span>${permission.label}</span>
             <div class="form-check form-switch m-0">
-              <input class="form-check-input permission-switch" type="checkbox" ${permission.enabled ? 'checked' : ''}>
+              <input
+                class="form-check-input permission-switch"
+                type="checkbox"
+                data-code="${permission.code}"
+                ${permission.enabled ? 'checked' : ''}>
             </div>
           </label>
         `).join('')}
@@ -972,15 +935,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderMembers() {
     const role = getCurrentRole();
-
-    if (!role) {
-      memberList.innerHTML = `
-        <div class="perm-empty">
-          Chưa có thành viên nào trong vai trò này.
-        </div>
-      `;
-      return;
-    }
 
     memberList.innerHTML = role.members.map(member => `
       <div class="perm-member-item">
@@ -1002,14 +956,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     `).join('');
-
-    if (!role.members.length) {
-      memberList.innerHTML = `
-        <div class="perm-empty">
-          Chưa có thành viên nào trong vai trò này.
-        </div>
-      `;
-    }
   }
 
   function renderAll() {
@@ -1020,6 +966,52 @@ document.addEventListener('DOMContentLoaded', function () {
     renderMembers();
   }
 
+  moduleBox.addEventListener('change', function (event) {
+    const switchEl = event.target.closest('.permission-switch');
+    if (!switchEl) return;
+
+    const role = getCurrentRole();
+    const permissionCode = switchEl.getAttribute('data-code');
+    const enabled = switchEl.checked;
+
+    fetch("{% url 'update_role_permission' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken
+      },
+      body: JSON.stringify({
+        role_id: role.id,
+        permission_code: permissionCode,
+        enabled: enabled
+      })
+    })
+    .then(response => response.json().then(data => ({ ok: response.ok, data })))
+    .then(({ ok, data }) => {
+      if (!ok || !data.success) {
+        switchEl.checked = !enabled;
+        showToast("Không thể cập nhật quyền", data.message || "Có lỗi xảy ra.");
+        return;
+      }
+
+      const module = role.modules[currentModuleIndex];
+      const permission = module.permissions.find(item => item.code === permissionCode);
+
+      if (permission) {
+        permission.enabled = enabled;
+      }
+
+      renderOverview();
+      renderModule();
+
+      showToast("Đã cập nhật quyền", data.message);
+    })
+    .catch(() => {
+      switchEl.checked = !enabled;
+      showToast("Không thể cập nhật quyền", "Có lỗi xảy ra khi kết nối máy chủ.");
+    });
+  });
+
   roleSearch.addEventListener('input', function () {
     searchText = this.value;
     renderRoleList();
@@ -1028,54 +1020,46 @@ document.addEventListener('DOMContentLoaded', function () {
   savePermissionBtn.addEventListener('click', function () {
     showToast(
       'Đã lưu thay đổi',
-      'Cấu hình quyền đã được cập nhật trên giao diện.'
+      'Cấu hình quyền đã được cập nhật trên giao diện demo.'
     );
   });
 
-  const assignMemberModal = (typeof bootstrap !== 'undefined' && assignMemberModalElement)
-    ? new bootstrap.Modal(assignMemberModalElement)
-    : null;
-
-  const removeMemberModal = (typeof bootstrap !== 'undefined' && removeMemberModalElement)
-    ? new bootstrap.Modal(removeMemberModalElement)
-    : null;
+  const assignMemberModal = new bootstrap.Modal(assignMemberModalElement);
+  const removeMemberModal = new bootstrap.Modal(removeMemberModalElement);
 
   openAssignMemberBtn.addEventListener('click', function () {
     populateAssignMemberSelect();
-    if (assignMemberModal) {
-      assignMemberModal.show();
-    }
+    assignMemberModal.show();
   });
 
   assignMemberSelect.addEventListener('change', function () {
     updateAssignMemberPreview();
   });
 
-  confirmAssignMemberBtn.addEventListener('click', async function () {
+  confirmAssignMemberBtn.addEventListener('click', function () {
     const selectedUserId = Number(assignMemberSelect.value);
-    const selectedUser = userPool.find(user => user.id === selectedUserId);
+    const availableUsers = getAvailableUsersForCurrentRole();
+    const selectedUser = availableUsers.find(user => Number(user.id) === selectedUserId);
 
     if (!selectedUser) return;
 
     const role = getCurrentRole();
 
-    try {
-      const response = await fetch("{% url 'add_role_member' %}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken
-        },
+    fetch("{% url 'add_role_member' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken
+      },
       body: JSON.stringify({
         role_id: role.id,
         user_id: selectedUserId
       })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        showToast('Không thể thêm thành viên', result.message || 'Có lỗi xảy ra.');
+    })
+    .then(response => response.json().then(data => ({ ok: response.ok, data })))
+    .then(({ ok, data }) => {
+      if (!ok || !data.success) {
+        showToast("Không thể thêm thành viên", data.message || "Có lỗi xảy ra.");
         return;
       }
 
@@ -1085,24 +1069,67 @@ document.addEventListener('DOMContentLoaded', function () {
         email: selectedUser.email
       });
 
-      if (assignMemberModal) {
-        assignMemberModal.hide();
+      assignMemberModal.hide();
+      renderAll();
+      showToast("Đã thêm thành viên", data.message);
+    })
+    .catch(() => {
+      showToast("Không thể thêm thành viên", "Có lỗi xảy ra khi kết nối máy chủ.");
+    });
+
+    });
+
+
+    confirmRemoveMemberBtn.addEventListener('click', function () {
+      const role = getCurrentRole();
+
+      if (!pendingRemoveMemberId) {
+        showToast('Không thể xóa thành viên', 'Không tìm thấy ID thành viên.');
+        return;
       }
 
-      renderAll();
+      fetch("{% url 'remove_role_member' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+          role_id: role.id,
+          user_id: pendingRemoveMemberId
+        })
+      })
+      .then(response => response.json().then(data => ({ ok: response.ok, data })))
+      .then(({ ok, data }) => {
+        if (!ok || !data.success) {
+          showToast("Không thể xóa thành viên", data.message || "Có lỗi xảy ra.");
+          return;
+        }
 
-      showToast('Đã thêm thành viên', result.message);
-    } catch (error) {
-      showToast('Không thể thêm thành viên', 'Có lỗi xảy ra khi kết nối máy chủ.');
-    }
-  });
+        role.members = role.members.filter(member => Number(member.id) !== pendingRemoveMemberId);
+
+        removeMemberModal.hide();
+        renderAll();
+
+        showToast("Đã xóa thành viên", data.message);
+
+        pendingRemoveMemberId = null;
+        pendingRemoveMemberEmail = '';
+        pendingRemoveMemberName = '';
+      })
+      .catch(() => {
+        showToast("Không thể xóa thành viên", "Có lỗi xảy ra khi kết nối máy chủ.");
+      });
+    });
+
+  renderAll();
 
   memberList.addEventListener('click', function (event) {
     const removeBtn = event.target.closest('.member-remove-btn');
     if (!removeBtn) return;
 
     const role = getCurrentRole();
-    pendingRemoveMemberId = removeBtn.getAttribute('data-member-id');
+    pendingRemoveMemberId = Number(removeBtn.getAttribute('data-member-id'));
     pendingRemoveMemberEmail = removeBtn.getAttribute('data-member-email');
     pendingRemoveMemberName = removeBtn.getAttribute('data-member-name');
 
@@ -1111,52 +1138,8 @@ document.addEventListener('DOMContentLoaded', function () {
     removeMemberAvatar.textContent = pendingRemoveMemberName.charAt(0).toUpperCase();
     removeMemberRoleName.textContent = role.name;
 
-    if (removeMemberModal) {
-      removeMemberModal.show();
-    }
+    removeMemberModal.show();
   });
-
-  confirmRemoveMemberBtn.addEventListener('click', async function () {
-    const role = getCurrentRole();
-
-    try {
-      const response = await fetch("{% url 'remove_role_member' %}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({
-          role_id: role.id,
-          user_id: pendingRemoveMemberId
-        })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        showToast('Không thể xóa thành viên', result.message || 'Có lỗi xảy ra.');
-        return;
-      }
-
-      role.members = role.members.filter(member => String(member.id) !== String(pendingRemoveMemberId));
-
-      if (removeMemberModal) {
-        removeMemberModal.hide();
-      }
-
-      renderAll();
-
-      showToast('Đã xóa thành viên', result.message);
-
-      pendingRemoveMemberEmail = '';
-      pendingRemoveMemberName = '';
-    } catch (error) {
-      showToast('Không thể xóa thành viên', 'Có lỗi xảy ra khi kết nối máy chủ.');
-    }
-  });
-
-  renderAll();
 });
 </script>
 {% endblock %}

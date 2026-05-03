@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container py-4">
-    <a href="{% url 'home' %}" class="text-decoration-none text-muted fw-bold">
+    <a href="{% url 'core:home' %}" class="text-decoration-none text-muted fw-bold">
         <i class="fas fa-arrow-left me-1"></i> Quay lại
     </a>
 </div>
@@ -12,12 +12,7 @@
     <div class="row gx-5">
         <div class="col-md-6 mb-4">
             <div class="product-detail-img-container rounded-4 overflow-hidden border-0 shadow-sm bg-white d-flex align-items-center justify-content-center">
-                <img
-                    src="{{ product.image }}"
-                    class="img-fluid"
-                    style="max-height: 500px;"
-                    alt="{{ product.name }}"
-                >
+                <img src="{{ product.image }}" class="img-fluid" style="max-height: 500px;" alt="{{ product.name }}">
             </div>
         </div>
 
@@ -39,46 +34,47 @@
             </p>
 
             <form method="POST" action="{% url 'cart:add' product.id %}" class="js-ajax-add-to-cart">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.path }}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
 
-                <div class="d-flex align-items-center gap-3 mb-4">
-                    <span class="fw-bold small text-muted">Số lượng:</span>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <span class="fw-bold small text-muted">Số lượng:</span>
 
-                    <div class="input-group quantity-group" style="width: 140px;">
-                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
+        <div class="input-group quantity-group" style="width: 140px;">
+            <button class="btn quantity-btn border" type="button" onclick="handleQuantity(-1)">-</button>
 
-                        <input
-                            type="number"
-                            name="quantity"
-                            id="quantity-input"
-                            class="form-control quantity-input text-center bg-white"
-                            value="1"
-                            min="1"
-                            readonly
-                        >
+            <input
+                type="number"
+                name="quantity"
+                id="quantity-input"
+                class="form-control quantity-input text-center bg-white"
+                value="1"
+                min="1"
+                readonly
+            >
 
-                        <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
-                    </div>
-                </div>
+            <button class="btn quantity-btn border" type="button" onclick="handleQuantity(1)">+</button>
+        </div>
+    </div>
 
-                <div class="d-grid gap-3">
-                    <button
-                        type="submit"
-                        class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm"
-                        style="background-color: #d72323; border: none;"
-                    >
-                        Thêm vào giỏ
-                    </button>
+    <div class="d-grid gap-3">
+        <button
+            type="submit"
+            class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm"
+            style="background-color: #d72323; border: none;"
+        >
+            Thêm vào giỏ
+        </button>
 
-                    <button
-                        type="submit"
-                        formaction="{% url 'buy_now' product.id %}"
-                        class="btn btn-buy-now w-100 py-2 fw-bold rounded-3"
-                    >
-                        Mua ngay
-                    </button>
-                </div>
+        <button
+    type="submit"
+    class="btn btn-buy-now w-100 py-2 fw-bold rounded-3"
+    data-redirect="{% url 'orders:checkout' %}"
+>
+    Mua ngay
+</button>
+    </div>
+</form>                      
             </form>
         </div>
     </div>
@@ -118,13 +114,13 @@
 
                         <div class="col-md-8">
                             {% for item in rating_breakdown %}
-                                <div class="d-flex align-items-center gap-3 mb-2">
-                                    <div class="review-progress-label">{{ item.star }} sao</div>
-                                    <div class="progress flex-grow-1 review-progress">
-                                        <div class="progress-bar" style="width: {{ item.percent }}%;"></div>
-                                    </div>
-                                    <div class="review-progress-count">{{ item.count }}</div>
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="review-progress-label">{{ item.star }} sao</div>
+                                <div class="progress flex-grow-1 review-progress">
+                                    <div class="progress-bar" style="width: {{ item.percent }}%"></div>
                                 </div>
+                                <div class="review-progress-count">{{ item.count }}</div>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -227,41 +223,41 @@
 
             <div id="review-list">
                 {% for review in reviews %}
-                    <div class="review-item {% if not forloop.last %}border-bottom{% endif %}">
-                        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="review-avatar">{{ review.name|slice:":1"|upper }}</div>
+                <div class="review-item {% if not forloop.last %}border-bottom{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="review-avatar">{{ review.name|slice:":1"|upper }}</div>
 
-                                <div>
-                                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                        <h6 class="mb-0 fw-bold">{{ review.name }}</h6>
-                                        {% if review.verified_purchase %}
-                                            <span class="badge rounded-pill review-bought-badge">Đã mua hàng</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="small text-muted">{{ review.created_at }}</div>
+                            <div>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                    <h6 class="mb-0 fw-bold">{{ review.name }}</h6>
+                                    {% if review.verified_purchase %}
+                                        <span class="badge rounded-pill review-bought-badge">Đã mua hàng</span>
+                                    {% endif %}
                                 </div>
-                            </div>
-
-                            <div class="review-stars">
-                                {% for _ in review.filled_stars %}
-                                    <i class="fas fa-star"></i>
-                                {% endfor %}
-                                {% for _ in review.empty_stars %}
-                                    <i class="far fa-star empty"></i>
-                                {% endfor %}
+                                <div class="small text-muted">{{ review.created_at }}</div>
                             </div>
                         </div>
 
-                        <p class="text-muted mb-0 mt-3" style="line-height: 1.7;">
-                            {{ review.comment }}
-                        </p>
+                        <div class="review-stars">
+                            {% for _ in review.filled_stars %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                            {% for _ in review.empty_stars %}
+                                <i class="far fa-star empty"></i>
+                            {% endfor %}
+                        </div>
                     </div>
+
+                    <p class="text-muted mb-0 mt-3" style="line-height: 1.7;">
+                        {{ review.comment }}
+                    </p>
+                </div>
                 {% empty %}
-                    <div class="text-center py-4">
-                        <h6 class="fw-bold mb-2">Chưa có đánh giá nào</h6>
-                        <p class="text-muted mb-0">Hãy trở thành người đầu tiên để lại nhận xét cho sản phẩm này.</p>
-                    </div>
+                <div class="text-center py-4">
+                    <h6 class="fw-bold mb-2">Chưa có đánh giá nào</h6>
+                    <p class="text-muted mb-0">Hãy trở thành người đầu tiên để lại nhận xét cho sản phẩm này.</p>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -275,7 +271,7 @@
         <div class="col-6 col-md-3">
             <div class="product-card h-100 d-flex flex-column shadow-sm">
                 <div class="product-img-container">
-                    <a href="#">
+                    <a href="{% url 'core:product_detail' 2 %}">
                         <img src="https://bizweb.dktcdn.net/100/443/076/products/trang-tri-tet-hoa-dao-dong.jpg" alt="SP">
                     </a>
                 </div>
@@ -284,7 +280,7 @@
                         <span style="font-size: 20px;">🌸</span>
                         <small class="text-muted">Hoa mai/đào</small>
                     </div>
-                    <a href="#" class="text-decoration-none text-reset">
+                    <a href="{% url 'core:product_detail' 2 %}" class="text-decoration-none text-reset">
                         <h6 class="fw-bold mb-2">Cành hoa mai vàng</h6>
                     </a>
                     <div class="mt-auto">
@@ -292,7 +288,7 @@
                             <span class="text-danger fw-bold fs-5">180.000đ</span>
                             <span class="badge-stock">Còn hàng</span>
                         </div>
-                        <a href="#" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
+                        <a href="{% url 'core:product_detail' 2 %}" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
@@ -301,7 +297,7 @@
         <div class="col-6 col-md-3">
             <div class="product-card h-100 d-flex flex-column shadow-sm">
                 <div class="product-img-container">
-                    <a href="#">
+                    <a href="{% url 'core:product_detail' 3 %}">
                         <img src="https://salt.tikicdn.com/cache/w1200/ts/product/6e/c8/10/7c462744d03d09a06655c65b5302636a.jpg" alt="SP">
                     </a>
                 </div>
@@ -310,7 +306,7 @@
                         <span style="font-size: 20px;">🧧</span>
                         <small class="text-muted">Bao lì xì</small>
                     </div>
-                    <a href="#" class="text-decoration-none text-reset">
+                    <a href="{% url 'core:product_detail' 3 %}" class="text-decoration-none text-reset">
                         <h6 class="fw-bold mb-2">Bao lì xì rồng vàng</h6>
                     </a>
                     <div class="mt-auto">
@@ -318,7 +314,7 @@
                             <span class="text-danger fw-bold fs-5">25.000đ</span>
                             <span class="badge-stock">Còn hàng</span>
                         </div>
-                        <a href="#" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
+                        <a href="{% url 'core:product_detail' 3 %}" class="btn btn-danger w-100 btn-sm fw-bold">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
@@ -327,109 +323,106 @@
 </div>
 
 <script>
-    function handleQuantity(amount) {
-        const input = document.getElementById('quantity-input');
-        let currentQty = parseInt(input.value) || 1;
-        let newQty = currentQty + amount;
+function handleQuantity(amount) {
+    const input = document.getElementById('quantity-input');
+    let currentQty = parseInt(input.value) || 1;
+    let newQty = currentQty + amount;
 
-        if (newQty < 1) {
-            newQty = 1;
-        }
-
-        input.value = newQty;
+    if (newQty < 1) {
+        newQty = 1;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const starButtons = document.querySelectorAll('.star-btn');
-        const ratingValueInput = document.getElementById('rating-value');
-        const ratingText = document.getElementById('selected-rating-text');
-        const reviewForm = document.getElementById('product-review-form');
-        const reviewMessage = document.getElementById('review-form-message');
+    input.value = newQty;
+}
 
-        const ratingLabels = {
-            1: '1 sao - Rất không hài lòng',
-            2: '2 sao - Tạm được',
-            3: '3 sao - Ổn',
-            4: '4 sao - Tốt',
-            5: '5 sao - Rất hài lòng'
-        };
+document.addEventListener("DOMContentLoaded", function () {
+    const starButtons = document.querySelectorAll(".star-btn");
+    const ratingValueInput = document.getElementById("rating-value");
+    const ratingText = document.getElementById("selected-rating-text");
+    const reviewForm = document.getElementById("product-review-form");
+    const reviewMessage = document.getElementById("review-form-message");
 
-        function paintStars(value) {
-            starButtons.forEach(function (button) {
-                const starValue = parseInt(button.dataset.value);
-                if (starValue <= value) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
-            });
-        }
+    const ratingLabels = {
+        1: "1 sao - Rất không hài lòng",
+        2: "2 sao - Tạm được",
+        3: "3 sao - Ổn",
+        4: "4 sao - Tốt",
+        5: "5 sao - Rất hài lòng"
+    };
 
-        function setRating(value) {
-            ratingValueInput.value = value;
-            ratingText.textContent = ratingLabels[value] || 'Chưa chọn sao';
-            paintStars(parseInt(value));
-        }
-
+    function paintStars(value) {
         starButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                const value = parseInt(this.dataset.value);
-                setRating(value);
-            });
+            const starValue = parseInt(button.dataset.value);
+            if (starValue <= value) {
+                button.classList.add("active");
+            } else {
+                button.classList.remove("active");
+            }
+        });
+    }
 
-            button.addEventListener('mouseenter', function () {
-                const hoverValue = parseInt(this.dataset.value);
+    function setRating(value) {
+        ratingValueInput.value = value;
+        ratingText.textContent = ratingLabels[value] || "Chưa chọn sao";
+        paintStars(parseInt(value));
+    }
 
-                starButtons.forEach(function (btn) {
-                    const starValue = parseInt(btn.dataset.value);
-                    if (starValue <= hoverValue) {
-                        btn.classList.add('hovered');
-                    } else {
-                        btn.classList.remove('hovered');
-                    }
-                });
-            });
+    starButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const value = parseInt(this.dataset.value);
+            setRating(value);
+        });
 
-            button.addEventListener('mouseleave', function () {
-                starButtons.forEach(function (btn) {
-                    btn.classList.remove('hovered');
-                });
+        button.addEventListener("mouseenter", function () {
+            const hoverValue = parseInt(this.dataset.value);
+
+            starButtons.forEach(function (btn) {
+                const starValue = parseInt(btn.dataset.value);
+                if (starValue <= hoverValue) {
+                    btn.classList.add("hovered");
+                } else {
+                    btn.classList.remove("hovered");
+                }
             });
         });
 
-        if (reviewForm) {
-            reviewForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const selectedRating = ratingValueInput.value;
-                const reviewerName = document.getElementById('reviewer-name').value.trim();
-                const reviewComment = document.getElementById('review-comment').value.trim();
-                const displayName = reviewerName ? reviewerName : 'Bạn';
-
-                if (!selectedRating) {
-                    alert('Vui lòng chọn số sao đánh giá từ 1 đến 5.');
-                    return;
-                }
-
-                if (!reviewComment) {
-                    alert('Vui lòng nhập bình luận.');
-                    return;
-                }
-
-                reviewMessage.classList.remove('d-none');
-                reviewMessage.textContent =
-                    displayName +
-                    ' đã gửi đánh giá ' +
-                    selectedRating +
-                    '/5 sao thành công. Đây là giao diện demo, khi nối backend dữ liệu sẽ được lưu vào hệ thống.';
-
-                reviewForm.reset();
-                ratingValueInput.value = '';
-                ratingText.textContent = 'Chưa chọn sao';
-                paintStars(0);
+        button.addEventListener("mouseleave", function () {
+            starButtons.forEach(function (btn) {
+                btn.classList.remove("hovered");
             });
-        }
+        });
     });
+
+    if (reviewForm) {
+        reviewForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const selectedRating = ratingValueInput.value;
+            const reviewerName = document.getElementById("reviewer-name").value.trim();
+            const reviewComment = document.getElementById("review-comment").value.trim();
+            const displayName = reviewerName ? reviewerName : "Bạn";
+
+            if (!selectedRating) {
+                alert("Vui lòng chọn số sao đánh giá từ 1 đến 5.");
+                return;
+            }
+
+            if (!reviewComment) {
+                alert("Vui lòng nhập bình luận.");
+                return;
+            }
+
+            reviewMessage.classList.remove("d-none");
+            reviewMessage.textContent =
+                displayName + " đã gửi đánh giá " + selectedRating + "/5 sao thành công. Đây là giao diện demo, khi nối backend dữ liệu sẽ được lưu vào hệ thống.";
+
+            reviewForm.reset();
+            ratingValueInput.value = "";
+            ratingText.textContent = "Chưa chọn sao";
+            paintStars(0);
+        });
+    }
+});
 </script>
 
 <style>
@@ -439,8 +432,8 @@
         border-color: #d72323 !important;
     }
 
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button {
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }

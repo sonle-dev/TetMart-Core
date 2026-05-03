@@ -120,26 +120,24 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="bg-light rounded-circle p-2 me-2 text-danger fw-bold">
-                                                {{ order.full_name|default:"K"|slice:":1" }}
+                                                {{ order.user.username|first|upper }}
                                             </div>
-                                            <span>{{ order.full_name }}</span>
+                                            <span>{{ order.user.username }}</span>
                                         </div>
                                     </td>
                                     <td class="text-muted">{{ order.created_at|date:"d/m/Y" }}</td>
                                     <td class="fw-bold text-danger">{{ order.formatted_total_price }}đ</td>
                                     <td>
-                                        {% if order.status == 'new' %}
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Đơn mới</span>
-                                        {% elif order.status == 'pending' %}
-                                            <span class="badge bg-danger text-dark px-3 py-2 rounded-pill">Chờ xử lý</span>
-                                        {% elif order.status == 'shipping' %}
-                                            <span class="badge bg-info text-dark px-3 py-2 rounded-pill">Đang giao</span>
-                                        {% elif order.status == 'completed' %}
+                                        {% if order.status == 'completed' %}
                                             <span class="badge bg-success px-3 py-2 rounded-pill">Hoàn thành</span>
                                         {% elif order.status == 'cancelled' %}
                                             <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
+                                        {% elif order.status == 'shipping' %}
+                                            <span class="badge bg-info px-3 py-2 rounded-pill">Đang giao</span>
+                                        {% elif order.status == 'pending' %}
+                                            <span class="badge bg-danger px-3 py-2 rounded-pill">Chờ xử lý</span>
                                         {% else %}
-                                            <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{ order.status }}</span>
+                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Đơn mới</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end pe-4">
@@ -148,11 +146,9 @@
                                         </a>
                                     </td>
                                 </tr>
-                                {% empty %} 
+                                {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center py-4 text-muted">
-                                        Chưa có đơn hàng nào.
-                                    </td>
+                                    <td colspan="6" class="text-center text-muted py-4">Chưa có đơn hàng nào.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

@@ -16,11 +16,9 @@
                 <p class="text-muted small mb-0">Xem và cập nhật trạng thái đơn hàng của khách</p>
             </div>
 
-            <form method="get" class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body">
-                    <div class="row g-3">
-
-                        <!-- SEARCH -->
+                    <form method="get" class="row g-3">
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0">
@@ -36,9 +34,8 @@
                             </div>
                         </div>
 
-                        <!-- STATUS -->
                         <div class="col-md-3">
-                            <select name="status" class="form-select text-dark fw-bold" onchange="this.form.submit()">
+                            <select name="status" class="form-select text-dark fw-bold">
                                 <option value="all" {% if filters.status == 'all' %}selected{% endif %}>⚡ Trạng thái: Tất cả</option>
                                 <option value="new" {% if filters.status == 'new' %}selected{% endif %}>Đơn mới</option>
                                 <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Chờ xử lý</option>
@@ -48,17 +45,19 @@
                             </select>
                         </div>
 
-                        <!-- SORT -->
-                        <div class="col-md-3">
-                            <select name="sort" class="form-select" onchange="this.form.submit()">
+                        <div class="col-md-2">
+                            <select name="sort" class="form-select">
                                 <option value="newest" {% if filters.sort == 'newest' %}selected{% endif %}>📅 Mới nhất</option>
                                 <option value="oldest" {% if filters.sort == 'oldest' %}selected{% endif %}>Cũ nhất</option>
                             </select>
                         </div>
 
-                    </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-danger w-100 fw-bold">Lọc</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
 
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <div class="card-body p-0">
@@ -79,23 +78,19 @@
                             <tbody>
                                 {% for order in orders %}
                                 <tr>
-                                    <td class="ps-4 fw-bold text-dark">#DH{{ order.id }}</td>
+                                    <td class="fw-bold">#DH{{ order.id }}</td>
 
                                     <td>
-                                        <div class="fw-bold">
-                                            {% if order.user %}
-                                                {{ order.user.username }}
-                                            {% else %}
-                                                Chưa cập nhật
-                                            {% endif %}
-                                        </div>
+                                        {% if order.user %}
+                                            {{ order.user.username }}
+                                        {% else %}
+                                            {{ order.full_name|default:"Chưa cập nhật" }}
+                                        {% endif %}
                                     </td>
+
+                                    <td>{{ order.phone|default:"Chưa cập nhật" }}</td>
 
                                     <td>
-                                        {{ order.phone|default:"Chưa cập nhật" }}
-                                    </td>
-
-                                    <td class="text-muted small" style="max-width: 220px;">
                                         <i class="fas fa-map-marker-alt text-danger me-1"></i>
                                         {{ order.address|default:"Chưa cập nhật" }}
                                     </td>
@@ -105,32 +100,27 @@
                                     </td>
 
                                     <td>
-                                        {% if order.status == 'new' %}
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill border border-warning">Đơn mới</span>
-                                        {% elif order.status == 'pending' %}
-                                            <span class="badge bg-danger text-dark px-3 py-2 rounded-pill border border-warning">Chờ xử lý</span>
-                                        {% elif order.status == 'shipping' %}
-                                            <span class="badge bg-info text-dark px-3 py-2 rounded-pill border border-info">Đang giao</span>
-                                        {% elif order.status == 'completed' %}
-                                            <span class="badge bg-success px-3 py-2 rounded-pill border border-success">Hoàn thành</span>
+                                        {% if order.status == 'completed' %}
+                                            <span class="badge bg-success px-3 py-2 rounded-pill">Hoàn thành</span>
                                         {% elif order.status == 'cancelled' %}
                                             <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã hủy</span>
+                                        {% elif order.status == 'shipping' %}
+                                            <span class="badge bg-info px-3 py-2 rounded-pill">Đang giao</span>
+                                        {% elif order.status == 'pending' %}
+                                            <span class="badge bg-danger px-3 py-2 rounded-pill">Chờ xử lý</span>
                                         {% else %}
-                                            <span class="badge bg-secondary px-3 py-2 rounded-pill">{{ order.status }}</span>
+                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Đơn mới</span>
                                         {% endif %}
                                     </td>
 
-                                    <td class="text-muted small">
-                                        {{ order.created_at|date:"d/m/Y" }}
-                                    </td>
+                                    <td>{{ order.created_at|date:"d/m/Y" }}</td>
 
-                                    <td class="text-end pe-4">
+                                    <td class="text-end">
                                         <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary fw-bold rounded-3">
                                             <i class="fas fa-eye"></i> Xem
                                         </a>
                                         <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-danger ms-1 rounded-3">
                                             <i class="fas fa-edit"></i>
-                                        </a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -140,14 +130,42 @@
                 </div>
 
                 <div class="card-footer bg-white py-3 border-top-0 d-flex justify-content-between align-items-center">
-                    <div class="small text-muted">Hiển thị 4 trên 150 đơn hàng</div>
+                    <div class="small text-muted">
+                        Hiển thị {{ page_obj.start_index }} - {{ page_obj.end_index }} trên {{ page_obj.paginator.count }} đơn hàng
+                    </div>
+
                     <nav>
                         <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                            <li class="page-item active"><a class="page-link bg-danger border-danger" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link text-danger" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link text-danger" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link text-danger" href="#">Sau</a></li>
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link text-danger"
+                                    href="?q={{ filters.q }}&status={{ filters.status }}&sort={{ filters.sort }}&page={{ page_obj.previous_page_number }}">
+                                        Trước
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Trước</span></li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                    <a class="page-link {% if page_obj.number == num %}bg-danger border-danger{% else %}text-danger{% endif %}"
+                                    href="?q={{ filters.q }}&status={{ filters.status }}&sort={{ filters.sort }}&page={{ num }}">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link text-danger"
+                                    href="?q={{ filters.q }}&status={{ filters.status }}&sort={{ filters.sort }}&page={{ page_obj.next_page_number }}">
+                                        Sau
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Sau</span></li>
+                            {% endif %}
                         </ul>
                     </nav>
                 </div>
@@ -155,4 +173,11 @@
         </div>
     </div>
 </div>
+<script>
+document.querySelectorAll('select[name="status"], select[name="sort"]').forEach(function(select) {
+    select.addEventListener('change', function() {
+        this.form.submit();
+    });
+});
+</script>
 {% endblock %}

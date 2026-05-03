@@ -145,3 +145,7 @@ def report_view(request):
         'top_products': top_products
     }
     return render(request, 'report.html', context)
+
+@login_required(login_url='login')
+def account_view(request):
+    return render(request, 'user/account.html') 

@@ -12,7 +12,7 @@
 
         <div class="col-lg-9 col-xl-10">
             <div class="mb-4">
-                <a href="{% url 'dashboard_products' %}" class="text-decoration-none text-muted fw-semibold">
+                <a href="{% url 'dashboard:products' %}" class="text-decoration-none text-muted fw-semibold">
                     ← Quay lại danh sách
                 </a>
                 <h3 class="fw-bold mt-2 mb-1" style="color: var(--tet-text);">Sửa sản phẩm</h3>
@@ -39,11 +39,10 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
                                 <select name="category" class="form-select rounded-3">
-                                    {% for category in categories %}
-                                        <option value="{{ category.id }}" {% if product.category_id == category.id %}selected{% endif %}>
-                                            {{ category.name }}
-                                        </option>
-                                    {% endfor %}
+                                    <option value="Bánh kẹo Tết" {% if product.category == 'Bánh kẹo Tết' %}selected{% endif %}>Bánh kẹo Tết</option>
+                                    <option value="Mứt Tết" {% if product.category == 'Mứt Tết' %}selected{% endif %}>Mứt Tết</option>
+                                    <option value="Rượu bia" {% if product.category == 'Rượu bia' %}selected{% endif %}>Rượu bia</option>
+                                    <option value="Hộp quà Tết" {% if product.category == 'Hộp quà Tết' %}selected{% endif %}>Hộp quà Tết</option>
                                 </select>
                             </div>
 
@@ -112,7 +111,7 @@
                                 <i class="fas fa-save me-2"></i>Lưu thay đổi
                             </button>
 
-                            <a href="{% url 'dashboard_products' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
+                            <a href="{% url 'dashboard:products' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
                                 Hủy
                             </a>
                         </div>

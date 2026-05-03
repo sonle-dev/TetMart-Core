@@ -6,11 +6,12 @@ from django.db.models import Sum, Count
 from products.models import Product
 from orders.models import Order
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from tetmart.permission_utils import PERMISSION_PAGE_PERMS, permission_gate
+from django.core.paginator import Paginator
 
 User = get_user_model()
 
@@ -57,11 +58,11 @@ def dashboard_view(request):
 
     return render(request, 'dashboard/dashboard.html', context)
 
-@login_required(login_url='login')
+@permission_gate('users.view_customer_list')
 def dashboard_customers(request):
     q = request.GET.get('q', '').strip()
-    status = request.GET.get('status', 'tat_ca')
-    sort = request.GET.get('sort', 'moi_nhat')
+    status = request.GET.get('status', 'all')
+    sort = request.GET.get('sort', 'newest')
 
     users = User.objects.all().order_by('-date_joined')
 
@@ -119,7 +120,7 @@ def dashboard_customers(request):
             or q_lower in kh['so_dien_thoai'].lower()
         ]
 
-    if status != 'tat_ca':
+    if status != 'all':
         danh_sach_khach_hang = [
             kh for kh in danh_sach_khach_hang
             if kh['trang_thai'] == status
@@ -140,15 +141,46 @@ def dashboard_customers(request):
     khach_moi = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'khach_moi'])
     khach_hang_than_thiet = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'than_thiet'])
     khach_vip = len([kh for kh in danh_sach_khach_hang if kh['trang_thai'] == 'vip'])
+    paginator = Paginator(danh_sach_khach_hang, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    customers = []
+    for kh in page_obj:
+        if kh['trang_thai'] == 'khach_moi':
+            status_key = 'new'
+        elif kh['trang_thai'] == 'than_thiet':
+            status_key = 'active'
+        elif kh['trang_thai'] == 'vip':
+            status_key = 'vip'
+        else:
+            status_key = 'inactive'
+
+        customers.append({
+            'id': kh['id'],
+            'avatar': kh['ky_tu_dai_dien'],
+            'name': kh['ho_ten'],
+            'email': kh['email'],
+            'code': kh['ma_khach_hang'],
+            'phone': kh['so_dien_thoai'],
+            'city': kh['tinh_thanh'],
+            'order_count': kh['so_don_hang'],
+            'total_spent_display': kh['tong_chi_tieu_hien_thi'],
+            'status': status_key,
+            'joined_at': kh['ngay_tham_gia_hien_thi'],
+        })
 
     context = {
         'active_page': 'customers',
-        'tong_khach_hang': tong_khach_hang,
-        'khach_moi': khach_moi,
-        'khach_hang_than_thiet': khach_hang_than_thiet,
-        'khach_vip': khach_vip,
-        'danh_sach_khach_hang': danh_sach_khach_hang,
-        'bo_loc': {
+        'page_obj': page_obj,
+        'customers': customers,
+        'customer_stats': {
+            'all': tong_khach_hang,
+            'new': khach_moi,
+            'active': khach_hang_than_thiet,
+            'vip': khach_vip,
+        },
+        'filters': {
             'q': q,
             'status': status,
             'sort': sort,
@@ -156,7 +188,7 @@ def dashboard_customers(request):
     }
 
     return render(request, 'dashboard/customers.html', context)
-@login_required(login_url='login')
+@permission_gate('users.create_customer')
 def customer_create(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -184,6 +216,64 @@ def customer_create(request):
     return render(request, 'dashboard/customer_create.html', {
         'active_page': 'customers'
     })
+
+@permission_gate('users.view_customer_detail')
+def customer_detail(request, pk):
+    user = get_object_or_404(User, pk=pk, is_customer=True)
+
+    don_hang_qs = Order.objects.filter(user=user).order_by('-created_at')
+    so_don_hang = don_hang_qs.count()
+    tong_chi_tieu = don_hang_qs.aggregate(total=Sum('total_price'))['total'] or 0
+
+    if not user.is_active:
+        trang_thai = 'inactive'
+    elif tong_chi_tieu >= 1000000:
+        trang_thai = 'vip'
+    elif so_don_hang >= 2:
+        trang_thai = 'active'
+    else:
+        trang_thai = 'new'
+
+    customer = {
+        'id': user.id,
+        'avatar': (user.username[:1] or 'K').upper(),
+        'name': user.get_full_name().strip() or user.username,
+        'email': user.email or 'Chưa cập nhật',
+        'phone': user.phone or 'Chưa cập nhật',
+        'city': user.address or 'Chưa cập nhật',
+        'address': user.address or 'Chưa cập nhật',
+        'code': f'KH{user.id:03d}',
+        'order_count': so_don_hang,
+        'total_spent_display': f"{int(tong_chi_tieu):,}đ".replace(",", "."),
+        'status': trang_thai,
+        'joined_at': user.date_joined.strftime('%d/%m/%Y'),
+        'is_active': user.is_active,
+    }
+
+    return render(request, 'dashboard/customer_detail.html', {
+        'active_page': 'customers',
+        'customer': customer,
+        'orders': don_hang_qs,
+    })
+
+
+@permission_gate('users.lock_customer')
+def customer_lock(request, pk):
+    user = get_object_or_404(User, pk=pk, is_customer=True)
+
+    if user.is_superuser:
+        messages.error(request, 'Không thể khóa tài khoản quản trị viên.')
+        return redirect('dashboard_customers')
+
+    user.is_active = not user.is_active
+    user.save(update_fields=['is_active'])
+
+    if user.is_active:
+        messages.success(request, f'Đã mở khóa khách hàng {user.username}.')
+    else:
+        messages.success(request, f'Đã tạm khóa khách hàng {user.username}.')
+
+    return redirect('dashboard_customers')
 
 @login_required(login_url='login')
 def report_view(request):
@@ -398,7 +488,7 @@ def dashboard_permissions(request):
                 'name': u.username,
                 'email': u.email or 'Chưa cập nhật'
             }
-            for u in g.user_set.filter(is_staff=True)
+            for u in g.user_set.all()
         ]
 
         group_permission_codes = set(
@@ -560,14 +650,13 @@ def add_role_member(request):
 
         user.groups.add(group)
 
-        if not user.is_staff:
-            user.is_staff = True
-            user.save(update_fields=['is_staff'])
+        # Không tự bật is_staff khi gán vai trò
 
         return JsonResponse({
             'success': True,
             'message': f'{user.username} đã được thêm vào vai trò {group.name}.',
             'member': {
+                'id': user.id,
                 'name': user.username,
                 'email': user.email or 'Chưa cập nhật'
             }
@@ -612,13 +701,51 @@ def remove_role_member(request):
 
         user.groups.remove(group)
 
-        if not user.is_superuser and not user.groups.exists():
-            user.is_staff = False
-            user.save(update_fields=['is_staff'])
+        # Không tự đổi is_staff khi gỡ vai trò
 
         return JsonResponse({
             'success': True,
             'message': f'{user.username} đã được gỡ khỏi vai trò {group.name}.'
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Dữ liệu gửi lên không hợp lệ.'
+        }, status=400)
+    
+@require_POST
+@permission_gate(*PERMISSION_PAGE_PERMS)
+def update_role_permission(request):
+    try:
+        data = json.loads(request.body)
+
+        role_id = data.get('role_id')
+        permission_code = data.get('permission_code')
+        enabled = data.get('enabled')
+
+        if not role_id or not permission_code or enabled is None:
+            return JsonResponse({
+                'success': False,
+                'message': 'Thiếu dữ liệu cập nhật quyền.'
+            }, status=400)
+
+        if str(role_id).startswith('group_'):
+            role_id = str(role_id).replace('group_', '')
+
+        group = get_object_or_404(Group, id=role_id)
+        permission = get_object_or_404(Permission, codename=permission_code)
+
+        if enabled:
+            group.permissions.add(permission)
+            message = 'Đã bật quyền thành công.'
+        else:
+            group.permissions.remove(permission)
+            message = 'Đã tắt quyền thành công.'
+
+        return JsonResponse({
+            'success': True,
+            'message': message
         })
 
     except json.JSONDecodeError:

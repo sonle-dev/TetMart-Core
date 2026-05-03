@@ -12,7 +12,7 @@
 
         <div class="col-lg-9 col-xl-10">
             <div class="mb-4">
-                <a href="{% url 'dashboard_customers' %}" class="text-decoration-none text-muted fw-semibold">
+                <a href="{% url 'dashboard:customers' %}" class="text-decoration-none text-muted fw-semibold">
                     ← Quay lại danh sách khách hàng
                 </a>
                 <h3 class="fw-bold mt-2 mb-1" style="color: var(--tet-text);">Thêm khách hàng</h3>
@@ -27,22 +27,22 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Họ và tên <span class="text-danger">*</span></label>
-                                <input name="username" type="text" class="form-control rounded-3" placeholder="Nguyễn Văn A">
+                                <input type="text" class="form-control rounded-3" placeholder="Nguyễn Văn A">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Số điện thoại <span class="text-danger">*</span></label>
-                                <input name="phone" type="text" class="form-control rounded-3" placeholder="09xx xxx xxx">
+                                <input type="text" class="form-control rounded-3" placeholder="09xx xxx xxx">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Email</label>
-                                <input name="email" type="email" class="form-control rounded-3" placeholder="ten@email.com">
+                                <input type="email" class="form-control rounded-3" placeholder="ten@email.com">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Tỉnh / thành</label>
-                                <select name="city" class="form-select rounded-3">
+                                <select class="form-select rounded-3">
                                     <option>Chọn tỉnh / thành</option>
                                     <option>Hà Nội</option>
                                     <option>Đà Nẵng</option>
@@ -54,7 +54,7 @@
 
                             <div class="col-12">
                                 <label class="form-label fw-bold">Địa chỉ</label>
-                                <input name="address" type="text" class="form-control rounded-3" placeholder="Số nhà, đường, phường/xã, quận/huyện">
+                                <input type="text" class="form-control rounded-3" placeholder="Số nhà, đường, phường/xã, quận/huyện">
                             </div>
 
                             <div class="col-md-6">
@@ -82,7 +82,7 @@
                             <button type="submit" class="btn btn-danger fw-bold px-4 rounded-3" style="background-color:#d72323; border:none;">
                                 <i class="fas fa-save me-2"></i>Lưu khách hàng
                             </button>
-                            <a href="{% url 'dashboard_customers' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
+                            <a href="{% url 'dashboard:customers' %}" class="btn btn-outline-secondary fw-bold px-4 rounded-3">
                                 Hủy
                             </a>
                         </div>

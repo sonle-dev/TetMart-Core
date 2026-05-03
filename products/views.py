@@ -12,6 +12,8 @@ from collections import defaultdict
 from orders.models import Order, OrderItem
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.core.paginator import Paginator
+from django.contrib.auth import get_user_model
 
 from tetmart.permission_utils import (
     DASHBOARD_PERMS,
@@ -72,7 +74,7 @@ def has_report_permission(user):
         or user.has_perm('auth.view_revenue_report')
     )
 # VIEW DANH SÁCH ĐƠN HÀNG 
-@permission_gate(*ORDER_PERMS)
+@permission_gate('orders.view_order')
 def dashboard_orders_view(request):
     orders = Order.objects.select_related('user').all()
 
@@ -101,11 +103,16 @@ def dashboard_orders_view(request):
     else:
         orders = orders.order_by('-created_at')
 
-    for order in orders:
+    paginator = Paginator(orders, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    for order in page_obj:
         order.formatted_total_price = f"{int(order.total_price or 0):,}".replace(",", ".")
 
     context = {
-        'orders': orders,
+        'orders': page_obj,
+        'page_obj': page_obj,
         'active_page': 'orders',
         'filters': {
             'q': q,
@@ -119,7 +126,7 @@ def dashboard_orders_view(request):
 # VIEW DANH SÁCH SẢN PHẨM
 @login_required(login_url='login')
 @user_passes_test(has_product_permission, login_url='home')
-@permission_gate(*PRODUCT_PERMS)
+@permission_gate('products.view_product')
 def dashboard_products_view(request):
     products = Product.objects.select_related('category').all()
     categories = Category.objects.all().order_by('name')
@@ -130,29 +137,38 @@ def dashboard_products_view(request):
     sort = request.GET.get('sort', 'newest')
 
     if q:
-        products = products.filter(
-            Q(name__icontains=q) |
-            Q(slug__icontains=q) |
-            Q(id__icontains=q)
-        )
+        product_id = q.replace('#SP', '').replace('SP', '').strip()
+        query = Q(name__icontains=q) | Q(slug__icontains=q)
 
-    if category != 'all':
-        products = products.filter(category_id=category)
+        if product_id.isdigit():
+            query |= Q(id=int(product_id))
+
+        products = products.filter(query)
+
+    if category != 'all' and str(category).isdigit():
+        products = products.filter(category_id=int(category))
 
     if status == 'in_stock':
         products = products.filter(is_active=True, stock__gt=0)
     elif status == 'out_stock':
         products = products.filter(Q(is_active=False) | Q(stock__lte=0))
 
-    if sort == 'price_asc':
+    if sort == 'oldest':
+        products = products.order_by('id')
+    elif sort == 'price_asc':
         products = products.order_by('price')
     elif sort == 'price_desc':
         products = products.order_by('-price')
     else:
         products = products.order_by('-id')
 
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'products': products,
+        'products': page_obj,
+        'page_obj': page_obj,
         'categories': categories,
         'active_page': 'products',
         'filters': {
@@ -162,6 +178,7 @@ def dashboard_products_view(request):
             'sort': sort,
         }
     }
+
     return render(request, 'dashboard/products.html', context)
     
 
@@ -232,19 +249,88 @@ def dashboard_view(request):
     return render(request, 'dashboard/dashboard.html', context)
 @permission_gate(*CUSTOMER_PERMS)
 def dashboard_customers(request):
+    User = get_user_model()
+
+    customers_qs = User.objects.filter(is_customer=True).annotate(
+        order_count=Count('orders'),
+        total_spent=Sum('orders__total_price')
+    )
+
+    q = request.GET.get('q', '').strip()
+    status = request.GET.get('status', 'all')
+    sort = request.GET.get('sort', 'newest')
+
+    if q:
+        code_number = q.replace('KH', '').strip()
+        query = (
+            Q(username__icontains=q) |
+            Q(email__icontains=q) |
+            Q(phone__icontains=q)
+        )
+
+        if code_number.isdigit():
+            query |= Q(id=int(code_number))
+
+        customers_qs = customers_qs.filter(query)
+
+    if sort == 'name_asc':
+        customers_qs = customers_qs.order_by('username')
+    elif sort == 'orders_desc':
+        customers_qs = customers_qs.order_by('-order_count')
+    elif sort == 'spent_desc':
+        customers_qs = customers_qs.order_by('-total_spent')
+    else:
+        customers_qs = customers_qs.order_by('-date_joined')
+
+    customer_list = []
+    for user in customers_qs:
+        order_count = user.order_count or 0
+        total_spent = user.total_spent or 0
+
+        if not user.is_active:
+            customer_status = 'inactive'
+        elif total_spent >= 500000:
+            customer_status = 'vip'
+        elif order_count > 0:
+            customer_status = 'active'
+        else:
+            customer_status = 'new'
+
+        if status != 'all' and customer_status != status:
+            continue
+
+        customer_list.append({
+            'id': user.id,
+            'avatar': (user.username[:1] or 'K').upper(),
+            'name': user.get_full_name() or user.username,
+            'email': user.email or 'Chưa cập nhật',
+            'phone': user.phone or 'Chưa cập nhật',
+            'city': user.address or 'Chưa cập nhật',
+            'code': f'KH{user.id:03d}',
+            'order_count': order_count,
+            'total_spent_display': f"{int(total_spent):,}đ".replace(",", "."),
+            'status': customer_status,
+            'joined_at': user.date_joined.strftime('%d/%m/%Y'),
+        })
+
+    customer_stats = {
+        'all': User.objects.filter(is_customer=True).count(),
+        'new': sum(1 for c in customer_list if c['status'] == 'new'),
+        'active': sum(1 for c in customer_list if c['status'] == 'active'),
+        'vip': sum(1 for c in customer_list if c['status'] == 'vip'),
+    }
+
     context = {
         'active_page': 'customers',
-        'tong_khach_hang': 0,
-        'khach_moi': 0,
-        'khach_hang_than_thiet': 0,
-        'khach_vip': 0,
-        'bo_loc': {
-            'q': request.GET.get('q', ''),
-            'status': request.GET.get('status', 'tat_ca'),
-            'sort': request.GET.get('sort', 'moi_nhat'),
+        'customers': customer_list,
+        'customer_stats': customer_stats,
+        'filters': {
+            'q': q,
+            'status': status,
+            'sort': sort,
         },
-        'danh_sach_khach_hang': [],
     }
+
     return render(request, 'dashboard/customers.html', context)
 # VIEW BÁO CÁO DOANH THU
 @permission_gate(*REPORT_PERMS)
@@ -376,11 +462,15 @@ def report_view(request):
 
     return render(request, 'dashboard/report.html', context)
 # VIEW CHI TIẾT ĐƠN HÀNG
-@permission_gate(*ORDER_PERMS)
+@permission_gate('orders.view_order')
 def order_detail_view(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
     if request.method == 'POST':
+        if not request.user.is_superuser and not request.user.has_perm('orders.update_order_status'):
+            messages.error(request, 'Bạn không có quyền cập nhật trạng thái đơn hàng.')
+            return redirect('order_detail', pk=pk)
+
         new_status = request.POST.get('status')
         allowed_status = ['new', 'pending', 'shipping', 'completed', 'cancelled']
 
@@ -405,14 +495,60 @@ def order_detail_view(request, pk):
 
 @login_required(login_url='login')
 @user_passes_test(has_product_permission, login_url='home')
-@permission_gate(*PRODUCT_PERMS)
+@permission_gate('products.add_product')
 def product_create(request):
-    return render(request, 'dashboard/product_create.html')
+    categories = Category.objects.all().order_by('name')
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        category_id = request.POST.get('category')
+        price = request.POST.get('price') or 0
+        stock = request.POST.get('stock') or 0
+        description = request.POST.get('description', '').strip()
+        image = request.FILES.get('images')
+
+        form_data = {
+            'name': name,
+            'category': category_id,
+            'price': price,
+            'stock': stock,
+            'description': description,
+        }
+
+        if not name or not category_id or int(price) <= 0 or int(stock) < 0:
+            messages.error(request, 'Vui lòng nhập đầy đủ thông tin hợp lệ.')
+            return render(request, 'dashboard/product_create.html', {
+                'active_page': 'products',
+                'categories': categories,
+                'form_data': form_data,
+            })
+
+        product = Product.objects.create(
+            name=name,
+            category_id=category_id,
+            price=price,
+            stock=stock,
+            description=description,
+            image=image,
+            is_active=True,
+        )
+
+        product.slug = f'sp-{product.id}'
+        product.save()
+
+        messages.success(request, 'Thêm sản phẩm thành công.')
+        return redirect('dashboard_products')
+
+    return render(request, 'dashboard/product_create.html', {
+        'active_page': 'products',
+        'categories': categories,
+        'form_data': {},
+    })
 
 # products/views.py
 @login_required(login_url='login')
 @user_passes_test(has_product_permission, login_url='home')
-@permission_gate(*PRODUCT_PERMS)
+@permission_gate('products.change_product')
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     categories = Category.objects.all().order_by('name')
@@ -440,7 +576,7 @@ def product_edit(request, pk):
 
 @login_required(login_url='login')
 @user_passes_test(has_product_permission, login_url='home')
-@permission_gate(*PRODUCT_PERMS)
+@permission_gate('products.delete_product')
 def product_delete(request, pk):
    
     product = get_object_or_404(Product, pk=pk)

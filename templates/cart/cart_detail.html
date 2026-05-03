@@ -90,10 +90,11 @@
                         <strong class="text-danger">{{ total_price_display }}đ</strong>
                     </div>
 
-                    <a href="{% url 'orders:checkout' %}" class="btn btn-primary-tet w-100">
-                        Thanh toán
-                    </a>    
-                    
+                    <button type="button" class="btn btn-danger w-100 mb-2">
+                         <a href="{% url 'orders:checkout' %}" class="btn btn-primary-tet w-100">
+                            Thanh toán
+                         </a>    
+                    </button>
 
                     <form method="POST" action="{% url 'cart:clear' %}">
                         {% csrf_token %}

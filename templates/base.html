@@ -68,14 +68,36 @@
                                 
                                 {% if user.is_staff %}
                                     <li>
+                                        {% if request.user.is_superuser or perms.auth.view_dashboard %}
                                         <a class="dropdown-item fw-bold text-danger" href="{% url 'dashboard' %}">
                                             <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
                                         </a>
+                                        {% elif perms.orders.view_order %}
+                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'dashboard_orders' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
+                                        </a>
+                                        {% elif perms.products.view_product %}
+                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'dashboard_products' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
+                                        </a>
+                                        {% elif perms.users.view_customer_list %}
+                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'dashboard_customers' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
+                                        </a>
+                                        {% elif perms.auth.view_revenue_report %}
+                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'report' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
+                                        </a>
+                                        {% elif perms.auth.view_permission_page %}
+                                        <a class="dropdown-item fw-bold text-danger" href="{% url 'permissions' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Trang quản trị
+                                        </a>
+                                        {% endif %}
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="#">📄 Đơn mua</a></li>
-                                <li><a class="dropdown-item" href="#">⚙️ Tài khoản</a></li>
+                                <li><a class="dropdown-item" href="{% url 'orders:orders' %}">📄 Đơn mua</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account' %}">⚙️ Tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-danger fw-bold" href="{% url 'logout' %}">
