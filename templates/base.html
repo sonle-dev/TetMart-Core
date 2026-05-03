@@ -131,24 +131,15 @@
     <main class="flex-grow-1">
         
         {% if messages %}
-            <div class="container mt-3">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        {% for message in messages %}
-                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm border-0 text-center" role="alert">
-                                {% if message.tags == 'error' %}
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                {% else %}
-                                    <i class="fas fa-check-circle me-2"></i>
-                                {% endif %}
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    </div>
+            <div class="position-fixed start-50 translate-middle-x px-3"
+                style="top: 90px; z-index: 1080; width: min(92vw, 720px);">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'success' }} shadow-sm border-0 mb-2 text-center">
+                {{ message }}
                 </div>
+            {% endfor %}
             </div>
-        {% endif %}
+            {% endif %}
 
         {% block content %}
         {% endblock %}
@@ -301,6 +292,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+    });
+    document.querySelectorAll('.position-fixed .alert').forEach(function (el) {
+        setTimeout(function () {
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 300);
+        }, 2500);
     });
 });
 </script>

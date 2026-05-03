@@ -249,9 +249,22 @@
 
   .account-stat-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    grid-template-columns: 1fr;
+    gap: 10px;
     margin-top: 20px;
+  }
+
+  .account-stat {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .account-stat-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1f2937;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .account-stat {
@@ -283,9 +296,16 @@
       grid-template-columns: 1fr;
     }
   }
+  
+
+  .account-toast-wrap .alert {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    margin-bottom: 10px;
+  }
 </style>
 
 <section class="account-page">
+  
   <div class="container">
     <div class="account-header">
       <div class="account-breadcrumb">Trang chủ / Tài khoản</div>
@@ -317,13 +337,13 @@
 
           <nav class="account-menu">
             {% if account_profile.is_staff %}
-              <a href="{% url 'dashboard:dashboard' %}">
+              <a href="{% url 'dashboard' %}">
                 <span>🎯</span>
                 <span>Trang quản trị</span>
               </a>
             {% endif %}
 
-            <a href="{% url 'my_orders' %}">
+            <a href="{% url 'orders:orders' %}">
               <span>📄</span>
               <span>Đơn mua</span>
             </a>
@@ -360,15 +380,6 @@
 
       <div class="col-lg-8">
         <div class="account-card">
-          {% if messages %}
-            <div class="mb-3">
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} rounded-4">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            </div>
-          {% endif %}
 
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -576,6 +587,7 @@
         reader.readAsDataURL(file);
       });
     }
+  
   });
 </script>
 {% endblock %}

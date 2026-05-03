@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -148,4 +148,65 @@ def report_view(request):
 
 @login_required(login_url='login')
 def account_view(request):
-    return render(request, 'user/account.html') 
+    user = request.user
+
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
+        user.email = request.POST.get('email', '').strip()
+        user.phone = request.POST.get('phone', '').strip()
+        user.address = request.POST.get('address', '').strip()
+
+        new_username = request.POST.get('username', '').strip()
+        if new_username and new_username != user.username:
+            UserModel = user.__class__
+            if UserModel.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                messages.error(request, 'Tên đăng nhập đã tồn tại.')
+            else:
+                user.username = new_username
+
+        avatar = request.FILES.get('avatar')
+        if avatar:
+            user.avatar = avatar
+
+        current_password = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+
+        if current_password or new_password:
+            if not current_password or not new_password:
+                messages.error(request, 'Vui lòng nhập đủ mật khẩu hiện tại và mật khẩu mới.')
+            elif not user.check_password(current_password):
+                messages.error(request, 'Mật khẩu hiện tại không đúng.')
+            else:
+                user.set_password(new_password)
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Đã cập nhật mật khẩu.')
+
+        user.save()
+        messages.success(request, 'Đã cập nhật thông tin tài khoản.')
+        return redirect('account')
+
+    full_name = user.get_full_name() or user.username
+    avatar_url = user.avatar.url if user.avatar else ''
+
+    context = {
+        'account_profile': {
+            'full_name': full_name,
+            'avatar_url': avatar_url,
+            'avatar_initial': (user.username[:1] or 'U').upper(),
+            'is_staff': user.is_staff,
+            'email': user.email,
+            'phone': user.phone,
+            'joined_at': user.date_joined,
+        },
+        'form_data': {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'phone': user.phone,
+            'address': user.address,
+        }
+    }
+
+    return render(request, 'user/account.html', context) 

@@ -14,6 +14,7 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
 from tetmart.permission_utils import (
     DASHBOARD_PERMS,
@@ -533,7 +534,15 @@ def product_create(request):
             is_active=True,
         )
 
-        product.slug = f'sp-{product.id}'
+        base_slug = slugify(name)
+        slug = base_slug
+        counter = 1
+
+        while Product.objects.filter(slug=slug).exclude(pk=product.pk).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+
+        product.slug = slug
         product.save()
 
         messages.success(request, 'Thêm sản phẩm thành công.')
@@ -562,6 +571,16 @@ def product_edit(request, pk):
 
         if request.FILES.get('image'):
             product.image = request.FILES.get('image')
+
+        base_slug = slugify(product.name)
+        slug = base_slug
+        counter = 1
+
+        while Product.objects.filter(slug=slug).exclude(pk=product.pk).exists():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+
+        product.slug = slug
 
         product.save()
         messages.success(request, 'Cập nhật sản phẩm thành công.')
