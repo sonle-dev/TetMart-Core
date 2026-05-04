@@ -1,0 +1,48 @@
+{# templates/includes/product_card.html #}
+
+<div class="product-card h-100 d-flex flex-column">
+    <div class="product-img-container">
+        <a href="{% url 'product_detail' p.slug %}">
+            {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.name }}">
+            {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                    Chưa có ảnh
+                </div>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="p-3 d-flex flex-column flex-grow-1">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span style="font-size: 20px;">{{ p.icon }}</span>
+            <small class="text-muted">{{ p.category }}</small>
+        </div>
+
+        <a href="{% url 'product_detail' p.slug %}" class="text-decoration-none text-reset">
+            <h6 class="fw-bold mb-2">{{ p.name }}</h6>
+        </a>
+
+        <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-danger fw-bold fs-5">{{ p.price }}đ</span>
+                <span class="badge-stock">Còn hàng</span>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'product_detail' p.slug %}" class="btn btn-primary-tet w-100">
+                    Xem chi tiết
+                </a>
+
+                <form method="POST" action="{% url 'cart:add' p.id %}" class="js-ajax-add-to-cart">
+                  {% csrf_token %}
+                 <input type="hidden" name="quantity" value="1">
+                 <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <button type="submit" class="btn btn-outline-danger w-100">
+                   Thêm vào giỏ
+                  </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

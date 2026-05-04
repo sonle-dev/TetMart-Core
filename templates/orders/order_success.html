@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Đặt hàng thành công - Tet Mart{% endblock %}
+
+{% block content %}
+<section class="order-success-page py-5">
+  <div class="container">
+    <div class="success-wrapper mx-auto">
+      <div class="success-hero text-center">
+        <div class="success-icon-wrap">
+          <div class="success-icon">✓</div>
+        </div>
+
+        <div class="success-badge">Đơn hàng đã được ghi nhận</div>
+
+        <h1 class="success-title mt-4">Đặt hàng thành công</h1>
+        <p class="success-subtitle mt-3">
+          Cảm ơn <strong>{{ order.customer_name }}</strong>. Tet Mart đã nhận được đơn hàng của bạn
+          và sẽ sớm liên hệ để xác nhận giao hàng.
+        </p>
+      </div>
+
+      <div class="row g-4 mt-4">
+        <div class="col-lg-7">
+          <div class="success-card h-100">
+            <div class="success-card-header">
+              <h5 class="mb-0">Thông tin đơn hàng</h5>
+            </div>
+
+            <div class="success-card-body">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Người nhận</span>
+                  <strong class="info-value">{{ order.customer_name }}</strong>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">Số điện thoại</span>
+                  <strong class="info-value">{{ order.phone }}</strong>
+                </div>
+
+                <div class="info-item full-width">
+                  <span class="info-label">Địa chỉ nhận hàng</span>
+                  <strong class="info-value">{{ order.address }}</strong>
+                </div>
+
+                {% if order.note %}
+                <div class="info-item full-width">
+                  <span class="info-label">Ghi chú</span>
+                  <strong class="info-value">{{ order.note }}</strong>
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="success-divider"></div>
+
+              <div class="next-steps">
+                <h6 class="next-steps-title">Các bước tiếp theo</h6>
+
+                <div class="step-item">
+                  <div class="step-dot">1</div>
+                  <div>
+                    <strong>Tet Mart xác nhận đơn</strong>
+                    <p class="mb-0">Nhân viên sẽ liên hệ với bạn để xác nhận thông tin đặt hàng.</p>
+                  </div>
+                </div>
+
+                <div class="step-item">
+                  <div class="step-dot">2</div>
+                  <div>
+                    <strong>Chuẩn bị và đóng gói</strong>
+                    <p class="mb-0">Sản phẩm sẽ được chuẩn bị cẩn thận trước khi giao đến bạn.</p>
+                  </div>
+                </div>
+
+                <div class="step-item">
+                  <div class="step-dot">3</div>
+                  <div>
+                    <strong>Giao hàng</strong>
+                    <p class="mb-0">Đơn hàng sẽ được giao tới địa chỉ bạn đã cung cấp.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="success-card order-summary-card h-100">
+            <div class="success-card-header">
+              <h5 class="mb-0">Tóm tắt thanh toán</h5>
+            </div>
+
+            <div class="success-card-body">
+              <div class="summary-row">
+                <span>Tổng số lượng sản phẩm</span>
+                <strong>{{ order.total_quantity }}</strong>
+              </div>
+
+              <div class="summary-row">
+                <span>Phương thức thanh toán</span>
+                <strong>
+                  {% if order.payment_method == "bank" %}
+                    Chuyển khoản
+                  {% else %}
+                    Thanh toán khi nhận hàng
+                  {% endif %}
+                </strong>
+              </div>
+
+              <div class="summary-row">
+                <span>Phí vận chuyển</span>
+                <strong>Miễn phí</strong>
+              </div>
+
+              <div class="summary-total">
+                <span>Tổng thanh toán</span>
+                <h3 class="mb-0">{{ order.total_price_display }}đ</h3>
+              </div>
+
+              <div class="success-note">
+                <strong>Lưu ý:</strong> Vui lòng giữ điện thoại khả dụng để Tet Mart liên hệ xác nhận đơn hàng.
+              </div>
+
+              <div class="d-grid gap-3 mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary-tet btn-lg">
+                  Về trang chủ
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-tet btn-lg">
+                  Tiếp tục mua sắm
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

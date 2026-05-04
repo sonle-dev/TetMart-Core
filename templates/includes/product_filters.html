@@ -1,0 +1,49 @@
+{# templates/includes/product_filters.html #}
+
+<div class="filter-wrap">
+  <div class="filter-card">
+    <div class="filter-title">Bộ lọc</div>
+
+    <form method="get" action="{% url 'product_list' %}">
+      {% if filters.q %}
+        <input type="hidden" name="q" value="{{ filters.q }}">
+      {% endif %}
+
+      <div class="filter-group">
+        <div class="filter-label">Danh mục</div>
+        <select class="form-select" name="category">
+          <option value="all" {% if filters.category == "all" %}selected{% endif %}>Tất cả</option>
+          {% for c in categories %}
+            <option value="{{ c }}" {% if filters.category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-label">Khoảng giá</div>
+        <div class="row g-2">
+          <div class="col-6">
+            <input class="form-control" type="number" name="price_min" placeholder="Từ" value="{{ filters.price_min }}">
+          </div>
+          <div class="col-6">
+            <input class="form-control" type="number" name="price_max" placeholder="Đến" value="{{ filters.price_max }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-label">Sắp xếp</div>
+        <select class="form-select" name="sort">
+          <option value="newest" {% if filters.sort == "newest" %}selected{% endif %}>Mới nhất</option>
+          <option value="price_asc" {% if filters.sort == "price_asc" %}selected{% endif %}>Giá tăng dần</option>
+          <option value="price_desc" {% if filters.sort == "price_desc" %}selected{% endif %}>Giá giảm dần</option>
+        </select>
+      </div>
+
+      <div class="d-grid gap-2 mt-3">
+        <button type="submit" class="btn btn-outline-secondary">Áp dụng</button>
+        <a class="btn btn-light border" href="{% url 'product_list' %}">Xóa lọc</a>
+      </div>
+    </form>
+  </div>
+</div>

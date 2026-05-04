@@ -1,0 +1,55 @@
+<div class="bg-white rounded-4 shadow-sm p-3 border h-100">
+  <div class="small fw-bold text-uppercase text-muted mb-3">Quản lý chung</div>
+
+  <div class="d-grid gap-2 mb-4">
+    {% if request.user.is_superuser or perms.auth.view_dashboard %}
+    <a href="{% url 'dashboard' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'dashboard' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Tổng quan
+    </a>
+    {% endif %}
+
+    {% if request.user.is_superuser or perms.orders.view_order %}
+    <a href="{% url 'dashboard_orders' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'orders' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Đơn hàng
+    </a>
+    {% endif %}
+
+    {% if request.user.is_superuser or perms.products.view_product %}
+    <a href="{% url 'dashboard_products' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'products' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Sản phẩm
+    </a>
+    {% endif %}
+
+    {% if request.user.is_superuser or perms.users.view_customer_list %}
+    <a href="{% url 'dashboard_customers' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'customers' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Khách hàng
+    </a>
+    {% endif %}
+  </div>
+
+  {% if request.user.is_superuser or perms.auth.view_revenue_report %}
+  <div class="small fw-bold text-uppercase text-muted mb-3">Thống kê</div>
+
+  <div class="d-grid gap-2 mb-4">
+    <a href="{% url 'report' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'report' or active_page == 'reports' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Báo cáo doanh thu
+    </a>
+  </div>
+  {% endif %}
+
+  {% if request.user.is_superuser or perms.auth.view_permission_page %}
+  <div class="small fw-bold text-uppercase text-muted mb-3">Cấu hình</div>
+
+  <div class="d-grid gap-2">
+    <a href="{% url 'permissions' %}"
+       class="btn text-start rounded-3 fw-semibold {% if active_page == 'permissions' %}btn-danger text-white{% else %}btn-light{% endif %}">
+      Phân quyền
+    </a>
+  </div>
+  {% endif %}
+</div>
