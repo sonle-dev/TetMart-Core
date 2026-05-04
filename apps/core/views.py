@@ -115,3 +115,8 @@ def dashboard_view(request):
         'total_products': 48
     }
     return render(request, 'dashboard.html', context)
+
+def dashboard_customers(request):
+    return render(request, 'dashboard/customers.html', {
+        'active_page': 'customers'
+    })

@@ -7,6 +7,7 @@
 <div class="container-fluid bg-light" style="min-height: 100vh;">
     <div class="row">
         
+<<<<<<< HEAD
         <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
             <div class="position-sticky pt-3">
                 <h6 class="sidebar-heading px-3 mt-2 mb-3 text-muted text-uppercase fw-bold">Quản lý chung</h6>
@@ -29,8 +30,13 @@
                 </ul>
                  </div>
         </nav>
+=======
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='orders' %}
+        </div>
+>>>>>>> develop
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <main class="col-lg-9 col-xl-10 px-md-4 py-4">
             
             <div class="d-flex align-items-center mb-4">
                 <a href="{% url 'dashboard_orders' %}" class="btn btn-light border me-3">
@@ -53,7 +59,7 @@
                         <div class="card-body">
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Họ tên:</div>
-                                <div class="col-md-9 fw-bold">{{ order.full_name|default:order.user.username }}</div>
+                                <div class="col-md-9">{{ order.full_name }}</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">SĐT:</div>
@@ -65,6 +71,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-md-3 text-muted">Ghi chú:</div>
+<<<<<<< HEAD
                                 <div class="col-md-9 text-danger">{{ order.note|default:"Không có ghi chú" }}</div>
                             </div>
                             <div class="mb-2">
@@ -82,6 +89,27 @@
                                 {% else %}
                                     <span class="badge bg-dark">{{ order.get_status_display }}</span>
                                 {% endif %}
+=======
+                                <div class="col-md-9 text-danger">{{ order.note }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 text-muted">Trạng thái:</div>
+                                <div class="col-md-9">
+                                    <div class="col-md-9">
+                                        {% if order.status == 'new' %}
+                                            <span class="badge bg-warning text-dark px-3 rounded-pill">Đơn mới</span>
+                                        {% elif order.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark px-3 rounded-pill">Chờ xử lý</span>
+                                        {% elif order.status == 'shipping' %}
+                                            <span class="badge bg-info text-dark px-3 rounded-pill">Đang giao</span>
+                                        {% elif order.status == 'completed' %}
+                                            <span class="badge bg-success px-3 rounded-pill">Hoàn thành</span>
+                                        {% elif order.status == 'cancelled' %}
+                                            <span class="badge bg-secondary px-3 rounded-pill">Đã hủy</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+>>>>>>> develop
                             </div>
                         </div>
                     </div>
@@ -105,7 +133,11 @@
                                     <tr>
                                         <td class="ps-4 py-3">{{ item.product.name }}</td>
                                         <td class="text-center">{{ item.quantity }}</td>
+<<<<<<< HEAD
                                         <td class="text-end">{{ item.price|floatformat:0 }}</td>
+=======
+                                        <td class="text-end">{{ item.price }}</td>
+>>>>>>> develop
                                         <td class="text-end pe-4 fw-bold text-dark">{{ item.total }}</td>
                                     </tr>
                                     {% endfor %}
@@ -120,6 +152,50 @@
                         </div>
                     </div>
 
+<<<<<<< HEAD
+=======
+                </div>
+
+                <div class="col-md-4">
+                    
+                    {% if request.user.is_superuser or perms.orders.update_order_status %}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="fw-bold m-0">Cập nhật trạng thái</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Trạng thái đơn hàng</label>
+                                    <select name="status" class="form-select">
+                                        {% for value, label in order.STATUS_CHOICES %}
+                                            <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-danger w-100 fw-bold mb-2">Lưu trạng thái</button>
+
+                                {% if request.user.is_superuser or perms.orders.cancel_order %}
+                                <button type="button" class="btn btn-outline-secondary w-100">Hủy đơn</button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-primary bg-primary-subtle border-0 text-primary small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Lưu ý:</strong> Chỉ cho phép cập nhật trạng thái theo thứ tự hợp lý: 
+                        Chờ xử lý → Đang giao → Hoàn thành.
+                    </div>
+
+                </div>
+>>>>>>> develop
             </div>
 
     <div class="col-md-4">

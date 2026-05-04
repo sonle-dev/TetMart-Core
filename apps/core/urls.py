@@ -10,6 +10,7 @@ from .views import (
     login_view, 
     register_view, 
     logout_view
+    
 )
 
 # ---------------------------------------------------------
@@ -17,10 +18,12 @@ from .views import (
 # Lấy từ file: apps/dashboard/views.py
 # ---------------------------------------------------------
 from apps.dashboard.views import (
-    dashboard_view, 
+    dashboard_view,
+    dashboard_customers,
     report_view, 
     order_list_view, 
-    order_detail_view  # ✅ Đã chuyển hàm này về đúng chỗ (Hết lỗi Import)
+    order_detail_view
+     # ✅ Đã chuyển hàm này về đúng chỗ (Hết lỗi Import)
 )
 
 app_name = 'core'
@@ -42,6 +45,7 @@ urlpatterns = [
     
     # Quản lý đơn hàng (Danh sách)
     path('dashboard/orders/', order_list_view, name='orders'),
+    path('dashboard/customers/', dashboard_customers, name='dashboard_customers'),
     
     # Chi tiết đơn hàng (Xem & Sửa)
     path('dashboard/orders/<str:order_slug>/', order_detail_view, name='order_detail'),

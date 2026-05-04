@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="container-fluid bg-light" style="min-height: 100vh;">
+<<<<<<< HEAD
     <div class="row">
 
         <nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm p-3" style="min-height: 85vh;">
@@ -42,19 +43,32 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
+=======
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-3 col-xl-2">
+            {% include 'includes/sidebar.html' with active_page='reports' %}
+        </div>
+
+        <main class="col-lg-9 col-xl-10 px-3 px-md-4 py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+>>>>>>> develop
                 <div>
-                    <h4 class="fw-bold text-dark">Báo cáo / Thống kê</h4>
+                    <h4 class="fw-bold text-dark mb-1">Báo cáo / Thống kê</h4>
                     <p class="text-muted small mb-0">Thống kê kinh doanh và báo cáo chi tiết</p>
                 </div>
             </div>
 
+<<<<<<< HEAD
             <div class="card border-0 shadow-sm mb-4">
+=======
+            <div class="card border-0 shadow-sm mb-4 rounded-4">
+>>>>>>> develop
                 <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div class="d-flex align-items-center gap-2">
                         <i class="fas fa-calendar-alt text-muted"></i>
                         <span class="fw-bold text-muted">Khoảng thời gian:</span>
                         <select class="form-select form-select-sm fw-bold" style="width: 150px; border-color: #ddd;">
-                            <option>7 ngày qua</option>
+                            <option selected>7 ngày qua</option>
                             <option>Tháng này</option>
                             <option>Quý này</option>
                         </select>
@@ -67,30 +81,34 @@
 
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-success">
+                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-success rounded-4">
                         <h6 class="text-muted fw-bold">Tổng doanh thu</h6>
                         <h3 class="fw-bold text-success mb-1">{{ total_revenue }}đ</h3>
                         <small class="text-muted">7 ngày qua</small>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-primary">
+                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-primary rounded-4">
                         <h6 class="text-muted fw-bold">Tổng số đơn</h6>
                         <h3 class="fw-bold text-primary mb-1">{{ total_orders }}</h3>
                         <small class="text-muted">7 ngày qua</small>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-danger">
-                        <h6 class="text-muted fw-bold">Tỉ lệ hủy</h6>
+                    <div class="card border-0 shadow-sm p-3 h-100 bg-white border-start border-4 border-danger rounded-4">
+                        <h6 class="text-muted fw-bold">Tỷ lệ hủy đơn</h6>
                         <h3 class="fw-bold text-danger mb-1">{{ cancel_rate }}%</h3>
+<<<<<<< HEAD
                         <small class="text-muted">1/7 đơn</small>
+=======
+                        <small class="text-muted">7 ngày qua</small>
+>>>>>>> develop
                     </div>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3">
+            <div class="card border-0 shadow-sm mb-4 rounded-4">
+                <div class="card-header bg-white py-3 rounded-top-4">
                     <h5 class="fw-bold m-0 text-dark">Doanh thu theo ngày</h5>
                 </div>
                 <div class="card-body">
@@ -102,8 +120,13 @@
 
             <div class="row g-4 mb-4">
                 <div class="col-lg-7">
+<<<<<<< HEAD
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-white py-3">
+=======
+                    <div class="card border-0 shadow-sm h-100 rounded-4">
+                        <div class="card-header bg-white py-3 rounded-top-4">
+>>>>>>> develop
                             <h5 class="fw-bold m-0 text-dark">Số đơn hàng theo ngày</h5>
                         </div>
                         <div class="card-body">
@@ -115,8 +138,13 @@
                 </div>
 
                 <div class="col-lg-5">
+<<<<<<< HEAD
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-white py-3">
+=======
+                    <div class="card border-0 shadow-sm h-100 rounded-4">
+                        <div class="card-header bg-white py-3 rounded-top-4">
+>>>>>>> develop
                             <h5 class="fw-bold m-0 text-dark">Tỉ trọng doanh thu theo danh mục</h5>
                         </div>
                         <div class="card-body">
@@ -131,9 +159,15 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
             
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3">
+=======
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3 rounded-top-4">
+>>>>>>> develop
                     <h5 class="fw-bold m-0 text-dark">Top sản phẩm bán chạy</h5>
                 </div>
                 <div class="card-body p-0">
@@ -162,16 +196,18 @@
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     const labels = JSON.parse('{{ chart_labels_json|escapejs }}');
     const revenueData = JSON.parse('{{ chart_data_json|escapejs }}');
+<<<<<<< HEAD
     const orderLabels = JSON.parse('{{ order_chart_labels_json|escapejs }}');
     const orderData = JSON.parse('{{ order_chart_data_json|escapejs }}');
     const categoryLabels = JSON.parse('{{ category_labels_json|escapejs }}');
@@ -181,6 +217,12 @@
     console.log("revenueData =", revenueData);
     console.log("orderLabels =", orderLabels);
     console.log("orderData =", orderData);
+=======
+    const orderData = JSON.parse('{{ order_chart_data_json|escapejs }}');
+
+    const categoryLabels = JSON.parse('{{ category_labels_json|escapejs }}');
+    const categoryData = JSON.parse('{{ category_data_json|escapejs }}');
+>>>>>>> develop
 
     function formatMoney(value) {
         return Number(value).toLocaleString('vi-VN') + 'đ';
@@ -242,7 +284,11 @@
         new Chart(orderCtx, {
             type: 'line',
             data: {
+<<<<<<< HEAD
                 labels: orderLabels,
+=======
+                labels: labels,
+>>>>>>> develop
                 datasets: [{
                     label: 'Số đơn hàng',
                     data: orderData,
@@ -319,7 +365,11 @@
     const categoryCtx = document.getElementById('categoryChart');
     const categorySummaryList = document.getElementById('categorySummaryList');
 
+<<<<<<< HEAD
     if (categoryCtx) {
+=======
+    if (categoryCtx && categoryLabels.length && categoryData.length) {
+>>>>>>> develop
         const totalCategoryRevenue = categoryData.reduce((sum, value) => sum + value, 0);
 
         new Chart(categoryCtx, {
@@ -329,7 +379,11 @@
                 datasets: [{
                     label: 'Doanh thu theo danh mục',
                     data: categoryData,
+<<<<<<< HEAD
                     backgroundColor: categoryColors,
+=======
+                    backgroundColor: categoryColors.slice(0, categoryData.length),
+>>>>>>> develop
                     borderColor: '#ffffff',
                     borderWidth: 3,
                     hoverOffset: 10
@@ -356,7 +410,11 @@
                         callbacks: {
                             label: function(context) {
                                 const value = context.raw;
+<<<<<<< HEAD
                                 const percent = ((value / totalCategoryRevenue) * 100).toFixed(1);
+=======
+                                const percent = totalCategoryRevenue ? ((value / totalCategoryRevenue) * 100).toFixed(1) : 0;
+>>>>>>> develop
                                 return ` ${context.label}: ${formatMoney(value)} (${percent}%)`;
                             }
                         }
@@ -369,7 +427,11 @@
         if (categorySummaryList) {
             categorySummaryList.innerHTML = categoryLabels.map((label, index) => {
                 const value = categoryData[index];
+<<<<<<< HEAD
                 const percent = ((value / totalCategoryRevenue) * 100).toFixed(1);
+=======
+                const percent = totalCategoryRevenue ? ((value / totalCategoryRevenue) * 100).toFixed(1) : 0;
+>>>>>>> develop
 
                 return `
                     <div class="category-summary-item">
@@ -391,10 +453,35 @@
 </script>
 
 <style>
-    .hover-effect:hover {
-        background-color: #ffe5e5;
-        color: #d72323 !important;
-        font-weight: bold;
+    .top-rank-badge {
+        width: 25px;
+        height: 25px;
+        line-height: 18px;
+    }
+
+    .category-summary-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .category-summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 14px;
+        border: 1px solid #f1f1f1;
+        border-radius: 12px;
+        background: #fafafa;
+    }
+
+    .category-color-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
     }
 
     .top-rank-badge {
