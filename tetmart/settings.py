@@ -36,7 +36,7 @@ INSTALLED_APPS = [
    # 'apps.accounts',
    # 'apps.catalog',
     #'apps.orders',
-   # 'apps.dashboard',
+    'apps.dashboard',
     'apps.cart',
     'orders',
     'users',
@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# tiếng việt
+
 LANGUAGE_CODE = 'vi' 
 
 TIME_ZONE = 'Asia/Ho_Chi_Minh'

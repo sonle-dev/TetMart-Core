@@ -52,7 +52,7 @@ def product_detail(request, product_id):
     product = None
     for item in products_data:
         if item['id'] == product_id:
-            product = item``
+            product = item
             break
     
     context = {'product': product}
@@ -115,3 +115,8 @@ def dashboard_view(request):
         'total_products': 48
     }
     return render(request, 'dashboard.html', context)
+
+def dashboard_customers(request):
+    return render(request, 'dashboard/customers.html', {
+        'active_page': 'customers'
+    })
